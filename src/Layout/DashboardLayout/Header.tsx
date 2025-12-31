@@ -1,16 +1,7 @@
-import { useState, useRef, useEffect } from "react";
-import {
-  Search,
-  Bell,
-  User,
-  Settings,
-  LogOut,
-  ChevronDown,
-} from "lucide-react";
-import { Link } from "react-router-dom";
+import { useRef, useEffect } from "react";
+import { Search, Bell } from "lucide-react";
 
 const Header = () => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -20,7 +11,6 @@ const Header = () => {
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
       ) {
-        setIsDropdownOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -50,8 +40,6 @@ const Header = () => {
         </button>
 
         <div className="h-8 w-[1px] bg-gray-200 mx-2"></div>
-
-        {/* User Profile Dropdown Container */}
       </div>
     </header>
   );
