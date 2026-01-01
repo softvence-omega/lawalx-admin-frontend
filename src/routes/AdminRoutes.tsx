@@ -25,6 +25,7 @@ import GlobalSettings from "@/pages/Admin/GlobalSettings/GlobalSettings";
 import AddClientForm from "@/pages/Admin/Clients/Components/AddClient/AddClientForm";
 import ManageBillings from "@/pages/Admin/ManageBillings/ManageBillings";
 import PlatformAnalyticsOverview from "@/pages/Admin/PlatformAnalyticsOverview/Analytics";
+import ClientsParent from "@/pages/Admin/Clients/ClientsParent";
 export const adminRoutes: RouteGroup[] = [
   {
     group: "Main Menu",
@@ -39,8 +40,12 @@ export const adminRoutes: RouteGroup[] = [
         icon: <Users />,
         name: "Clients",
         path: "clients",
-        element: <Clients />,
+        element: <ClientsParent />,
         children: [
+          {
+            path: "",
+            element: <Clients />,
+          },
           {
             path: "addClient",
             element: <AddClientForm />,

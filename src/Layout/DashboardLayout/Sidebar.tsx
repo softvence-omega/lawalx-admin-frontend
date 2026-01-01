@@ -19,14 +19,16 @@ const NavItem = ({
 
   // Active route logic
   const isRouteActive = (item: MenuItem, currentPath: string): boolean => {
-    if (item.path && currentPath === item.path) return true;
-    if (item.children)
+    if (item.path && currentPath.startsWith(item.path)) return true;
+
+    if (item.children) {
       return item.children.some((child) => isRouteActive(child, currentPath));
+    }
+
     return false;
   };
 
   const active = isRouteActive(item, location.pathname);
-
   const itemClasses = `flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-all duration-200 no-underline! text-gray-600 text-lg font-semibold
     ${
       active
@@ -98,7 +100,7 @@ const Sidebar = () => {
 
   return (
     <aside className="w-64 h-screen bg-white text-gray-800 sticky top-0 z-40 flex flex-col">
-      <div className="p-4 h-24 text-xl font-bold border-b border-gray-200 flex items-center">
+      <div className="p-4 h-24 text-xl font-bold flex items-center">
         <Link to="/" className="no-underline">
           <img src="/sitelogo.png" alt="" />
         </Link>

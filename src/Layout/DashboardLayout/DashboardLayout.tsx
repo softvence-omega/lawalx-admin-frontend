@@ -8,10 +8,12 @@ const DashboardLayout = () => {
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* 1. Fixed Sidebar */}
-      <Sidebar />
+      <div className="z-90 border-r border-gray-200">
+        <Sidebar />
+      </div>
 
       {/* 2. Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col max-w-full">
         <Header />
         <main className="p-6 overflow-y-auto">
           {/* Breadcrumbs (Optional) */}
@@ -19,10 +21,6 @@ const DashboardLayout = () => {
             <div className="flex items-center gap-2 space-y-2">
               <Breadcrumbs config={adminRoutes} basePath="/admin" />
             </div>
-            <h1 className="text-2xl font-bold text-gray-800">Overview</h1>
-            <p className="text-sm text-gray-500">
-              Welcome back to your reseller dashboard.
-            </p>
           </div>
           <Outlet />
         </main>
