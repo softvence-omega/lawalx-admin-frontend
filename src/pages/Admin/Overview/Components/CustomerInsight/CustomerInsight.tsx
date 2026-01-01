@@ -4,17 +4,17 @@ import { LayoutGrid, Table, Filter } from "lucide-react";
 import BoardCustomerInsight from "./BoardCustomerInsight";
 import TableCustomerInsight from "./TableCustomerInsight";
 import { ClientData } from "@/types/Client";
+import { useGetAllClientByAdminQuery } from "@/store/Api/AdminApi/ClientApi";
 
 export function CustomerInsights() {
   const [customers, setCustomers] = useState<ClientData[]>([]);
-
+  const { data } = useGetAllClientByAdminQuery({});
+  console.log(data?.data);
   useEffect(() => {
-    fetch("/customerData.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setCustomers(data);
-      });
-  }, []);
+    if (data?.data) {
+      setCustomers(data?.data);
+    }
+  }, [data]);
 
   const [viewMode, setViewMode] = useState("Boards");
 

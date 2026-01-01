@@ -47,7 +47,6 @@ export const menuGenerator = (
         ? menuGenerator(routeItem.children, parentPath)
         : [];
     }
-    console.log(routeItem);
     // Skip if no element and no children
     if (!routeItem.element && !routeItem.children?.length) {
       return [];

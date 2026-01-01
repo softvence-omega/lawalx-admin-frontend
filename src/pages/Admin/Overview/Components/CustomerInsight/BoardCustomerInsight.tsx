@@ -24,6 +24,7 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
     Critical: "text-red-600",
     Warning: "text-yellow-600",
   };
+  console.log(customer);
   return (
     <Card key={customer.id} className="border-0 shadow-sm">
       <Link to={`/admin/clients/${customer.id}`}>
@@ -36,7 +37,7 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">
-                  {customer.companyName}
+                  {customer.contactPersonName}
                 </h3>
                 <p className="text-sm text-gray-500">{customer.plan}</p>
               </div>

@@ -6,7 +6,7 @@ export interface ClientData {
   users: string;
   lastActive: string;
   dashboardUpdates: number;
-  alerts: number;
+  alerts: number; 
   alertType: string;
   storageUsage: number;
   storageTotal: number;
