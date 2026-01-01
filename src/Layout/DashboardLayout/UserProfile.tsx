@@ -88,7 +88,7 @@ export default function UserProfile({
 
       <DropdownMenuContent
         align="end"
-        className="w-56   mt-2 border border-[#E2E8F0] bg-white space-y-2 focus:outline-none focus-visible:outline-none"
+        className="z-99 w-56 mt-2 border border-[#E2E8F0] bg-white space-y-2 focus:outline-none focus-visible:outline-none"
       >
         <DropdownMenuItem
           onClick={onProfileClick}

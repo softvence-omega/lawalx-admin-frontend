@@ -10,15 +10,15 @@ import { useAppDispatch } from "@/hooks/useRedux";
 import { setUser } from "@/store/Slices/AuthSlice/authSlice";
 import { jwtDecode } from "jwt-decode";
 
-const Role = {
-  VIEWER: "viewer-panel",
-  EMPLOYEE: "staff-employee-panel", // todo: change to employee-panel when ready
-  SUPPORTER: "supporter",
-  MANAGER: "staff-manager-panel",
-  ADMIN: "admin",
-  CLIENT: "client-panel",
-  SUPERADMIN: "admin",
-};
+// const Role = {
+//   VIEWER: "viewer-panel",
+//   EMPLOYEE: "staff-employee-panel", // todo: change to employee-panel when ready
+//   SUPPORTER: "supporter",
+//   MANAGER: "staff-manager-panel",
+//   ADMIN: "admin",
+//   CLIENT: "client-panel",
+//   SUPERADMIN: "admin",
+// };
 const loginSchema = z.object({
   email: z.string().email("Invalid email format"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -36,7 +36,7 @@ const Login = () => {
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "mdkazinaim0018@gmail.com",
+      email: "sakibsoftvence@gmail.com",
       password: "123456789",
     },
   });
@@ -53,11 +53,13 @@ const Login = () => {
         if (res.data.specialToken) {
           navigate("/verification");
         } else {
-          const { role } = jwtDecode<{ role: keyof typeof Role }>(
-            res.data.accessToken
-          );
-          if (Role[role]) {
-            navigate(`/${Role[role]}`);
+          const { role } = jwtDecode<{
+            role: "ADMIN" | "SUPERADMIN" | "CLIENT";
+          }>(res.data.accessToken);
+          if (role === "ADMIN" || "SUPERADMIN" || "CLIENT") {
+            navigate("/admin");
+          } else {
+            navigate("/unauthorized");
           }
         }
       }
