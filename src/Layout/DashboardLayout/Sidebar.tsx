@@ -9,10 +9,12 @@ const NavItem = ({
   item,
   level,
   location,
+  isCollapsed,
 }: {
   item: MenuItem;
   level: number;
   location: Location;
+  isCollapsed: boolean;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const hasChildren = !!item.children?.length;
@@ -33,8 +35,8 @@ const NavItem = ({
     ${
       active
         ? "bg-blue-500 text-white font-medium"
-        : "text-blue-800 hover:bg-blue-50 "
-    }`;
+        : "text-blue-800 hover:bg-blue-50"
+    } ${isCollapsed ? "justify-center px-2" : ""}`;
 
   return (
     <div
@@ -45,11 +47,20 @@ const NavItem = ({
       {/* Parent / Leaf Link */}
       <NavLink
         to={item.path || "#"}
+        title={isCollapsed ? item.label : ""}
         className={`${itemClasses} cursor-pointer whitespace-nowrap`}
       >
-        {item.icon}
-        <span className="flex-1 uppercase no-underline!">{item.label}</span>
-        {hasChildren && (
+        <span
+          className={`${
+            isCollapsed ? "w-6 h-6 flex items-center justify-center" : ""
+          }`}
+        >
+          {item.icon}
+        </span>
+        {!isCollapsed && (
+          <span className="flex-1 uppercase no-underline!">{item.label}</span>
+        )}
+        {hasChildren && !isCollapsed && (
           <span
             className={`text-[10px] transition-transform duration-200 ${
               isHovered ? "rotate-90" : ""
@@ -63,7 +74,7 @@ const NavItem = ({
       {/* Sub-menu: Renders only if hovered AND has children */}
       {hasChildren && isHovered && (
         <div
-          className="absolute left-full top-0 z-[100] pt-0 pl-2 animate-in fade-in slide-in-from-left-1 duration-150"
+          className={`absolute left-full top-0 z-[100] pt-0 pl-2 animate-in fade-in slide-in-from-left-1 duration-150`}
           style={{ marginLeft: "-2px" }} // Slight overlap to prevent hover-gap flicker
         >
           {/* Invisible bridge */}
@@ -77,6 +88,7 @@ const NavItem = ({
                   item={child}
                   level={level + 1}
                   location={location}
+                  isCollapsed={false} // Sub-menus are always expanded
                 />
               ))}
             </div>
@@ -87,7 +99,11 @@ const NavItem = ({
   );
 };
 
-const Sidebar = () => {
+interface SidebarProps {
+  isCollapsed: boolean;
+}
+
+const Sidebar = ({ isCollapsed }: SidebarProps) => {
   const menu = menuGenerator(adminRoutes, "/admin");
   const location = useLocation();
 
@@ -99,19 +115,39 @@ const Sidebar = () => {
   }, {});
 
   return (
-    <aside className="w-64 h-screen bg-white text-gray-800 sticky top-0 z-40 flex flex-col">
-      <div className="p-4 h-24 text-xl font-bold flex items-center">
+    <aside
+      className={`h-screen bg-white text-gray-800 sticky top-0 z-40 flex flex-col transition-all duration-300 ${
+        isCollapsed ? "w-20" : "w-64"
+      }`}
+    >
+      <div
+        className={`p-4 h-24 text-xl font-bold flex items-center ${
+          isCollapsed ? "justify-center" : ""
+        }`}
+      >
         <Link to="/" className="no-underline">
-          <img src="/sitelogo.png" alt="" />
+          {isCollapsed ? (
+            <div className=" flex items-center justify-center text-white text-xs">
+              <img src="/sitelogo.png" alt="" />
+            </div>
+          ) : (
+            <img src="/sitelogo.png" alt="Logo" className="max-h-12" />
+          )}
         </Link>
       </div>
 
-      <nav className="p-2 my-5 space-y-10 flex-1 overflow-y-visible overflow-x-visible">
+      <nav
+        className={`p-2 my-5 space-y-10 flex-1 overflow-y-visible overflow-x-visible ${
+          isCollapsed ? "px-2" : ""
+        }`}
+      >
         {Object.entries(groupedMenu).map(([group, items], index, arr) => (
           <div key={group}>
-            <p className="px-3 mb-2 text-xs font-semibold capitalize text-gray-500 tracking-widest">
-              {group}
-            </p>
+            {!isCollapsed && (
+              <p className="px-3 mb-2 text-xs font-semibold capitalize text-gray-500 tracking-widest">
+                {group}
+              </p>
+            )}
             <div className="space-y-2">
               {items.map((item) => (
                 <NavItem
@@ -119,18 +155,26 @@ const Sidebar = () => {
                   item={item}
                   level={0}
                   location={location}
+                  isCollapsed={isCollapsed}
                 />
               ))}
             </div>
             {/* Divider */}
-            {index !== arr.length - 1 && (
+            {index !== arr.length - 1 && !isCollapsed && (
               <div className="my-6 border-t border-gray-200" />
+            )}
+            {index !== arr.length - 1 && isCollapsed && (
+              <div className="my-4 border-t border-gray-100 mx-2" />
             )}
           </div>
         ))}
       </nav>
-      <div className="mt-auto p-4 border-t border-gray-200">
-        <UserProfile />
+      <div
+        className={`mt-auto p-4 border-t border-gray-200 ${
+          isCollapsed ? "px-2" : ""
+        }`}
+      >
+        <UserProfile isCollapsed={isCollapsed} />
       </div>
     </aside>
   );

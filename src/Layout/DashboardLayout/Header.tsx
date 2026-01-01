@@ -1,11 +1,17 @@
 import { useRef, useEffect, useState } from "react";
-import { Search, Bell, X, Plus } from "lucide-react";
+import { Search, Bell, X, Plus, PanelLeftClose, PanelLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { NavLink } from "react-router-dom";
 import { useGetUser } from "@/hooks/useGetUser";
-const Header = () => {
+
+interface HeaderProps {
+  toggleSidebar: () => void;
+  isCollapsed: boolean;
+}
+
+const Header = ({ toggleSidebar, isCollapsed }: HeaderProps) => {
   const { name } = useGetUser();
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mockNotifications = [
@@ -70,9 +76,21 @@ const Header = () => {
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
-    <header className="h-24 border-b bg-white border-gray-200 flex items-center justify-between px-6 sticky top-0 z-50">
+    <header className="h-24 border-b bg-white border-gray-200 flex items-center justify-between px-6 gap-6 sticky top-0 z-50">
       {/* Left Side: Search */}
-      <div className="">
+      <div className="flex items-center gap-4">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleSidebar}
+          className="text-gray-500 hover:bg-gray-100 transition-colors"
+        >
+          {isCollapsed ? (
+            <PanelLeft className="w-6 h-6" />
+          ) : (
+            <PanelLeftClose className="w-6 h-6" />
+          )}
+        </Button>
         <div>
           <h1 className="text-2xl font-semibold text-gray-900">
             Good Morning, {name} 👋
