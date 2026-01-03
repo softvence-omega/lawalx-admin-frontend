@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, Table, Filter } from "lucide-react";
 import BoardCustomerInsight from "./BoardCustomerInsight";
-import { useGetAllClientByAdminQuery } from "@/store/Api/AdminApi/ClientApi";
+import { useGetAllClientByAdminQuery } from "@/store/Api/ClientApi/ClientApi";
 import BoardCustomerInsightSkeleton from "@/common/Skeleton/BoardCustomerInsightSkeleton";
 import { ClientData2 } from "@/types/Client";
 import ClientInsightsTable from "./TableCustomerInsight";

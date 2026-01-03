@@ -1,4 +1,3 @@
-
 import { logOut, setUser } from "@/store/Slices/AuthSlice/authSlice";
 import {
   BaseQueryFn,
@@ -68,6 +67,7 @@ const baseApi = createApi({
     "menuItems",
     "Favorite",
     "Clients",
+    "Payments",
   ],
 });
 export default baseApi;

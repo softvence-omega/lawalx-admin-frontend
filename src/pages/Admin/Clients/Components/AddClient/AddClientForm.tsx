@@ -12,7 +12,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { FormSubmissionSuccess } from "./form-submission-success";
 import { formSchema, type FormData } from "./form-types";
-import { useCreateClientMutation } from "@/store/Api/AdminApi/ClientApi";
+import { useCreateClientMutation } from "@/store/Api/ClientApi/ClientApi";
 
 const steps = [
   {

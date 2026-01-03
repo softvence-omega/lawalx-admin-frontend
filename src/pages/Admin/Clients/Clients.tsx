@@ -7,7 +7,7 @@ import BoardCustomerInsight from "../Overview/Components/CustomerInsight/BoardCu
 import {
   useGetAllClientByAdminQuery,
   useGetClientDashboardSummaryQuery,
-} from "@/store/Api/AdminApi/ClientApi";
+} from "@/store/Api/ClientApi/ClientApi";
 import ClientInsightsTable from "../Overview/Components/CustomerInsight/TableCustomerInsight";
 import CounterCardSkeleton from "@/common/Skeleton/CounterCardSkeleton";
 

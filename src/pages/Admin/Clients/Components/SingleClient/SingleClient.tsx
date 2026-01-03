@@ -17,7 +17,7 @@ import ClientPrograms from "./clientSingleProgramTab";
 import ClientSingleActiveAlerts from "./ClientSingleActiveAlerts";
 import ClientSingleSubscriptionTab from "./ClientSingleSubscriptionTab";
 import ClientSingleActivityLog from "./clientSingleActivityLog";
-import { useGetClientByIdAdminQuery } from "@/store/Api/AdminApi/ClientApi";
+import { useGetClientByIdAdminQuery } from "@/store/Api/ClientApi/ClientApi";
 
 export function SingleClient() {
   const { id } = useParams<{ id: string }>();
