@@ -24,10 +24,10 @@ const ClientSingleActiveAlerts = ({ alerts }: { alerts: any[] }) => {
     const paginatedAlerts = useMemo(() => {
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
-        return alerts.slice(startIndex, endIndex);
+        return alerts?.slice(startIndex, endIndex) || [];
     }, [alerts, currentPage, itemsPerPage]);
 
-    const totalPages = Math.ceil(alerts.length / itemsPerPage);
+    const totalPages = Math.ceil((alerts?.length || 0) / itemsPerPage);
 
     const handleNextPage = () => {
         if (currentPage < totalPages) {
@@ -48,7 +48,7 @@ const ClientSingleActiveAlerts = ({ alerts }: { alerts: any[] }) => {
                         Active Alerts
                     </h2>
                     <span className="text-sm text-gray-500">
-                        Showing {alerts.length} Alerts
+                        Showing {alerts?.length || 0} Alerts
                     </span>
                 </div>
 
@@ -89,29 +89,29 @@ const ClientSingleActiveAlerts = ({ alerts }: { alerts: any[] }) => {
                             </tr>
                         </thead>
                         <tbody className="bg-white divide-y divide-gray-200">
-                            {paginatedAlerts.map((alert, index) => (
+                            {paginatedAlerts?.map((alert, index) => (
                                 <tr
                                     key={index}
                                     className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}
                                 >
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 align-middle">
-                                        {alert.alertType}
+                                        {alert?.alertType}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-middle">
                                         <Badge
-                                            className={`${priorityColors[alert.priority] || priorityColors.Default}`}
+                                            className={`${priorityColors[alert?.priority] || priorityColors.Default}`}
                                         >
-                                            {alert.priority}
+                                            {alert?.priority}
                                         </Badge>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-middle">
-                                        {alert.timeStamp}
+                                        {alert?.timeStamp}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-middle">
                                         <Badge
-                                            className={`${statusColors[alert.status] || statusColors.New}`}
+                                            className={`${statusColors[alert?.status] || statusColors.New}`}
                                         >
-                                            {alert.status}
+                                            {alert?.status}
                                         </Badge>
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600 align-middle">

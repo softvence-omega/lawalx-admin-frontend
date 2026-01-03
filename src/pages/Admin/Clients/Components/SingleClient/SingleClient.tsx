@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,180 +17,200 @@ import ClientPrograms from "./clientSingleProgramTab";
 import ClientSingleActiveAlerts from "./ClientSingleActiveAlerts";
 import ClientSingleSubscriptionTab from "./ClientSingleSubscriptionTab";
 import ClientSingleActivityLog from "./clientSingleActivityLog";
+import { useGetClientByIdAdminQuery } from "@/store/Api/AdminApi/ClientApi";
 
 export function SingleClient() {
-  const [customers, setCustomers] = useState<any[]>([]);
   const { id } = useParams<{ id: string }>();
+  const { data, isLoading } = useGetClientByIdAdminQuery(id as string);
+  const clientData = data?.data;
 
-  useEffect(() => {
-    fetch("/customerData.json")
-      .then((res) => res.json())
-      .then((data) => setCustomers(data));
-  }, []);
+  if (isLoading) return <p>Loading...</p>;
+  if (!clientData) return <p>Client not found</p>;
 
-  const userData = customers.find((c) => c.id === Number(id));
-  if (!userData) return <p>Client not found</p>;
-
-  // Fix: actual data is inside userData.user
-  console.log(userData);
   const {
-    client,
-    metrics,
-    planSummary,
-    programs,
-    alertsList,
-    invoices,
-    activityLog,
-  } = userData.user;
-  const { plan } = userData.user.client;
+    contactPersonName,
+    subdomain,
+    isActive,
+    subscriptionPlan,
+    storageQuotaGb,
+    archiveThreshold,
+    billingCycle,
+    region,
+    supportContactLink,
+  } = clientData;
 
   return (
-    <div className="flex h-full">
+    <div className=" h-full">
       {/* Main Content */}
-      <div className="flex-1 p-6">
-        {/* Metrics Cards */}
-        <ClientInfoCards metrics={metrics} />
+      <ClientInfoCards metrics={clientData?.metrics} />
+      <div className="flex">
+        <div className="flex-1 p-6">
+          {/* Tabs */}
+          <Tabs defaultValue="overview" className="w-full">
+            <TabsList className="grid w-full grid-cols-6">
+              <TabsTrigger className="cursor-pointer" value="overview">
+                Overview
+              </TabsTrigger>
+              <TabsTrigger className="cursor-pointer" value="program">
+                Program
+              </TabsTrigger>
+              <TabsTrigger className="cursor-pointer" value="alerts">
+                Alerts
+              </TabsTrigger>
+              <TabsTrigger className="cursor-pointer" value="subscription">
+                Subscription
+              </TabsTrigger>
+              <TabsTrigger className="cursor-pointer" value="activity">
+                Activity Log
+              </TabsTrigger>
+            </TabsList>
 
-        {/* Tabs */}
-        <Tabs defaultValue="overview" className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger className="cursor-pointer" value="overview">
-              Overview
-            </TabsTrigger>
-            <TabsTrigger className="cursor-pointer" value="program">
-              Program
-            </TabsTrigger>
-            <TabsTrigger className="cursor-pointer" value="alerts">
-              Alerts
-            </TabsTrigger>
-            <TabsTrigger className="cursor-pointer" value="subscription">
-              Subscription
-            </TabsTrigger>
-            <TabsTrigger className="cursor-pointer" value="activity">
-              Activity Log
-            </TabsTrigger>
-          </TabsList>
+            <TabsContent value="overview" className="mt-6">
+              <ClientSingleOverviewTab planSummary={clientData?.planSummary} />
+            </TabsContent>
 
-          <TabsContent value="overview" className="mt-6">
-            <ClientSingleOverviewTab planSummary={planSummary} />
-          </TabsContent>
+            <TabsContent value="program" className="mt-6">
+              <ClientPrograms programs={clientData?.programs} />
+            </TabsContent>
 
-          <TabsContent value="program" className="mt-6">
-            <ClientPrograms programs={programs} />
-          </TabsContent>
+            <TabsContent value="alerts" className="mt-6">
+              <ClientSingleActiveAlerts alerts={clientData?.alertsList} />
+            </TabsContent>
 
-          <TabsContent value="alerts" className="mt-6">
-            <ClientSingleActiveAlerts alerts={alertsList} />
-          </TabsContent>
+            <TabsContent value="subscription" className="mt-6">
+              <ClientSingleSubscriptionTab
+                invoices={clientData?.invoices}
+                subscription={subscriptionPlan}
+              />
+            </TabsContent>
 
-          <TabsContent value="subscription" className="mt-6">
-            <ClientSingleSubscriptionTab
-              invoices={invoices}
-              subscription={plan}
-            />
-          </TabsContent>
-          <TabsContent value="activity" className="mt-6">
-            <ClientSingleActivityLog activityLogs={activityLog} />
-          </TabsContent>
-        </Tabs>
-      </div>
+            <TabsContent value="activity" className="mt-6">
+              <ClientSingleActivityLog activityLogs={clientData?.activityLog} />
+            </TabsContent>
+          </Tabs>
+        </div>
 
-      {/* Right Sidebar */}
-      <div className="w-80 bg-white px-6">
-        <div className="space-y-6">
-          {/* Client Information */}
-          <div className="border border-gray-200 px-5 py-5 rounded-xl">
-            <h3 className="text-lg font-semibold mb-4">Client Information</h3>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <Building2 className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Company</p>
-                  <p className="font-medium">{client.company}</p>
+        {/* Right Sidebar */}
+        <div className="w-80 bg-white rounded-xl border border-gray-200 p-6">
+          <div className="space-y-6">
+            {/* Client Information */}
+            <div className="rounded-xl">
+              <h3 className="text-lg font-semibold mb-4">Client Information</h3>
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <div className="p-2 border border-gray-200 bg-slate-50 rounded-sm">
+                    <Building2 className="w-5 h-5 text-gray-800 mt-0.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Company</p>
+                    <p className="font-medium">
+                      {subdomain?.replace(".theanalyzer.com", "").trim()}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <User className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Primary Contact</p>
-                  <p className="font-medium">{client.primaryContact}</p>
+                <div className="flex items-start gap-3">
+                  <div className="p-2 border border-gray-200 bg-slate-50 rounded-sm">
+                    <User className="w-5 h-5 text-gray-800 mt-0.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Primary Contact</p>
+                    <p className="font-medium">{contactPersonName}</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Mail className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Email</p>
-                  <p className="font-medium text-blue-600">{client.email}</p>
+                <div className="flex items-start gap-3">
+                  <div className="p-2 border border-gray-200 bg-slate-50 rounded-sm">
+                    <Mail className="w-5 h-5 text-gray-800 mt-0.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Support</p>
+                    <p className="font-medium text-blue-600">
+                      {supportContactLink}
+                    </p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <Phone className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Phone</p>
-                  <p className="font-medium">{client.phone}</p>
+                <div className="flex items-start gap-3">
+                  <div className="p-2 border border-gray-200 bg-slate-50 rounded-sm">
+                    <Phone className="w-5 h-5 text-gray-800 mt-0.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Phone</p>
+                    <p className="font-medium">—</p>
+                  </div>
                 </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
-                <div>
-                  <p className="text-sm text-gray-600">Location</p>
-                  <p className="font-medium">{client.location}</p>
+                <div className="flex items-start gap-3">
+                  <div className="p-2 border border-gray-200 bg-slate-50 rounded-sm">
+                    <MapPin className="w-5 h-5 text-gray-800 mt-0.5" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600">Region</p>
+                    <p className="font-medium">{region}</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Plan Info */}
-          <div className="border border-gray-200 px-5 py-5 rounded-xl">
-            <h3 className="text-lg font-semibold mb-4">Plan Information</h3>
-            <div className="space-y-4">
-              <div>
-                <p className="text-sm text-gray-600">Current Plan:</p>
-                <Badge
-                  variant="secondary"
-                  className="bg-purple-100 text-purple-800 mt-1"
+            {/* Plan Info */}
+            <div className=" rounded-xl">
+              <h3 className="text-lg font-semibold mb-4">Plan Information</h3>
+              <div className="space-y-4 p-4 border border-gray-200 rounded-xl bg-slate-50 ">
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Current Plan:</p>
+                  <Badge
+                    variant="secondary"
+                    className="bg-purple-100 text-purple-800 mt-1"
+                  >
+                    {subscriptionPlan}
+                  </Badge>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Billing Cycle:</p>
+                  <p className="font-medium">{billingCycle}</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Storage Quota:</p>
+                  <p className="font-medium">{storageQuotaGb} Gb</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Used Storage:</p>
+                  <p className="font-medium">{archiveThreshold} Gb</p>
+                </div>
+                <div className="flex items-center justify-between">
+                  <p className="text-sm text-gray-600">Status:</p>
+                  <Badge
+                    className={`mt-1 ${
+                      isActive
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {isActive ? "Active" : "Suspended"}
+                  </Badge>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div>
+              <h3 className="text-lg font-semibold mb-4">Quick Action</h3>
+              <div className="space-y-3">
+                <Button
+                  className="w-full justify-start gap-2 bg-transparent"
+                  variant="outline"
                 >
-                  {client.plan.current}
-                </Badge>
+                  <Pause className="w-4 h-4" />
+                  Suspend Client
+                </Button>
+                <Button
+                  className="w-full justify-start gap-2 bg-transparent"
+                  variant="outline"
+                >
+                  <Ticket className="w-4 h-4" />
+                  View Support Tickets
+                  <Badge variant="secondary" className="ml-auto">
+                    3
+                  </Badge>
+                </Button>
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Billing Cycle:</p>
-                <p className="font-medium">{client.plan.billingCycle}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Next Renewal:</p>
-                <p className="font-medium">{client.plan.nextRenewal}</p>
-              </div>
-              <div>
-                <p className="text-sm text-gray-600">Status:</p>
-                <Badge className="bg-green-100 text-green-800 mt-1">
-                  {client.plan.status}
-                </Badge>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Action</h3>
-            <div className="space-y-3">
-              <Button
-                className="w-full justify-start gap-2 bg-transparent"
-                variant="outline"
-              >
-                <Pause className="w-4 h-4" />
-                Suspend Client
-              </Button>
-              <Button
-                className="w-full justify-start gap-2 bg-transparent"
-                variant="outline"
-              >
-                <Ticket className="w-4 h-4" />
-                View Support Tickets
-                <Badge variant="secondary" className="ml-auto">
-                  3
-                </Badge>
-              </Button>
             </div>
           </div>
         </div>

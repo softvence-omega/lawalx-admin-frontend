@@ -116,7 +116,7 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
 
   return (
     <aside
-      className={`h-screen bg-white text-gray-800 sticky top-0 z-40 flex flex-col transition-all duration-300 ${
+      className={`h-screen bg-white text-gray-800 sticky top-0 z-40 flex flex-col transition-all duration-300 border-r border-gray-200 ${
         isCollapsed ? "w-20" : "w-64"
       }`}
     >

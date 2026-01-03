@@ -51,7 +51,7 @@ export const adminRoutes: RouteGroup[] = [
             element: <AddClientForm />,
           },
           {
-            path: "clients/:id",
+            path: ":id",
             element: <SingleClient />,
           },
         ],

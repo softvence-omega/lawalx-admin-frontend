@@ -26,7 +26,7 @@ const ClientSingleOverviewTab: React.FC<PlanSummaryProps> = ({
               <span className="text-gray-700">Users</span>
             </div>
             <span className="font-medium">
-              {planSummary.users.current}/{planSummary.users.total}
+              {planSummary?.users?.current}/{planSummary?.users?.total}
             </span>
           </div>
           <div className="flex items-center justify-between py-3 border-b border-gray-100">
@@ -35,7 +35,7 @@ const ClientSingleOverviewTab: React.FC<PlanSummaryProps> = ({
               <span className="text-gray-700">Projects</span>
             </div>
             <span className="font-medium">
-              {planSummary.projects.current}/{planSummary.projects.total}
+              {planSummary?.projects?.current}/{planSummary?.projects?.total}
             </span>
           </div>
           <div className="flex items-center justify-between py-3 border-b border-gray-100">
@@ -44,7 +44,7 @@ const ClientSingleOverviewTab: React.FC<PlanSummaryProps> = ({
               <span className="text-gray-700">Storage</span>
             </div>
             <span className="font-medium">
-              {planSummary.storage.current}/{planSummary.storage.total}
+              {planSummary?.storage?.current}/{planSummary?.storage?.total}
             </span>
           </div>
           <div className="flex items-center justify-between py-3">
@@ -53,7 +53,7 @@ const ClientSingleOverviewTab: React.FC<PlanSummaryProps> = ({
               <span className="text-gray-700">API Calls</span>
             </div>
             <span className="font-medium">
-              {planSummary.apiCalls.current}/{planSummary.apiCalls.total}
+              {planSummary?.apiCalls?.current}/{planSummary?.apiCalls?.total}
             </span>
           </div>
         </div>

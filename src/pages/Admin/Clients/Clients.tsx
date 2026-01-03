@@ -4,39 +4,70 @@ import { LayoutGrid, Table, Filter } from "lucide-react";
 import { ClientData2 } from "@/types/Client";
 import CounterCard from "./Components/CounterCard";
 import BoardCustomerInsight from "../Overview/Components/CustomerInsight/BoardCustomerInsight";
-import { useGetAllClientByAdminQuery } from "@/store/Api/AdminApi/ClientApi";
+import {
+  useGetAllClientByAdminQuery,
+  useGetClientDashboardSummaryQuery,
+} from "@/store/Api/AdminApi/ClientApi";
 import ClientInsightsTable from "../Overview/Components/CustomerInsight/TableCustomerInsight";
+import CounterCardSkeleton from "@/common/Skeleton/CounterCardSkeleton";
 
 interface Clientdata {
   customer?: ClientData2;
 }
 
 const Clients: React.FC<Clientdata> = () => {
+  const { data: summary, isLoading: summaryLoading } =
+    useGetClientDashboardSummaryQuery({});
   const { data, isLoading } = useGetAllClientByAdminQuery({});
-  const customers: ClientData2[] = data?.data || [];
   const [viewMode, setViewMode] = useState("Boards");
 
+  const customers: ClientData2[] = data?.data || [];
+  const summaryData = summary?.data || [];
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 50;
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(customers.length / itemsPerPage);
+  const totalPages = Math.ceil(customers?.length / itemsPerPage);
 
   // Calculate the customers to display on the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentCustomers = customers.slice(startIndex, endIndex);
+  const currentCustomers = customers?.slice(startIndex, endIndex);
   if (isLoading) {
     return <div>Loading...</div>;
   }
   return (
     <>
       <div className="flex gap-5 mt-11">
-        <CounterCard image="icon.png" title="Total Client" count="150" />
-        <CounterCard image="icon1.png" title="New Clients" count="20" />
-        <CounterCard image="icon2.png" title="Active User" count="850" />
-        <CounterCard image="icon3.png" title="Inactive Client" count="15" />
+        {summaryLoading ? (
+          Array(4)
+            .fill(0)
+            .map((_, index) => <CounterCardSkeleton key={index} />)
+        ) : (
+          <>
+            <CounterCard
+              image="icon.png"
+              title="Total Client"
+              count={summaryData?.totalClients}
+            />
+            <CounterCard
+              image="icon1.png"
+              title="New Clients"
+              count={summaryData?.newClients}
+            />
+            <CounterCard
+              image="icon2.png"
+              title="Active User"
+              count={summaryData?.activeUsers}
+            />
+            <CounterCard
+              image="icon3.png"
+              title="Inactive Client"
+              count={summaryData?.inactiveClients}
+            />
+          </>
+        )}
       </div>
       <div className="space-y-6 mt-11">
         {/* Section Header */}

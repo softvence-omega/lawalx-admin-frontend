@@ -1,4 +1,4 @@
-import { useState, useMemo, ReactNode } from 'react';
+import { useState, useMemo, ReactNode } from "react";
 export interface ActivityLog {
   timestamp: string;
   action: string;
@@ -18,7 +18,9 @@ type ActionType =
   | "Delete"
   | "Default";
 
-const ClientSingleActivityLog: React.FC<ActivityLogsProps> = ({ activityLogs }) => {
+const ClientSingleActivityLog: React.FC<ActivityLogsProps> = ({
+  activityLogs,
+}) => {
   // Color mapping for action badges
   const actionColors: Record<ActionType, string> = {
     Update: "bg-yellow-100 text-yellow-700",
@@ -32,7 +34,10 @@ const ClientSingleActivityLog: React.FC<ActivityLogsProps> = ({ activityLogs }) 
   };
 
   // Typed Badge component
-  const Badge: React.FC<{ children: ReactNode; className?: string }> = ({ children, className }) => (
+  const Badge: React.FC<{ children: ReactNode; className?: string }> = ({
+    children,
+    className,
+  }) => (
     <span
       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${className}`}
     >
@@ -47,10 +52,10 @@ const ClientSingleActivityLog: React.FC<ActivityLogsProps> = ({ activityLogs }) 
   const paginatedLogs = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return activityLogs.slice(startIndex, endIndex);
+    return activityLogs?.slice(startIndex, endIndex);
   }, [activityLogs, currentPage, itemsPerPage]);
 
-  const totalPages = Math.ceil(activityLogs.length / itemsPerPage);
+  const totalPages = Math.ceil((activityLogs?.length || 0) / itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
@@ -86,10 +91,14 @@ const ClientSingleActivityLog: React.FC<ActivityLogsProps> = ({ activityLogs }) 
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {paginatedLogs.map((log, index) => {
+              {paginatedLogs?.map((log, index) => {
                 // Ensure valid key lookup
                 const color =
-                  actionColors[(log.action as ActionType) in actionColors ? (log.action as ActionType) : "Default"];
+                  actionColors[
+                    (log.action as ActionType) in actionColors
+                      ? (log.action as ActionType)
+                      : "Default"
+                  ];
 
                 return (
                   <tr
@@ -107,7 +116,9 @@ const ClientSingleActivityLog: React.FC<ActivityLogsProps> = ({ activityLogs }) 
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                       {log.performedBy}
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-600">{log.details}</td>
+                    <td className="px-6 py-4 text-sm text-gray-600">
+                      {log.details}
+                    </td>
                   </tr>
                 );
               })}

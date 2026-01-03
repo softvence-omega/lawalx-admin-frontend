@@ -18,10 +18,10 @@ const ClientPrograms: React.FC<ProgramDataType> = ({ programs }) => {
   const paginatedPrograms = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return programs.slice(startIndex, endIndex);
+    return programs?.slice(startIndex, endIndex);
   }, [programs, currentPage, itemsPerPage]);
 
-  const totalPages = Math.ceil(programs.length / itemsPerPage);
+  const totalPages = Math.ceil((programs?.length || 0) / itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -43,7 +43,7 @@ const ClientPrograms: React.FC<ProgramDataType> = ({ programs }) => {
             Client’s Program
           </h2>
           <span className="text-sm text-gray-500">
-            Showing {programs.length} Programs
+            Showing {programs?.length || 0} Programs
           </span>
         </div>
 
@@ -78,7 +78,7 @@ const ClientPrograms: React.FC<ProgramDataType> = ({ programs }) => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {paginatedPrograms.map((program, index) => (
+              {paginatedPrograms?.map((program, index) => (
                 <tr
                   key={index}
                   className={`${

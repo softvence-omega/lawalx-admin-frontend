@@ -48,10 +48,10 @@ const ClientSingleSubscriptionTab: React.FC<ClientSingleSubscriptionTabProps> = 
 
   // Subscription details data with icons
   const subscriptionDetails = [
-    { label: 'Plan Type', value: subscription.current, icon: <FileText className="h-4 w-4 text-gray-500" /> },
-    { label: 'Billing Cycle', value: subscription.billingCycle, icon: <Calendar className="h-4 w-4 text-gray-500" /> },
-    { label: 'Next Renewal', value: subscription.nextRenewal, icon: <Clock className="h-4 w-4 text-gray-500" /> },
-    { label: 'Status', value: subscription.status, icon: <CreditCard className="h-4 w-4 text-gray-500" /> },
+    { label: 'Plan Type', value: subscription?.current, icon: <FileText className="h-4 w-4 text-gray-500" /> },
+    { label: 'Billing Cycle', value: subscription?.billingCycle, icon: <Calendar className="h-4 w-4 text-gray-500" /> },
+    { label: 'Next Renewal', value: subscription?.nextRenewal, icon: <Clock className="h-4 w-4 text-gray-500" /> },
+    { label: 'Status', value: subscription?.status, icon: <CreditCard className="h-4 w-4 text-gray-500" /> },
   ];
 
   // Pagination state and logic for billing history table
@@ -61,10 +61,10 @@ const ClientSingleSubscriptionTab: React.FC<ClientSingleSubscriptionTabProps> = 
   const paginatedInvoices = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    return invoices.slice(startIndex, endIndex);
+    return invoices?.slice(startIndex, endIndex);
   }, [invoices, currentPage, itemsPerPage]);
 
-  const totalPages = Math.ceil(invoices.length / itemsPerPage);
+  const totalPages = Math.ceil((invoices?.length || 0) / itemsPerPage);
 
   const handleNextPage = () => {
     if (currentPage < totalPages) {
@@ -162,7 +162,7 @@ const ClientSingleSubscriptionTab: React.FC<ClientSingleSubscriptionTabProps> = 
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedInvoices.map((invoice, index) => (
+                {paginatedInvoices?.map((invoice, index) => (
                   <tr
                     key={index}
                     className={`${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-100 transition-colors`}

@@ -36,14 +36,14 @@ const ClientInfoCards: React.FC<MetricsProps> = ({ metrics }) => {
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-600">Total User</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {metrics.totalUsers.current}/{metrics.totalUsers.total}
+              <p className="text-2xl font-semibold text-gray-900">
+                {metrics?.totalUsers?.current}/{metrics?.totalUsers?.total}
               </p>
             </div>
           </div>
           <div className="mt-8 bg-green-50 rounded-lg p-3">
             <p className="text-sm text-green-700">
-              {metrics.totalUsers.percentage}% of capacity used
+              {metrics?.totalUsers?.percentage}% of capacity used
             </p>
           </div>
         </CardContent>
@@ -58,14 +58,14 @@ const ClientInfoCards: React.FC<MetricsProps> = ({ metrics }) => {
               <p className="text-sm font-medium text-gray-600">
                 Active Program
               </p>
-              <p className="text-2xl font-bold text-gray-900">
-                {metrics.activePrograms.current}
+              <p className="text-2xl font-semibold text-gray-900">
+                {metrics?.activePrograms?.current}
               </p>
             </div>
           </div>
           <div className="mt-8 bg-green-50 rounded-lg p-3">
             <p className="text-sm text-green-700">
-              {metrics.activePrograms.newThisMonth} new Program in this month
+              {metrics?.activePrograms?.newThisMonth} new Program in this month
             </p>
           </div>
         </CardContent>
@@ -81,14 +81,14 @@ const ClientInfoCards: React.FC<MetricsProps> = ({ metrics }) => {
               <p className="text-sm font-medium text-gray-600">
                 Critical Alerts
               </p>
-              <p className="text-2xl font-bold text-gray-900">
-                {metrics.criticalAlerts.current}
+              <p className="text-2xl font-semibold text-gray-900">
+                {metrics?.criticalAlerts?.current}
               </p>
             </div>
           </div>
           <div className="mt-8 bg-green-50 rounded-lg p-3">
             <p className="text-sm text-green-700">
-              {metrics.criticalAlerts.newIn24Hours} new alerts in the last 24
+              {metrics?.criticalAlerts?.newIn24Hours} new alerts in the last 24
               hours
             </p>
           </div>
@@ -103,14 +103,14 @@ const ClientInfoCards: React.FC<MetricsProps> = ({ metrics }) => {
             </div>
             <div className="flex-1">
               <p className="text-sm font-medium text-gray-600">Storage Usage</p>
-              <p className="text-2xl font-bold text-gray-900">
-                {metrics.storageUsage.current}/{metrics.storageUsage.total}
+              <p className="text-2xl font-semibold text-gray-900">
+                {metrics?.storageUsage?.current}/{metrics?.storageUsage?.total}
               </p>
             </div>
           </div>
           <div className="mt-8 bg-red-50 rounded-lg p-3">
             <p className="text-sm text-red-700">
-              {metrics.storageUsage.percentage}% of storage used
+              {metrics?.storageUsage?.percentage}% of storage used
             </p>
           </div>
         </CardContent>

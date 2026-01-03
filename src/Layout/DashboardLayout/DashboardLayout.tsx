@@ -24,7 +24,7 @@ const DashboardLayout = () => {
       </div>
 
       {/* 2. Main Content Area */}
-      <div className="flex-1 flex flex-col max-w-full">
+      <div className="flex-1 flex flex-col max-w-full bg-white">
         <Header toggleSidebar={toggleSidebar} isCollapsed={isCollapsed} />
         <main className="p-6 overflow-y-auto">
           {/* Breadcrumbs (Optional) */}
