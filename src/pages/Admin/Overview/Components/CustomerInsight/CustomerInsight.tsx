@@ -1,21 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, Table, Filter } from "lucide-react";
 import BoardCustomerInsight from "./BoardCustomerInsight";
 import TableCustomerInsight from "./TableCustomerInsight";
-import { ClientData } from "@/types/Client";
 import { useGetAllClientByAdminQuery } from "@/store/Api/AdminApi/ClientApi";
-
+import BoardCustomerInsightSkeleton from "@/common/Skeleton/BoardCustomerInsightSkeleton";
+import { ClientData2 } from "@/types/Client";
 export function CustomerInsights() {
-  const [customers, setCustomers] = useState<ClientData[]>([]);
-  const { data } = useGetAllClientByAdminQuery({});
-  console.log(data?.data);
-  useEffect(() => {
-    if (data?.data) {
-      setCustomers(data?.data);
-    }
-  }, [data]);
-
+  const { data, isLoading } = useGetAllClientByAdminQuery({});
+  const customers: ClientData2[] = data?.data || [];
   const [viewMode, setViewMode] = useState("Boards");
 
   // Pagination states
@@ -23,12 +16,19 @@ export function CustomerInsights() {
   const itemsPerPage = 4;
 
   // Calculate the total number of pages
-  const totalPages = Math.ceil(customers.length / itemsPerPage);
+  const totalPages = Math.ceil(customers?.length / itemsPerPage);
 
   // Calculate the customers to display on the current page
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const currentCustomers = customers.slice(startIndex, endIndex);
+  const currentCustomers = customers?.slice(startIndex, endIndex);
+  if (isLoading) {
+    return (
+      <div className="space-y-6 mt-11">
+        <BoardCustomerInsightSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 mt-11">

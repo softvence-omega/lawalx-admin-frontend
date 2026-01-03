@@ -6,7 +6,7 @@ export interface ClientData {
   users: string;
   lastActive: string;
   dashboardUpdates: number;
-  alerts: number; 
+  alerts: number;
   alertType: string;
   storageUsage: number;
   storageTotal: number;
@@ -77,4 +77,61 @@ export interface ClientData {
       details: string;
     }[];
   };
+}
+export interface ClientData2 {
+  id: string;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
+
+  contactPersonName: string;
+
+  isReferred: boolean;
+  referrerName: string | null;
+  referrerEmail: string | null;
+  referrerPhone: string | null;
+
+  discoverySource: string | null;
+
+  logoUrl: string;
+  faviconUrl: string;
+
+  primaryColor: string;
+  secondaryColor: string;
+
+  showFooter: boolean;
+  customFooterText: string;
+
+  supportContactLink: string;
+
+  subdomain: string;
+  region: string;
+  timeZone: string;
+  language: string;
+
+  enableOnboarding: boolean;
+  autoGenDashboard: boolean;
+  industryTemplate: string;
+
+  isActive: boolean;
+  enableCustomCharts: boolean;
+
+  storageQuotaGb: number;
+  archiveThreshold: number;
+  archiveAfterDays: number;
+  usageWarningAlert: boolean;
+
+  billingCycle: "MONTHLY" | "QUARTERLY" | "HALFYEARLY" | "YEARLY";
+  subscriptionPlan: "Enterprise" | "Business" | "Professional" | "Starter";
+
+  discountCode: string | null;
+  startBillingDate: string; // ISO date string
+  trialPeriodDays: number;
+
+  paymentMethod: string;
+
+  internalNotes: string | null;
+
+  userId: string;
+
+  assignedCharts: string[];
 }

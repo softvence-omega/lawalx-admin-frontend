@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, Table, Filter } from "lucide-react";
-import { ClientData } from "@/types/Client";
+import { ClientData2 } from "@/types/Client";
 import CounterCard from "./Components/CounterCard";
 import BoardCustomerInsight from "../Overview/Components/CustomerInsight/BoardCustomerInsight";
 import TableCustomerInsight from "../Overview/Components/CustomerInsight/TableCustomerInsight";
 
 interface Clientdata {
-  customer?: ClientData;
+  customer?: ClientData2;
 }
 
 const Clients: React.FC<Clientdata> = () => {
-  const [customers, setCustomers] = useState<ClientData[]>([]);
+  const [customers, setCustomers] = useState<ClientData2[]>([]);
   useEffect(() => {
     fetch("/customerData.json")
       .then((res) => res.json())

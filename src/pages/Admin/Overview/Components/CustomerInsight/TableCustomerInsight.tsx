@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Badge } from "@/components/ui/badge";
 import { ProgressBar } from "@/common/ProgressBarCustom";
 import { cn } from "@/lib/utils";
-import { ClientData } from "@/types/Client";
+import { ClientData2 } from "@/types/Client";
 import { Eye, Pencil, Trash } from "lucide-react";
 import {
   Dialog,
@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface CustomerData {
-  customer: ClientData;
+  customer: ClientData2;
 }
 
 const TableCustomerInsight: React.FC<CustomerData> = ({ customer }) => {
@@ -23,71 +23,90 @@ const TableCustomerInsight: React.FC<CustomerData> = ({ customer }) => {
     null
   );
 
+  const status = customer.isActive ? "Active" : "Suspended";
+
   const statusColors = {
     Active: "bg-emerald-100 text-emerald-700 border-emerald-200",
     Suspended: "bg-red-100 text-red-700 border-red-200",
     Trial: "bg-yellow-100 text-yellow-700 border-yellow-200",
     Expired: "bg-gray-100 text-gray-600 border-gray-200",
   };
-
-  const alertColors = {
-    Critical: "text-red-600",
-    Warning: "text-yellow-600",
+  const subscriptionPlanColors = {
+    Enterprise: "bg-purple-100 text-purple-700 border-purple-200",
+    Business: "bg-blue-100 text-blue-700 border-blue-200",
+    Professional: "bg-green-100 text-green-700 border-green-200",
+    Starter: "bg-gray-100 text-gray-600 border-gray-200",
   };
+
+  const alertType = customer.usageWarningAlert ? "Warning" : null;
+
+  const storageUsage = customer.archiveThreshold ?? 0;
+  const storageTotal = customer.storageQuotaGb;
+
+  const companyName = customer.subdomain
+    ?.replace(".theanalyzer.com", "")
+    ?.trim();
 
   return (
     <>
       <tr
-        key={customer.id}
         className="hover:bg-gray-50 cursor-pointer"
         onClick={() => navigate(`/admin/clients/${customer.id}`)}
       >
-        <td className="px-4 py-3 font-medium text-gray-900">
-          {customer.companyName}
-        </td>
+        <td className="px-4 py-3 font-medium text-gray-900">{companyName}</td>
+
         <td className="px-4 py-3">
           <Badge
             variant="outline"
-            className="border-blue-600 text-blue-600 rounded-3xl"
+            className={cn(
+              "border-blue-600 text-blue-600 rounded-3xl",
+              subscriptionPlanColors[customer.subscriptionPlan] 
+            )}
           >
-            {customer.plan}
+            {customer.subscriptionPlan}
           </Badge>
         </td>
-        <td className="px-4 py-3 text-center">{customer.dashboardUpdates}</td>
+
+        <td className="px-4 py-3 text-center">
+          {customer.autoGenDashboard ? "Enabled" : "Disabled"}
+        </td>
+
         <td
           className={cn(
             "px-4 py-3 text-center font-medium",
-            customer.alertType
-              ? alertColors[customer.alertType as keyof typeof alertColors]
-              : "text-gray-900"
+            alertType === "Warning" ? "text-yellow-600" : "text-gray-900"
           )}
         >
-          {customer.alerts} {customer.alertType}
+          {alertType ? "1 (Warning)" : "0"}
         </td>
-        <td className="px-4 py-3 text-center">{customer.users}</td>
+
+        <td className="px-4 py-3 text-center">—</td>
+
         <td className="px-4 py-3 w-48">
           <ProgressBar
-            value={(customer.storageUsage / customer.storageTotal) * 100}
+            value={(storageUsage / storageTotal) * 100}
             className="h-2 mb-1"
           />
           <span className="text-xs text-gray-600">
-            {customer.storageUsage}/{customer.storageTotal} Gb
+            {storageUsage}/{storageTotal} Gb
           </span>
         </td>
+
         <td className="px-4 py-3 text-center">
           <Badge
             variant="outline"
             className={cn(
               "text-xs font-medium w-28 py-1",
-              statusColors[customer.status as keyof typeof statusColors]
+              statusColors[status]
             )}
           >
-            {customer.status}
+            {status}
           </Badge>
         </td>
+
         <td
           className="px-4 py-3 flex justify-center gap-3"
-          onClick={(e) => e.stopPropagation()} // prevent row navigation
+          onClick={(e) => e.stopPropagation()}
         >
           <Eye
             className="w-4 h-4 text-blue-600 cursor-pointer"
@@ -111,17 +130,23 @@ const TableCustomerInsight: React.FC<CustomerData> = ({ customer }) => {
       >
         <DialogContent className="bg-white border-none">
           <DialogHeader>
-            <DialogTitle>View Customer</DialogTitle>
+            <DialogTitle>Client Details</DialogTitle>
           </DialogHeader>
-          <div>
+          <div className="space-y-2 text-sm">
             <p>
-              <strong>Company:</strong> {customer.companyName}
+              <strong>Subdomain:</strong> {customer.subdomain}
             </p>
             <p>
-              <strong>Plan:</strong> {customer.plan}
+              <strong>Plan:</strong> {customer.subscriptionPlan}
             </p>
             <p>
-              <strong>Status:</strong> {customer.status}
+              <strong>Billing:</strong> {customer.billingCycle}
+            </p>
+            <p>
+              <strong>Region:</strong> {customer.region}
+            </p>
+            <p>
+              <strong>Language:</strong> {customer.language}
             </p>
           </div>
         </DialogContent>
@@ -134,12 +159,11 @@ const TableCustomerInsight: React.FC<CustomerData> = ({ customer }) => {
       >
         <DialogContent className="bg-white border-none">
           <DialogHeader>
-            <DialogTitle>Edit Customer</DialogTitle>
+            <DialogTitle>Edit Client</DialogTitle>
           </DialogHeader>
-          <div>
-            {/* Add edit form here */}
-            <p>Edit form goes here...</p>
-          </div>
+          <p className="text-sm text-gray-500">
+            Editing will be wired to backend mutations.
+          </p>
         </DialogContent>
       </Dialog>
 
@@ -150,10 +174,14 @@ const TableCustomerInsight: React.FC<CustomerData> = ({ customer }) => {
       >
         <DialogContent className="bg-white border-none">
           <DialogHeader>
-            <DialogTitle>Delete Customer</DialogTitle>
+            <DialogTitle>Delete Client</DialogTitle>
           </DialogHeader>
-          <p>Are you sure you want to delete {customer.companyName}?</p>
-          <Button className="bg-black text-white cursor-pointer">Delete</Button>
+          <p className="mb-4">
+            Are you sure you want to delete <strong>{companyName}</strong>?
+          </p>
+          <Button className="bg-black text-white cursor-pointer">
+            Confirm Delete
+          </Button>
         </DialogContent>
       </Dialog>
     </>
