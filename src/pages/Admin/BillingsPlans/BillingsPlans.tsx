@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { Search, Eye, Edit2, ChevronDown, X } from "lucide-react";
 
 import { clientBillingService } from "./Components/clientBillingService";
+import BillingStats from "./Components/BillingStats";
 
 export interface ClientBilling {
   id: string;
@@ -178,6 +179,9 @@ const BillingPlans: React.FC = () => {
 
   return (
     <div className="min-h-screen ">
+      <div className="pb-12">
+        <BillingStats />
+      </div>
       <div className="">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           {/* Header */}
