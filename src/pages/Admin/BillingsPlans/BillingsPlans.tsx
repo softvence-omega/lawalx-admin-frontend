@@ -178,7 +178,7 @@ const BillingPlans: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen ">
+    <div className="min-h-screen">
       <div className="pb-12">
         <BillingStats />
       </div>

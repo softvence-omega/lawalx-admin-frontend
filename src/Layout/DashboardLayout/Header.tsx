@@ -52,8 +52,8 @@ const Header = ({ toggleSidebar, isCollapsed }: HeaderProps) => {
       if (
         dropdownRef.current &&
         !dropdownRef.current.contains(event.target as Node)
-      ) {
-      }
+      )
+        setShowNotifications(false);
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -127,7 +127,7 @@ const Header = ({ toggleSidebar, isCollapsed }: HeaderProps) => {
             )}
           </button>
           {showNotifications && (
-            <Card className="absolute right-0 top-12 w-96 z-50 shadow-xl border border-gray-200 rounded-lg bg-white">
+            <Card className="absolute right-20 top-20 w-96 z-50 shadow-xl border border-gray-200 rounded-lg bg-white">
               <CardContent className="p-0">
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200">
