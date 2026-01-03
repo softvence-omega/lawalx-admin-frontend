@@ -54,7 +54,7 @@ const Login = () => {
           navigate("/verification");
         } else {
           const { role } = jwtDecode<{
-            role: "ADMIN" | "SUPERADMIN" | "CLIENT";
+            role: "ADMIN" | "SUPERADMIN";
           }>(res.data.accessToken);
           if (role === "ADMIN" || role === "SUPERADMIN") {
             navigate("/admin");
