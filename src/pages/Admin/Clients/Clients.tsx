@@ -1,24 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, Table, Filter } from "lucide-react";
 import { ClientData2 } from "@/types/Client";
 import CounterCard from "./Components/CounterCard";
 import BoardCustomerInsight from "../Overview/Components/CustomerInsight/BoardCustomerInsight";
-import TableCustomerInsight from "../Overview/Components/CustomerInsight/TableCustomerInsight";
+import { useGetAllClientByAdminQuery } from "@/store/Api/AdminApi/ClientApi";
+import ClientInsightsTable from "../Overview/Components/CustomerInsight/TableCustomerInsight";
 
 interface Clientdata {
   customer?: ClientData2;
 }
 
 const Clients: React.FC<Clientdata> = () => {
-  const [customers, setCustomers] = useState<ClientData2[]>([]);
-  useEffect(() => {
-    fetch("/customerData.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setCustomers(data);
-      });
-  }, []);
+  const { data, isLoading } = useGetAllClientByAdminQuery({});
+  const customers: ClientData2[] = data?.data || [];
   const [viewMode, setViewMode] = useState("Boards");
 
   // Pagination states
@@ -32,6 +27,9 @@ const Clients: React.FC<Clientdata> = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const currentCustomers = customers.slice(startIndex, endIndex);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
   return (
     <>
       <div className="flex gap-5 mt-11">
@@ -91,27 +89,7 @@ const Clients: React.FC<Clientdata> = () => {
             ))}
           </div>
         ) : (
-          <div className="overflow-x-auto rounded-lg">
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50 text-gray-700">
-                <tr>
-                  <th className="px-4 py-3 text-left">Company Name</th>
-                  <th className="px-4 py-3 text-left">Subscription Plan</th>
-                  <th className="px-4 py-3">Dashboard Updates</th>
-                  <th className="px-4 py-3">Alerts</th>
-                  <th className="px-4 py-3">Users</th>
-                  <th className="px-4 py-3">Storage Usage</th>
-                  <th className="px-4 py-3">Status</th>
-                  <th className="px-4 py-3">Action</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {currentCustomers.map((customer) => (
-                  <TableCustomerInsight key={customer.id} customer={customer} />
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <ClientInsightsTable customers={currentCustomers} />
         )}
 
         {/* Pagination Controls */}

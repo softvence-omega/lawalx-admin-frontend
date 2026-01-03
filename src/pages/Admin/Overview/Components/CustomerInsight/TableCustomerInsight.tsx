@@ -1,191 +1,214 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
-import { ProgressBar } from "@/common/ProgressBarCustom";
-import { cn } from "@/lib/utils";
-import { ClientData2 } from "@/types/Client";
 import { Eye, Pencil, Trash } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { ProgressBar } from "@/common/ProgressBarCustom";
+import { cn } from "@/lib/utils";
+import { ClientData2 } from "@/types/Client";
 
-interface CustomerData {
-  customer: ClientData2;
+interface Props {
+  customers: ClientData2[];
 }
 
-const TableCustomerInsight: React.FC<CustomerData> = ({ customer }) => {
+const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
   const navigate = useNavigate();
-  const [openModal, setOpenModal] = useState<"view" | "edit" | "delete" | null>(
+  const [selectedClient, setSelectedClient] = useState<ClientData2 | null>(
     null
   );
-
-  const status = customer.isActive ? "Active" : "Suspended";
+  const [modal, setModal] = useState<"view" | "edit" | "delete" | null>(null);
 
   const statusColors = {
-    Active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    Suspended: "bg-red-100 text-red-700 border-red-200",
-    Trial: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    Expired: "bg-gray-100 text-gray-600 border-gray-200",
-  };
-  const subscriptionPlanColors = {
-    Enterprise: "bg-purple-100 text-purple-700 border-purple-200",
-    Business: "bg-blue-100 text-blue-700 border-blue-200",
-    Professional: "bg-green-100 text-green-700 border-green-200",
-    Starter: "bg-gray-100 text-gray-600 border-gray-200",
+    true: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    false: "bg-red-100 text-red-700 border-red-200",
   };
 
-  const alertType = customer.usageWarningAlert ? "Warning" : null;
+  const planColors = {
+    enterprise: "bg-purple-100 text-purple-700 border-purple-200",
+    business: "bg-blue-100 text-blue-700 border-blue-200",
+    professional: "bg-green-100 text-green-700 border-green-200",
+    starter: "bg-gray-100 text-gray-600 border-gray-200",
+  };
 
-  const storageUsage = customer.archiveThreshold ?? 0;
-  const storageTotal = customer.storageQuotaGb;
+  const openModal = (type: "view" | "edit" | "delete", client: ClientData2) => {
+    setSelectedClient(client);
+    setModal(type);
+  };
 
-  const companyName = customer.subdomain
-    ?.replace(".theanalyzer.com", "")
-    ?.trim();
+  const closeModal = () => {
+    setSelectedClient(null);
+    setModal(null);
+  };
 
   return (
     <>
-      <tr
-        className="hover:bg-gray-50 cursor-pointer"
-        onClick={() => navigate(`/admin/clients/${customer.id}`)}
-      >
-        <td className="px-4 py-3 font-medium text-gray-900">{companyName}</td>
+      <div className="overflow-x-auto rounded-lg border border-gray-200 bg-white">
+        <table className="min-w-full divide-y divide-gray-200 text-sm">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-5 py-3 text-left">Company</th>
+              <th className="px-5 py-3 text-left">Plan</th>
+              <th className="px-5 py-3 text-center">Dashboard</th>
+              <th className="px-5 py-3 text-center">Alerts</th>
+              <th className="px-5 py-3 text-center">Users</th>
+              <th className="px-5 py-3">Storage</th>
+              <th className="px-5 py-3 text-center">Status</th>
+              <th className="px-5 py-3 text-center">Action</th>
+            </tr>
+          </thead>
 
-        <td className="px-4 py-3">
-          <Badge
-            variant="outline"
-            className={cn(
-              "border-blue-600 text-blue-600 rounded-3xl",
-              subscriptionPlanColors[customer.subscriptionPlan] 
-            )}
-          >
-            {customer.subscriptionPlan}
-          </Badge>
-        </td>
+          <tbody className="divide-y divide-gray-100">
+            {customers.map((client) => {
+              const companyName = client.subdomain
+                ?.replace(".theanalyzer.com", "")
+                ?.trim();
 
-        <td className="px-4 py-3 text-center">
-          {customer.autoGenDashboard ? "Enabled" : "Disabled"}
-        </td>
+              const status = client.isActive ? "Active" : "Suspended";
+              const used = client.archiveThreshold ?? 0;
+              const total = client.storageQuotaGb;
 
-        <td
-          className={cn(
-            "px-4 py-3 text-center font-medium",
-            alertType === "Warning" ? "text-yellow-600" : "text-gray-900"
-          )}
-        >
-          {alertType ? "1 (Warning)" : "0"}
-        </td>
+              return (
+                <tr
+                  key={client.id}
+                  onClick={() => navigate(`/admin/clients/${client.id}`)}
+                  className="hover:bg-gray-50 cursor-pointer transition"
+                >
+                  <td className="px-5 py-4 font-semibold text-gray-900">
+                    {companyName}
+                  </td>
 
-        <td className="px-4 py-3 text-center">—</td>
+                  <td className="px-5 py-4">
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "rounded-full px-3 py-1 text-xs capitalize",
+                        planColors[client.subscriptionPlan]
+                      )}
+                    >
+                      {client.subscriptionPlan}
+                    </Badge>
+                  </td>
 
-        <td className="px-4 py-3 w-48">
-          <ProgressBar
-            value={(storageUsage / storageTotal) * 100}
-            className="h-2 mb-1"
-          />
-          <span className="text-xs text-gray-600">
-            {storageUsage}/{storageTotal} Gb
-          </span>
-        </td>
+                  <td className="px-5 py-4 text-center">
+                    {client.autoGenDashboard ? "Enabled" : "Disabled"}
+                  </td>
 
-        <td className="px-4 py-3 text-center">
-          <Badge
-            variant="outline"
-            className={cn(
-              "text-xs font-medium w-28 py-1",
-              statusColors[status]
-            )}
-          >
-            {status}
-          </Badge>
-        </td>
+                  <td className="px-5 py-4 text-center text-yellow-600 font-medium">
+                    {client.usageWarningAlert ? "1 (Warning)" : "0"}
+                  </td>
 
-        <td
-          className="px-4 py-3 flex justify-center gap-3"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Eye
-            className="w-4 h-4 text-blue-600 cursor-pointer"
-            onClick={() => setOpenModal("view")}
-          />
-          <Pencil
-            className="w-4 h-4 text-green-600 cursor-pointer"
-            onClick={() => setOpenModal("edit")}
-          />
-          <Trash
-            className="w-4 h-4 text-red-600 cursor-pointer"
-            onClick={() => setOpenModal("delete")}
-          />
-        </td>
-      </tr>
+                  <td className="px-5 py-4 text-center text-gray-400">—</td>
 
-      {/* View Modal */}
-      <Dialog
-        open={openModal === "view"}
-        onOpenChange={() => setOpenModal(null)}
-      >
-        <DialogContent className="bg-white border-none">
+                  <td className="px-5 py-4 w-56">
+                    <ProgressBar value={(used / total) * 100} className="h-2" />
+                    <p className="text-xs text-gray-500 mt-1">
+                      {used}/{total} Gb
+                    </p>
+                  </td>
+
+                  <td className="px-5 py-4 text-center">
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "rounded-full px-3 py-1 text-xs min-w-[90px]",
+                        status ? statusColors["true"] : statusColors["false"]
+                      )}
+                    >
+                      {status ? "Active" : "Inactive"}
+                    </Badge>
+                  </td>
+
+                  <td
+                    className="px-5 py-4"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex justify-center gap-4">
+                      <Eye
+                        className="w-4 h-4 text-blue-600 cursor-pointer"
+                        onClick={() => openModal("view", client)}
+                      />
+                      <Pencil
+                        className="w-4 h-4 text-green-600 cursor-pointer"
+                        onClick={() => openModal("edit", client)}
+                      />
+                      <Trash
+                        className="w-4 h-4 text-red-600 cursor-pointer"
+                        onClick={() => openModal("delete", client)}
+                      />
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+
+      {/* VIEW */}
+      <Dialog open={modal === "view"} onOpenChange={closeModal}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Client Details</DialogTitle>
           </DialogHeader>
-          <div className="space-y-2 text-sm">
-            <p>
-              <strong>Subdomain:</strong> {customer.subdomain}
-            </p>
-            <p>
-              <strong>Plan:</strong> {customer.subscriptionPlan}
-            </p>
-            <p>
-              <strong>Billing:</strong> {customer.billingCycle}
-            </p>
-            <p>
-              <strong>Region:</strong> {customer.region}
-            </p>
-            <p>
-              <strong>Language:</strong> {customer.language}
-            </p>
-          </div>
+          {selectedClient && (
+            <div className="space-y-2 text-sm">
+              <p>
+                <strong>Subdomain:</strong> {selectedClient.subdomain}
+              </p>
+              <p>
+                <strong>Plan:</strong> {selectedClient.subscriptionPlan}
+              </p>
+              <p>
+                <strong>Billing:</strong> {selectedClient.billingCycle}
+              </p>
+              <p>
+                <strong>Region:</strong> {selectedClient.region}
+              </p>
+              <p>
+                <strong>Language:</strong> {selectedClient.language}
+              </p>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
 
-      {/* Edit Modal */}
-      <Dialog
-        open={openModal === "edit"}
-        onOpenChange={() => setOpenModal(null)}
-      >
-        <DialogContent className="bg-white border-none">
+      {/* EDIT */}
+      <Dialog open={modal === "edit"} onOpenChange={closeModal}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit Client</DialogTitle>
           </DialogHeader>
           <p className="text-sm text-gray-500">
-            Editing will be wired to backend mutations.
+            Edit flow will be connected to backend mutations.
           </p>
         </DialogContent>
       </Dialog>
 
-      {/* Delete Modal */}
-      <Dialog
-        open={openModal === "delete"}
-        onOpenChange={() => setOpenModal(null)}
-      >
-        <DialogContent className="bg-white border-none">
+      {/* DELETE */}
+      <Dialog open={modal === "delete"} onOpenChange={closeModal}>
+        <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete Client</DialogTitle>
           </DialogHeader>
           <p className="mb-4">
-            Are you sure you want to delete <strong>{companyName}</strong>?
+            Are you sure you want to delete{" "}
+            <strong>
+              {selectedClient?.subdomain?.replace(".theanalyzer.com", "")}
+            </strong>
+            ?
           </p>
-          <Button className="bg-black text-white cursor-pointer">
-            Confirm Delete
-          </Button>
+          <Button className="bg-black text-white w-full">Confirm Delete</Button>
         </DialogContent>
       </Dialog>
     </>
   );
 };
 
-export default TableCustomerInsight;
+export default ClientInsightsTable;

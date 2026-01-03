@@ -18,6 +18,10 @@ const routes = createBrowserRouter([
         element: <Login />,
       },
       {
+        path: "login",
+        element: <Login />,
+      },
+      {
         path: "verification",
         element: <TwoStepVerification />,
       },

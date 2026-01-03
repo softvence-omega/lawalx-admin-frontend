@@ -2,10 +2,10 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { LayoutGrid, Table, Filter } from "lucide-react";
 import BoardCustomerInsight from "./BoardCustomerInsight";
-import TableCustomerInsight from "./TableCustomerInsight";
 import { useGetAllClientByAdminQuery } from "@/store/Api/AdminApi/ClientApi";
 import BoardCustomerInsightSkeleton from "@/common/Skeleton/BoardCustomerInsightSkeleton";
 import { ClientData2 } from "@/types/Client";
+import ClientInsightsTable from "./TableCustomerInsight";
 export function CustomerInsights() {
   const { data, isLoading } = useGetAllClientByAdminQuery({});
   const customers: ClientData2[] = data?.data || [];
@@ -78,27 +78,7 @@ export function CustomerInsights() {
           ))}
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-lg">
-          <table className="min-w-full divide-y divide-gray-200 text-sm">
-            <thead className="bg-gray-50 text-gray-700">
-              <tr>
-                <th className="px-4 py-3 text-left">Company Name</th>
-                <th className="px-4 py-3 text-left">Subscription Plan</th>
-                <th className="px-4 py-3">Dashboard Updates</th>
-                <th className="px-4 py-3">Alerts</th>
-                <th className="px-4 py-3">Users</th>
-                <th className="px-4 py-3">Storage Usage</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {currentCustomers.map((customer) => (
-                <TableCustomerInsight key={customer.id} customer={customer} />
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <ClientInsightsTable customers={currentCustomers} />
       )}
 
       {/* Pagination Controls */}

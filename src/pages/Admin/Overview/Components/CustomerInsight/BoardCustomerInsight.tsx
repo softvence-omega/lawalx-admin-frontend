@@ -15,10 +15,10 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
   const status = customer.isActive ? "Active" : "Suspended";
 
   const statusColors = {
-    Active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-    Suspended: "bg-red-100 text-red-700 border-red-200",
-    trial: "bg-yellow-100 text-yellow-700 border-yellow-200",
-    expired: "bg-gray-100 text-gray-600 border-gray-200",
+    true: "bg-emerald-100 text-emerald-700 border-emerald-200",
+    false: "bg-red-100 text-red-700 border-red-200",
+    // trial: "bg-yellow-100 text-yellow-700 border-yellow-200",
+    // expired: "bg-gray-100 text-gray-600 border-gray-200",
   };
 
   const storageUsed = customer.archiveThreshold ?? 0;
@@ -29,11 +29,11 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
   const hasAlert = customer.usageWarningAlert;
 
   return (
-    <Card className="border-0 shadow-sm">
-      <Link to={`/admin/clients/${customer.id}`}>
-        <CardContent className="px-6 space-y-4">
+    <Card className="border border-gray-200 shadow-sm">
+      <Link to={`/admin/clients/${customer.id}`} className="no-underline">
+        <CardContent className="p-0 space-y-4">
           {/* Header */}
-          <div className="flex items-start justify-between">
+          <div className="flex items-start justify-between px-6">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
                 <DollarSign className="h-5 w-5" />
@@ -50,14 +50,17 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
 
             <Badge
               variant="outline"
-              className={cn("text-xs font-medium", statusColors[status])}
+              className={cn(
+                "text-xs font-medium",
+                status ? statusColors["true"] : statusColors["false"]
+              )}
             >
-              {status}
+              {status ? "Active" : "Inactive"}
             </Badge>
           </div>
-
+          <hr className="my-6 border border-gray-200" />
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 gap-x-18 gap-y-5 text-sm">
+          <div className="grid grid-cols-2 gap-x-18 gap-y-5 text-sm px-6">
             <div>
               <p className="text-gray-500 mb-1">Users</p>
               <p className="font-medium text-gray-900">—</p>
@@ -87,9 +90,8 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
               </p>
             </div>
           </div>
-
           {/* Storage */}
-          <div className="space-y-2">
+          <div className="space-y-2 px-6">
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Storage Usage</span>
               <span className="font-medium text-gray-900">
@@ -102,10 +104,11 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
               className="h-2"
             />
           </div>
-
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer">
-            View Client
-          </Button>
+          <div className="px-6">
+            <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white cursor-pointer ">
+              View Client
+            </Button>
+          </div>
         </CardContent>
       </Link>
     </Card>

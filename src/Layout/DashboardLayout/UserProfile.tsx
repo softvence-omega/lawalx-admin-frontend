@@ -45,9 +45,15 @@ export default function UserProfile({
       <DropdownMenuTrigger asChild>
         <Button
           variant="ghost"
-          className={`h-auto mt-5 p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-300 focus:outline-none! focus-visible:outline-none! ${isCollapsed ? "w-12 px-1" : "p-3"}`}
+          className={`h-auto mt-5 p-2 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-all duration-300 focus:outline-none! focus-visible:outline-none! ${
+            isCollapsed ? "w-12 px-1" : "p-3"
+          }`}
         >
-          <div className={`flex items-center justify-between w-full gap-3 ${isCollapsed ? "px-0 justify-center" : "px-3"}`}>
+          <div
+            className={`flex items-center justify-between w-full gap-3 ${
+              isCollapsed ? "px-0 justify-center" : "px-3"
+            }`}
+          >
             {/* Profile Avatar */}
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-full overflow-hidden bg-gray-100 flex-shrink-0">

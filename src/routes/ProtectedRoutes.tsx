@@ -6,7 +6,7 @@ const ProtectedRoute = () => {
   const user = useSelector((state: RootState) => state.auth.user);
 
   // Check if the user is logged in and is an admin
-  if (!user || user.role !== "ADMIN" || "SUPERADMIN" || "Client") {
+  if (!user || user.role !== "ADMIN") {
     return <Navigate to="/" replace />;
   }
 

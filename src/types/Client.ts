@@ -121,7 +121,7 @@ export interface ClientData2 {
   usageWarningAlert: boolean;
 
   billingCycle: "MONTHLY" | "QUARTERLY" | "HALFYEARLY" | "YEARLY";
-  subscriptionPlan: "Enterprise" | "Business" | "Professional" | "Starter";
+  subscriptionPlan: "enterprise" | "business" | "professional" | "starter";
 
   discountCode: string | null;
   startBillingDate: string; // ISO date string

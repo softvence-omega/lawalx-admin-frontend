@@ -56,7 +56,7 @@ const Login = () => {
           const { role } = jwtDecode<{
             role: "ADMIN" | "SUPERADMIN" | "CLIENT";
           }>(res.data.accessToken);
-          if (role === "ADMIN" || "SUPERADMIN" || "CLIENT") {
+          if (role === "ADMIN" || role === "SUPERADMIN") {
             navigate("/admin");
           } else {
             navigate("/unauthorized");
@@ -172,7 +172,7 @@ const Login = () => {
               <p className="text-[#0F1325] w-[90%]">Remember me</p>
               <NavLink
                 to="/forgot"
-                className="font-medium text-[#0151FF] w-[60%] cursor-pointer"
+                className="font-medium text-[#0151FF] w-[60%] cursor-pointer no-underline"
               >
                 Forgot Password?
               </NavLink>
@@ -187,7 +187,7 @@ const Login = () => {
             Login
           </button>
 
-          <NavLink to="/signup">
+          <NavLink to="/signup" className={`no-underline`}>
             <div className="text-center mt-6">
               <h3 className="font-normal text-[#0151FF]">
                 Create a new account
