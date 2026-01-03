@@ -18,7 +18,6 @@ const NavItem = ({
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const hasChildren = !!item.children?.length;
-
   // Active route logic
   const isRouteActive = (item: MenuItem, currentPath: string): boolean => {
     if (item.path && currentPath.startsWith(item.path)) return true;
@@ -80,7 +79,7 @@ const NavItem = ({
           {/* Invisible bridge */}
           <div className="absolute -left-2 top-0 h-full w-2" />
 
-          <div className="w-52 p-1 bg-gray-800 border border-gray-600 shadow-2xl rounded-md">
+          <div className="w-52 p-1 bg-slate-50 border border-gray-200 shadow-2xl rounded-md">
             <div className="space-y-4">
               {item.children!.map((child) => (
                 <NavItem
@@ -106,7 +105,6 @@ interface SidebarProps {
 const Sidebar = ({ isCollapsed }: SidebarProps) => {
   const menu = menuGenerator(adminRoutes, "/admin");
   const location = useLocation();
-
   const groupedMenu = menu.reduce<Record<string, MenuItem[]>>((acc, item) => {
     const group = item.group || "General";
     if (!acc[group]) acc[group] = [];

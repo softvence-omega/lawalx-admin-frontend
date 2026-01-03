@@ -26,6 +26,7 @@ import AddClientForm from "@/pages/Admin/Clients/Components/AddClient/AddClientF
 import ManageBillings from "@/pages/Admin/ManageBillings/ManageBillings";
 import PlatformAnalyticsOverview from "@/pages/Admin/PlatformAnalyticsOverview/Analytics";
 import ClientsParent from "@/pages/Admin/Clients/ClientsParent";
+import { Outlet } from "react-router-dom";
 export const adminRoutes: RouteGroup[] = [
   {
     group: "Main Menu",
@@ -95,7 +96,14 @@ export const adminRoutes: RouteGroup[] = [
         icon: <HelpCircle />,
         name: "Help",
         path: "help",
-        element: <Help />,
+        element: <Outlet />,
+        children: [
+          {
+            path: "support",
+            name: "Support",
+            element: <Help />,
+          },
+        ],
       },
       {
         icon: <Settings />,
