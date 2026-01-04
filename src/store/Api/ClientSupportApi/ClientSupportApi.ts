@@ -1,6 +1,5 @@
 import baseApi from "../BaseApi/BaseApi";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const ClientSupportApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createSupport: builder.mutation({

@@ -70,7 +70,6 @@ const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
                 ?.replace(".theanalyzer.com", "")
                 ?.trim();
 
-              const status = client.isActive ? "Active" : "Suspended";
               const used = client.archiveThreshold ?? 0;
               const total = client.storageQuotaGb;
 
@@ -118,10 +117,10 @@ const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
                       variant="outline"
                       className={cn(
                         "rounded-full px-3 py-1 text-xs min-w-[90px]",
-                        status ? statusColors["true"] : statusColors["false"]
+                        client.isActive ? statusColors["true"] : statusColors["false"]
                       )}
                     >
-                      {status ? "Active" : "Inactive"}
+                      {client.isActive ? "Active" : "Inactive"}
                     </Badge>
                   </td>
 

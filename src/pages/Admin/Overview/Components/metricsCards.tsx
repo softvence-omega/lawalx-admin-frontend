@@ -1,9 +1,17 @@
-"use client"
+"use client";
 
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { DollarSign, TrendingUp, Users, UserMinus, Star, ArrowUpRight } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  DollarSign,
+  TrendingUp,
+  Users,
+  UserMinus,
+  Star,
+  ArrowUpRight,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 const metricsData = [
   {
@@ -56,7 +64,7 @@ const metricsData = [
     icon: "Star",
     color: "emerald",
   },
-]
+];
 
 const iconMap = {
   DollarSign,
@@ -64,44 +72,51 @@ const iconMap = {
   Users,
   UserMinus,
   Star,
-}
+};
 
 const colorMap = {
   emerald: "bg-emerald-100 text-emerald-600",
   blue: "bg-blue-100 text-blue-600",
   red: "bg-red-100 text-red-600",
-}
+};
 
 export function MetricsCards() {
   const handleViewReport = (metricTitle: string) => {
-    console.log("Viewing report for:", metricTitle)
-    alert(`Viewing ${metricTitle} report`)
-  }
+    console.log("Viewing report for:", metricTitle);
+    toast.info(`Viewing ${metricTitle} report`);
+  };
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-6 mt-10">
-      {metricsData.map((metric) => {
-        const IconComponent = iconMap[metric.icon as keyof typeof iconMap]
-        const isNetPromoter = metric.title === "Net Promoter Score"
+      {metricsData?.map((metric) => {
+        const IconComponent = iconMap[metric.icon as keyof typeof iconMap];
+        const isNetPromoter = metric.title === "Net Promoter Score";
 
         return (
           <Card
             key={metric.id}
             className={cn(
               "relative overflow-hidden border-0 shadow-sm",
-              isNetPromoter ? "md:col-span-2 lg:col-span-2 xl:col-span-1" : "",
+              isNetPromoter ? "md:col-span-2 lg:col-span-2 xl:col-span-1" : ""
             )}
           >
             <CardContent className="px-6 py-1">
               <div className="flex items-start justify-between mb-4">
-                <div className={cn("p-2 rounded-lg", colorMap[metric.color as keyof typeof colorMap])}>
+                <div
+                  className={cn(
+                    "p-2 rounded-lg",
+                    colorMap[metric.color as keyof typeof colorMap]
+                  )}
+                >
                   <IconComponent className="h-5 w-5" />
                 </div>
                 {metric.change && (
                   <div
                     className={cn(
                       "flex items-center gap-1 text-sm font-medium",
-                      metric.changeType === "positive" ? "text-emerald-600" : "text-red-600",
+                      metric.changeType === "positive"
+                        ? "text-emerald-600"
+                        : "text-red-600"
                     )}
                   >
                     <ArrowUpRight className="h-3 w-3" />
@@ -111,8 +126,12 @@ export function MetricsCards() {
               </div>
 
               <div className="space-y-1 mb-4">
-                <h3 className="text-sm font-medium text-gray-600">{metric.title}</h3>
-                <p className="text-2xl font-bold text-gray-900">{metric.value}</p>
+                <h3 className="text-sm font-medium text-gray-600">
+                  {metric.title}
+                </h3>
+                <p className="text-2xl font-bold text-gray-900">
+                  {metric.value}
+                </p>
               </div>
 
               <div className="flex items-center justify-between">
@@ -132,13 +151,13 @@ export function MetricsCards() {
                   "absolute bottom-0 right-0 w-20 h-20 rounded-full blur-2xl opacity-10",
                   metric.color === "emerald" && "bg-emerald-500",
                   metric.color === "blue" && "bg-blue-500",
-                  metric.color === "red" && "bg-red-500",
+                  metric.color === "red" && "bg-red-500"
                 )}
               ></div>
             </CardContent>
           </Card>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

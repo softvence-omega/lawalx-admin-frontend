@@ -84,7 +84,7 @@ export function ActivityLog() {
         <div className="relative">
           <div className="absolute left-1 top-2 bottom-2 w-px bg-gray-200"></div>
 
-          {activityLog.map((activity) => (
+          {activityLog?.map((activity) => (
             <div key={activity.id} className="flex items-start gap-3 relative">
               <div
                 className={`w-2 h-2 rounded-full mt-2 flex-shrink-0 relative z-10 ${

@@ -1,10 +1,22 @@
-"use client"
+"use client";
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from "recharts"
-import { ChevronDown, ShoppingCart, CreditCard, DollarSign } from "lucide-react"
-import { useState } from "react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
+import {
+  ChevronDown,
+  ShoppingCart,
+  CreditCard,
+  DollarSign,
+} from "lucide-react";
+import { useState, useMemo } from "react";
 
 const ordersData = [
   { month: "Jan", value: 18, percentage: "18%" },
@@ -19,7 +31,7 @@ const ordersData = [
   { month: "Oct", value: 45, percentage: "45%" },
   { month: "Nov", value: 47, percentage: "47%" },
   { month: "Dec", value: 60, percentage: "60%" },
-]
+];
 
 const salesData = [
   { month: "Jan", value: 25, percentage: "25%" },
@@ -34,7 +46,7 @@ const salesData = [
   { month: "Oct", value: 48, percentage: "48%" },
   { month: "Nov", value: 53, percentage: "53%" },
   { month: "Dec", value: 68, percentage: "68%" },
-]
+];
 
 const incomeData = [
   { month: "Jan", value: 15, percentage: "15%" },
@@ -49,33 +61,41 @@ const incomeData = [
   { month: "Oct", value: 40, percentage: "40%" },
   { month: "Nov", value: 43, percentage: "43%" },
   { month: "Dec", value: 55, percentage: "55%" },
-]
+];
 
-export function EarningReportsChart() {
-  const [activeTab, setActiveTab] = useState<"orders" | "sales" | "income">("orders")
+ const  EarningReportsChart = () => {
+  const [activeTab, setActiveTab] = useState<"orders" | "sales" | "income">(
+    "orders"
+  );
 
-  const getCurrentData = () => {
+  const currentData = useMemo(() => {
     switch (activeTab) {
       case "orders":
-        return ordersData
+        return ordersData;
       case "sales":
-        return salesData
+        return salesData;
       case "income":
-        return incomeData
+        return incomeData;
       default:
-        return ordersData
+        return ordersData;
     }
-  }
+  }, [activeTab]);
 
   return (
-    <Card className="lg:col-span-2 border-gray-200">
+    <Card className="border-gray-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <div>
-          <CardTitle className="text-lg font-semibold text-gray-900">Earning Reports</CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-900">
+            Earning Reports
+          </CardTitle>
           <p className="text-sm text-gray-500 mt-1">Yearly Earnings Overview</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" className="text-gray-500 hover:text-gray-700">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="text-gray-500 hover:text-gray-700"
+          >
             Sort By <ChevronDown className="ml-1 h-4 w-4" />
           </Button>
         </div>
@@ -90,7 +110,11 @@ export function EarningReportsChart() {
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            <ShoppingCart className={`h-4 w-4 ${activeTab === "orders" ? "text-blue-600" : "text-gray-600"}`} />
+            <ShoppingCart
+              className={`h-4 w-4 ${
+                activeTab === "orders" ? "text-blue-600" : "text-gray-600"
+              }`}
+            />
             <span className="text-sm font-medium">Orders</span>
           </button>
           <button
@@ -101,7 +125,11 @@ export function EarningReportsChart() {
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            <CreditCard className={`h-4 w-4 ${activeTab === "sales" ? "text-blue-600" : "text-gray-600"}`} />
+            <CreditCard
+              className={`h-4 w-4 ${
+                activeTab === "sales" ? "text-blue-600" : "text-gray-600"
+              }`}
+            />
             <span className="text-sm font-medium">Sales</span>
           </button>
           <button
@@ -112,14 +140,26 @@ export function EarningReportsChart() {
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            <DollarSign className={`h-4 w-4 ${activeTab === "income" ? "text-blue-600" : "text-gray-600"}`} />
+            <DollarSign
+              className={`h-4 w-4 ${
+                activeTab === "income" ? "text-blue-600" : "text-gray-600"
+              }`}
+            />
             <span className="text-sm font-medium">Income</span>
           </button>
         </div>
         <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={getCurrentData()} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+          <BarChart
+            data={currentData}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
             <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: "#666" }} />
+            <XAxis
+              dataKey="month"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: "#666" }}
+            />
             <YAxis
               axisLine={false}
               tickLine={false}
@@ -132,5 +172,7 @@ export function EarningReportsChart() {
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
+  );
 }
+
+export default EarningReportsChart;

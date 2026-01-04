@@ -12,7 +12,6 @@ interface CustomerProps {
 }
 
 const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
-  const status = customer.isActive ? "Active" : "Suspended";
 
   const statusColors = {
     true: "bg-emerald-100 text-emerald-700 border-emerald-200",
@@ -52,10 +51,10 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
               variant="outline"
               className={cn(
                 "text-xs font-medium",
-                status ? statusColors["true"] : statusColors["false"]
+                customer.isActive ? statusColors["true"] : statusColors["false"]
               )}
             >
-              {status ? "Active" : "Inactive"}
+              {customer.isActive ? "Active" : "Inactive"}
             </Badge>
           </div>
           <hr className="my-6 border border-gray-200" />

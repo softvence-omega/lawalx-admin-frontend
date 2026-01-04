@@ -1,11 +1,11 @@
 import { ActivityLog } from "./Components/ActivityLog";
 import { AlertCenter } from "./Components/AlertCenter";
 import { CustomerInsights } from "./Components/CustomerInsight/CustomerInsight";
-import { EarningReportsChart } from "./Components/earningReport";
-import { MetricsCards } from "./Components/metricsCards";
-import { SupportTicketsChart } from "./Components/supportTicket";
-import { TopClientsChart } from "./Components/topClients";
-import { TrendingIndustriesTable } from "./Components/trendingIndustries";
+import EarningReportsChart  from "./Components/EarningReport";
+import { MetricsCards } from "./Components/MetricsCards";
+import { SupportTicketsChart } from "./Components/SupportTicket";
+import  TopClients  from "./Components/TopClients";
+import { TrendingIndustriesTable } from "./Components/TrendingIndustries";
 
 const Overview = () => {
   return (
@@ -13,23 +13,21 @@ const Overview = () => {
       <MetricsCards />
       <CustomerInsights />
       <div className="grid grid-cols-12 gap-6 mx-auto mt-10">
-        <div className="col-span-5">
-          <TopClientsChart />
-        </div>
-        <div className="col-span-4">
-          <SupportTicketsChart />
-        </div>
-        <div className="col-span-3">
-          <AlertCenter />
-        </div>
-        <div className="col-span-9 -mt-32">
+        <div className="col-span-12 lg:col-span-9 space-y-6">
+          <div className="grid grid-cols-2 gap-6">
+            <div className="w-full h-full">
+              <TopClients />
+            </div>
+            <div className="w-full h-full">
+              <SupportTicketsChart />
+            </div>
+          </div>
           <EarningReportsChart />
-        </div>
-        <div className="col-span-3">
-          <ActivityLog />
-        </div>
-        <div className="col-span-9 -mt-112">
           <TrendingIndustriesTable />
+        </div>
+        <div className="col-span-12 lg:col-span-3 space-y-6">
+          <AlertCenter />
+          <ActivityLog /> 
         </div>
       </div>
     </>
