@@ -10,15 +10,15 @@ import { useAppDispatch } from "@/hooks/useRedux";
 import { setUser } from "@/store/Slices/AuthSlice/authSlice";
 import { jwtDecode } from "jwt-decode";
 
-// const Role = {
+const Role = {
 //   VIEWER: "viewer-panel",
 //   EMPLOYEE: "staff-employee-panel", // todo: change to employee-panel when ready
-//   SUPPORTER: "supporter",
+  SUPPORTER: "supporter",
 //   MANAGER: "staff-manager-panel",
-//   ADMIN: "admin",
+  ADMIN: "admin",
 //   CLIENT: "client-panel",
-//   SUPERADMIN: "admin",
-// };
+  SUPERADMIN: "admin",
+};
 const loginSchema = z.object({
   email: z.string().email("Invalid email format"),
   password: z.string().min(6, "Password must be at least 6 characters"),
@@ -54,10 +54,10 @@ const Login = () => {
           navigate("/verification");
         } else {
           const { role } = jwtDecode<{
-            role: "ADMIN" | "SUPERADMIN";
+            role: "ADMIN" | "SUPERADMIN" | "SUPPORTER";
           }>(res.data.accessToken);
-          if (role === "ADMIN" || role === "SUPERADMIN") {
-            navigate("/admin");
+          if (Role[role]) {
+            navigate("/" + Role[role]);
           } else {
             navigate("/unauthorized");
           }

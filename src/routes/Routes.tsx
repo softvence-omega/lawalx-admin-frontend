@@ -8,6 +8,8 @@ import DashboardLayout from "@/Layout/DashboardLayout/DashboardLayout";
 import Overview from "@/pages/Admin/Overview/Overview";
 import TwoStepVerification from "@/pages/Auth/TwoStepVerification";
 import ResetPassword from "@/pages/Auth/ResetPassword";
+import { supporterRoute } from "./SupporterRoutes";
+import ProtectedRoute from "./ProtectedRoutes";
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +42,12 @@ const routes = createBrowserRouter([
       },
       ...routesGenerator(adminRoutes),
     ],
+  },
+  {
+    element:<ProtectedRoute role={"SUPPORTER"} />,
+    children:[
+      ...supporterRoute,
+    ]
   },
   {
     path: "*",
