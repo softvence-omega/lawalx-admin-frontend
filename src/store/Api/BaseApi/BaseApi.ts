@@ -69,6 +69,8 @@ const baseApi = createApi({
     "Favorite",
     "Clients",  
     "Payments",
+    "SupporterTickets",
+    
   ],
 });
 export default baseApi;

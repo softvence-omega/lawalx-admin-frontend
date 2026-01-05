@@ -1,6 +1,6 @@
 
 const Supporter = () => {
-
+    
     return (
         <div className="">
             Supporter
