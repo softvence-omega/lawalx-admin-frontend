@@ -1,13 +1,31 @@
-import { Outlet } from "react-router-dom";
+import { useLocation, Outlet } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 import Breadcrumbs from "./Breadcrumbs";
 import { adminRoutes } from "@/routes/AdminRoutes";
 import { useState } from "react";
+import { useAppSelector } from "@/hooks/useRedux";
+import { supporterRoute } from "@/routes/SupporterRoutes";
 
 const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-  console.log("After Login Dashboard")
+  const location = useLocation();
+  const user = useAppSelector((state) => state.auth.user);
+
+  const ROLE = ["ADMIN", "SUPERADMIN"];
+  const isSupporter = user?.role === "SUPPORTER";
+  const isAdmin = ROLE.includes(user?.role as string);
+
+  const firstPath = location.pathname.split("/")[1];
+  const basePath = `/${firstPath}`;
+
+  const config =
+    isAdmin && firstPath === "admin"
+      ? adminRoutes
+      : isSupporter && firstPath === "supporter"
+      ? supporterRoute
+      : [];
+
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };
@@ -30,7 +48,7 @@ const DashboardLayout = () => {
           {/* Breadcrumbs (Optional) */}
           <div className="mb-6">
             <div className="flex items-center gap-2 space-y-2">
-              <Breadcrumbs config={adminRoutes} basePath="/admin" />
+              <Breadcrumbs config={config} basePath={basePath} />
             </div>
           </div>
           <Outlet />

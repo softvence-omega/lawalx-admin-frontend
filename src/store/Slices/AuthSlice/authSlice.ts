@@ -14,14 +14,7 @@ interface AuthState {
 }
 
 const initialState: AuthState = {
-  user: {
-    email: "",
-    phone: "",
-    userId: "",
-    role: "",
-    accessToken: "",
-    refreshToken: "",
-  },
+  user: null,
 };
 
 const authSlice = createSlice({

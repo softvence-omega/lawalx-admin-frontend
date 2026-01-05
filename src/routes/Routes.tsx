@@ -33,23 +33,19 @@ const routes = createBrowserRouter([
     ],
   },
   {
-    // element:<ProtectedRoute role={["ADMIN" , "SUPERADMIN"]} />,
+    element:<ProtectedRoute role={["ADMIN" , "SUPERADMIN"]} />,
     children: [
       {
         path:"/admin",
         element:<DashboardLayout/>,
         children:[
-          {
-            index: true,
-            element: <Overview />,
-          },
           ...routesGenerator(adminRoutes),
         ]
       },
     ],
   },
   {
-    // element:<ProtectedRoute role={["SUPPORTER"]} />,
+    element:<ProtectedRoute role={["SUPPORTER"]} />,
     children:[
       {
         path:"/supporter",

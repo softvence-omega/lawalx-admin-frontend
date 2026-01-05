@@ -4,9 +4,9 @@ import { adminRoutes } from "@/routes/AdminRoutes";
 import { menuGenerator, MenuItem } from "@/utils/Generator/MenuGenerator";
 import { Location } from "react-router-dom";
 import UserProfile from "./UserProfile";
-import { useGetUser } from "@/hooks/useGetUser";
 import { supporterRoute } from "@/routes/SupporterRoutes";
 import { useAppSelector } from "@/hooks/useRedux";
+import console from "console";
 // Sub-component to handle recursive levels and isolated hover states
 const NavItem = ({
   item,
@@ -23,8 +23,10 @@ const NavItem = ({
   const hasChildren = !!item.children?.length;
   // Active route logic
   const isRouteActive = (item: MenuItem, currentPath: string): boolean => {
+    if (item.index) {
+      return currentPath === item.path;
+    }
     if (item.path && currentPath.startsWith(item.path)) return true;
-
     if (item.children) {
       return item.children.some((child) => isRouteActive(child, currentPath));
     }
@@ -117,7 +119,6 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
     acc[group].push(item);
     return acc;
   }, {});
-
   return (
     <aside
       className={`h-screen bg-white text-gray-800 sticky top-0 z-40 flex flex-col transition-all duration-300 border-r border-gray-200 ${

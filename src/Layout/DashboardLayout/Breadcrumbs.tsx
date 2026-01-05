@@ -27,9 +27,9 @@ const Breadcrumbs = ({ config, basePath }: BreadcrumbProps) => {
 
       {pathnames.map((_, index) => {
         const to = `/${pathnames.slice(0, index + 1).join("/")}`;
-        if (to === basePath) return null;
-
         const last = index === pathnames.length - 1;
+
+        if (to === basePath && !last) return null;
         const routeData = routeMap[to];
         const rawSegment = pathnames[index];
 

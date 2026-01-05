@@ -32,7 +32,7 @@ export const adminRoutes: RouteGroup[] = [
     items: [
       {
         icon: <Clock />,
-        path: "overview",
+        index:true,
         name: "Overview",
         element: <Overview />,
       },

@@ -2,6 +2,7 @@ import { JSX } from "react";
 
 export type MenuItem = {
   group?: string;
+  index?: boolean;
   label: string;
   path?: string;
   icon?: JSX.Element;
@@ -12,10 +13,10 @@ export type RouteItem = {
   path?: string;
   element?: JSX.Element;
   children?: RouteItem[];
+  index?: boolean;
   icon?: JSX.Element;
   name?: string;
   label?: string;
-  index?: boolean;
 };
 
 export type RouteGroup =
@@ -73,8 +74,9 @@ export const menuGenerator = (
 
     const item: MenuItem = {
       label,
-      path: routePath,
+      path: routePath || (routeItem.index ? parentPath : undefined),
       icon: routeItem.icon,
+      index: routeItem.index,
       children: children?.length ? children : undefined,
     };
 
