@@ -7,6 +7,7 @@ import { SupportTicketsChart } from "./Components/SupportTicket";
 import  TopClients  from "./Components/TopClients";
 import { TrendingIndustriesTable } from "./Components/TrendingIndustries";
 
+
 const Overview = () => {
   return (
     <>
