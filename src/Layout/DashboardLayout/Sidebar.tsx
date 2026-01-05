@@ -6,7 +6,6 @@ import { Location } from "react-router-dom";
 import UserProfile from "./UserProfile";
 import { supporterRoute } from "@/routes/SupporterRoutes";
 import { useAppSelector } from "@/hooks/useRedux";
-import console from "console";
 // Sub-component to handle recursive levels and isolated hover states
 const NavItem = ({
   item,
