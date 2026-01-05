@@ -36,7 +36,7 @@ const Login = () => {
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "mdkazinaim0018@gmail.com",
+      email: "sakibsoftvence@gmail.com",
       password: "123456789",
     },
   });
@@ -57,8 +57,11 @@ const Login = () => {
             role: "ADMIN" | "SUPERADMIN" | "SUPPORTER";
           }>(res.data.accessToken);
           if (Role[role]) {
-            navigate("/" + Role[role]);
+            console.log("Inside Role" , role)
+            console.log(`/${Role[role]}`)
+            navigate(`/${Role[role]}`);
           } else {
+            console.log("Inside Catch" , role)
             navigate("/unauthorized");
           }
         }

@@ -1,9 +1,11 @@
 import { useState } from "react";
-import { Link, NavLink, useLocation } from "react-router-dom";
+import { Link, Navigate, NavLink, useLocation } from "react-router-dom";
 import { adminRoutes } from "@/routes/AdminRoutes";
 import { menuGenerator, MenuItem } from "@/utils/Generator/MenuGenerator";
 import { Location } from "react-router-dom";
 import UserProfile from "./UserProfile";
+import { useGetUser } from "@/hooks/useGetUser";
+import { supporterRoute } from "@/routes/SupporterRoutes";
 // Sub-component to handle recursive levels and isolated hover states
 const NavItem = ({
   item,
@@ -103,7 +105,10 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isCollapsed }: SidebarProps) => {
-  const menu = menuGenerator(adminRoutes, "/admin");
+  const {role} = useGetUser()
+  const ROLE = ["ADMIN", "SUPERADMIN"]
+  const menu = ROLE.includes(role) ? menuGenerator(adminRoutes, "/admin") : role === "SUPPORTER" ? menuGenerator(supporterRoute, "/supporter") : [];
+  if(menu.length === 0) return Navigate({to: "/login"});
   const location = useLocation();
   const groupedMenu = menu.reduce<Record<string, MenuItem[]>>((acc, item) => {
     const group = item.group || "General";
