@@ -3,16 +3,16 @@
 export const flattenRoutes = (routes: any[], base = "") => {
   let map: Record<string, { name: string; icon?: React.ReactNode }> = {};
 
-  routes.forEach((group) => {
-    group.items.forEach((item: any) => {
-      const fullPath = item.index
+  routes?.forEach((group) => {
+    group?.items?.forEach((item: any) => {
+      const fullPath = item?.index
         ? base.replace(/\/+/g, "/")
-        : `${base}/${item.path}`.replace(/\/+/g, "/");
+        : `${base}/${item?.path}`.replace(/\/+/g, "/");
       // Store name and icon
-      map[fullPath] = { name: item.name, icon: item.icon };
+      map[fullPath] = { name: item?.name, icon: item?.icon };
 
-      if (item.children) {
-        const nested = flattenNested(item.children, fullPath);
+      if (item?.children) {
+        const nested = flattenNested(item?.children, fullPath);
         map = { ...map, ...nested };
       }
     });
@@ -23,13 +23,13 @@ export const flattenRoutes = (routes: any[], base = "") => {
 
 const flattenNested = (children: any[], parentPath: string) => {
   let map: Record<string, { name: string; icon?: React.ReactNode }> = {};
-  children.forEach((child) => {
-    const fullPath = child.index
+  children?.forEach((child) => {
+    const fullPath = child?.index
       ? parentPath.replace(/\/+/g, "/")
-      : `${parentPath}/${child.path}`.replace(/\/+/g, "/");
-    map[fullPath] = { name: child.name, icon: child.icon };
-    if (child.children) {
-      map = { ...map, ...flattenNested(child.children, fullPath) };
+      : `${parentPath}/${child?.path}`.replace(/\/+/g, "/");
+    map[fullPath] = { name: child?.name, icon: child?.icon };
+    if (child?.children) {
+      map = { ...map, ...flattenNested(child?.children, fullPath) };
     }
   });
   return map;

@@ -10,7 +10,7 @@ import baseApi from "../BaseApi/BaseApi";
     }),
 
     // 02. GET my assigned tickets
-    getMySupporterTickets: builder.query({
+    getMyTickets: builder.query({
       query: () => "/supporters-support/my-tickets",
       providesTags: ["SupporterTickets"],
     }),
@@ -31,7 +31,7 @@ import baseApi from "../BaseApi/BaseApi";
     }),
 
     // 05. GET ticket messages
-    getTicketMessages: builder.query({
+    getTicketMessagesById: builder.query({
       query: (ticketId) =>
         `/supporters-support/${ticketId}/ticket-messages`,
       providesTags: ["SupporterTickets"],
@@ -42,10 +42,11 @@ import baseApi from "../BaseApi/BaseApi";
 
 export const {
     useGetAllSupporterTicketsQuery,
-    useGetMySupporterTicketsQuery,
+    useGetMyTicketsQuery,
     useUpdateTicketStatusMutation,
     useGetSupporterDashboardStackQuery,
-    useGetTicketMessagesQuery,
+    useGetTicketMessagesByIdQuery,
+    useLazyGetTicketMessagesByIdQuery,
 } = supportersApi;
 
 export default supportersApi;
