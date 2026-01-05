@@ -30,6 +30,7 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       const decode = jwtDecode(action.payload?.accessToken as string) as User;
+      console.log(decode)
       if (action.payload.refreshToken) {
         state.user = {
           ...state.user,

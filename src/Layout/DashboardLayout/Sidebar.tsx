@@ -6,6 +6,7 @@ import { Location } from "react-router-dom";
 import UserProfile from "./UserProfile";
 import { useGetUser } from "@/hooks/useGetUser";
 import { supporterRoute } from "@/routes/SupporterRoutes";
+import { useAppSelector } from "@/hooks/useRedux";
 // Sub-component to handle recursive levels and isolated hover states
 const NavItem = ({
   item,
@@ -105,11 +106,11 @@ interface SidebarProps {
 }
 
 const Sidebar = ({ isCollapsed }: SidebarProps) => {
-  const {role} = useGetUser()
-  const ROLE = ["ADMIN", "SUPERADMIN"]
-  const menu = ROLE.includes(role) ? menuGenerator(adminRoutes, "/admin") : role === "SUPPORTER" ? menuGenerator(supporterRoute, "/supporter") : [];
-  if(menu.length === 0) return Navigate({to: "/login"});
   const location = useLocation();
+  const user = useAppSelector((state) => state.auth.user);
+  const ROLE = ["ADMIN", "SUPERADMIN"]
+  const menu = ROLE.includes(user?.role as string) && location.pathname.split("/")[1] === "admin" ? menuGenerator(adminRoutes, "/admin") : user?.role === "SUPPORTER" && location.pathname.split("/")[1] === "supporter" ? menuGenerator(supporterRoute, "/supporter") : [];
+  if(menu.length === 0) return Navigate({to: "/unauthorized"});
   const groupedMenu = menu.reduce<Record<string, MenuItem[]>>((acc, item) => {
     const group = item.group || "General";
     if (!acc[group]) acc[group] = [];

@@ -77,7 +77,7 @@ const TopClients = () => {
           </div>
 
           {/* Chart */}
-          <div className="h-80">
+          <div className="w-full h-80 min-w-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={currentData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />

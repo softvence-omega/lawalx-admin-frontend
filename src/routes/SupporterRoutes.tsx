@@ -4,8 +4,8 @@ import { PieChart } from "lucide-react";
 export const supporterRoute = [
     {
         icon:<PieChart/>,
-        name:"/supporter",
         index:true,
+        name:"Supporter",
         element:<Supporter/>  
     }
 ]

@@ -1,14 +1,15 @@
 import { ActivityLog } from "./Components/ActivityLog";
 import { AlertCenter } from "./Components/AlertCenter";
 import { CustomerInsights } from "./Components/CustomerInsight/CustomerInsight";
-import EarningReportsChart  from "./Components/EarningReport";
+// import EarningReportsChart  from "./Components/EarningReport"; 
 import { MetricsCards } from "./Components/MetricsCards";
 import { SupportTicketsChart } from "./Components/SupportTicket";
-import  TopClients  from "./Components/TopClients";
+// import  TopClients  from "./Components/TopClients";
 import { TrendingIndustriesTable } from "./Components/TrendingIndustries";
 
 
 const Overview = () => {
+  console.log("Inside Overview")
   return (
     <>
       <MetricsCards />
@@ -17,13 +18,13 @@ const Overview = () => {
         <div className="col-span-12 lg:col-span-9 space-y-6">
           <div className="grid grid-cols-2 gap-6">
             <div className="w-full h-full">
-              <TopClients />
+              {/* <TopClients /> */}
             </div>
             <div className="w-full h-full">
               <SupportTicketsChart />
             </div>
           </div>
-          <EarningReportsChart />
+          {/* <EarningReportsChart /> */}
           <TrendingIndustriesTable />
         </div>
         <div className="col-span-12 lg:col-span-3 space-y-6">

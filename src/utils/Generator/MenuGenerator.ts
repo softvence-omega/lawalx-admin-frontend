@@ -29,6 +29,7 @@ export const menuGenerator = (
   routes: RouteGroup[],
   parentPath = ""
 ): MenuItem[] => {
+  console.log(routes)
   return routes.flatMap((route) => {
     // Group with items
     if ("items" in route && Array.isArray(route.items)) {

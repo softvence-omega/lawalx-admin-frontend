@@ -7,7 +7,7 @@ import { useState } from "react";
 
 const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
-
+  console.log("After Login Dashboard")
   const toggleSidebar = () => {
     setIsCollapsed(!isCollapsed);
   };

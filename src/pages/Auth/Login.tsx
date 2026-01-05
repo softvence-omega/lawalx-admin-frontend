@@ -47,15 +47,16 @@ const Login = () => {
     const toastId = toast.loading("Logging in...");
     try {
       const res = await login(data).unwrap();
+      console.log(res)
       if (res.success) {
         dispatch(setUser(res?.data));
         toast.success("Logged in successfully", { id: toastId });
-        if (res.data.specialToken) {
+        if (res?.data?.specialToken) {
           navigate("/verification");
         } else {
           const { role } = jwtDecode<{
             role: "ADMIN" | "SUPERADMIN" | "SUPPORTER";
-          }>(res.data.accessToken);
+          }>(res?.data?.accessToken);
           if (Role[role]) {
             console.log("Inside Role" , role)
             console.log(`/${Role[role]}`)
