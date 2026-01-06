@@ -35,7 +35,7 @@ const DashboardLayout = () => {
       {/* 1. Fixed Sidebar */}
       <div
         className={`z-90 border-r border-gray-200 transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-20" : "w-64"
+          isCollapsed ? "w-20" : "w-72"
         }`}
       >
         <Sidebar isCollapsed={isCollapsed} />
