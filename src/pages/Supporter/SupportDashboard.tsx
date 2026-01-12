@@ -16,7 +16,7 @@ import MessageInput from "./Components/MessageInput";
 import { Ticket, Message } from "./Components/types";
 
 // --- CONFIGURATION ---
-const SOCKET_URL = "https://gfwndvfv-5001.inc1.devtunnels.ms";
+const SOCKET_URL = "https://gfwndvfv-8080.inc1.devtunnels.ms";
 
 const SupportDashboard = () => {
   const [selectedTicket, setSelectedTicket] = useState<Ticket | null>(null);
@@ -27,7 +27,13 @@ const SupportDashboard = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [isChatLoading, setIsChatLoading] = useState(false);
   const [socket, setSocket] = useState<Socket | null>(null);
+  const selectedTicketRef = useRef<Ticket | null>(null);
   
+  // Keep ref in sync
+  useEffect(() => {
+    selectedTicketRef.current = selectedTicket;
+  }, [selectedTicket]);
+
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,45 +45,27 @@ const SupportDashboard = () => {
 
   const tickets = data?.data;
   const accessToken = useAppSelector((state) => state.auth.user?.accessToken);
+
   // Initialize Socket
   useEffect(() => {
     if (!accessToken || !SOCKET_URL) return;
 
-    console.log("🔑 Initializing socket with token:", accessToken ? "Token exists (length: " + accessToken.length + ")" : "No token");
-
     const newSocket = io(SOCKET_URL, {
       transports: ["websocket"],
       withCredentials: true,
-      auth: { token: accessToken },
-       extraHeaders: {
-        Authorization: `Bearer ${accessToken}`,
-      },
+      auth: { token: `${accessToken}` },
       timeout: 20000,
       reconnection: true,
       reconnectionAttempts: 5,
     });
 
     newSocket.on("connect", () => {
-      console.log("✅ Socket connected! ID:", newSocket.id);
-    });
-
-    newSocket.on("connect_error", (err) => {
-      console.error("❌ Socket connection error:", err.message);
-      console.error("Error details:", err);
-    });
-
-    newSocket.on("exception", (err) => {
-      console.error("❌ Socket exception:", err);
-    });
-
-    newSocket.on("error", (err) => {
-      console.error("❌ Socket error:", err);
+      console.log("🔌 Connected to socket ID:", newSocket.id);
     });
 
     setSocket(newSocket);
 
     return () => {
-      console.log("🔌 Disconnecting socket...");
       newSocket.disconnect();
     };
   }, [accessToken]);
@@ -87,18 +75,40 @@ const SupportDashboard = () => {
     if (!socket) return;
 
     const onNewMessage = (msg: any) => {
-      if (msg.ticketId !== selectedTicket?.id) return;
-      setMessages((prev) => [
-        ...prev,
-        {
-          id: msg.id,
-          ticketId: msg.ticketId,
-          text: msg.message || "",
-          fileUrl: msg.file,
-          sender: msg.senderRole,
-          timestamp: msg.createdAt,
-        },
-      ]);
+      // Use String() to handle potential number/string ID mismatches
+      if (String(msg.ticketId) !== String(selectedTicket?.id)) {
+        return;
+      }
+
+      setMessages((prev) => {
+        if (prev.some((m) => m.id === msg.id)) return prev;
+        return [
+          ...prev,
+          {
+            id: msg.id,
+            ticketId: msg.ticketId,
+            text: msg.message || "",
+            fileUrl: msg.file,
+            sender: msg.senderRole === "CLIENT" ? "CLIENT" : "SUPPORTER",
+            timestamp: msg.createdAt,
+            senderName: msg.sender?.name,
+          },
+        ];
+      });
+    };
+
+    const onTyping = (data: { isTyping: boolean; ticketId: string }) => {
+      if (String(data.ticketId) === String(selectedTicket?.id)) {
+        setIsTyping(data.isTyping);
+      }
+    };
+
+    socket.on("new_chat_message", onNewMessage);
+    socket.on("display_typing", onTyping);
+
+    return () => {
+      socket.off("new_chat_message", onNewMessage);
+      socket.off("display_typing", onTyping);
     };
   }, [socket, selectedTicket?.id]);
 
@@ -127,7 +137,12 @@ const SupportDashboard = () => {
         ticketId: msg.ticketId,
         text: msg.message,
         fileUrl: msg.file,
-        sender: msg.senderRole,
+        sender:
+          msg.senderRole === "supporter"
+            ? "SUPPORTER"
+            : msg.senderRole === "client"
+              ? "CLIENT"
+              : msg.senderRole,
         timestamp: msg.createdAt,
         senderName: msg.sender?.name,
       }));
@@ -145,11 +160,6 @@ const SupportDashboard = () => {
     if ((!inputValue.trim() && !selectedFile) || !socket || !selectedTicket)
       return;
 
-    if (!socket.connected) {
-      console.error("❌ Cannot send message: Socket is not connected");
-      return;
-    }
-
     let fileUrl = "";
     if (selectedFile) {
       fileUrl = await new Promise((resolve) => {
@@ -162,26 +172,14 @@ const SupportDashboard = () => {
     const messagePayload: any = {
       ticketId: selectedTicket.id,
       message: inputValue || null,
-      file: fileUrl || null, // Changed from fileUrl to file to match server expectations
+      fileUrl: fileUrl || null,
     };
 
-    console.log("📤 Sending message payload:", messagePayload);
-    socket.emit(
-      "sendMessage",
-      messagePayload,
-      (response: { success: boolean; message?: string }) => {
-        console.log("📩 Received sendMessage response:", response);
-        if (response?.success) {
-          console.log("✅ Message successfully delivered");
-          setInputValue("");
-          setSelectedFile(null);
-          setFilePreview(null);
-        } else {
-          console.error("❌ Message delivery failed:", response?.message || "Unknown error");
-          // Optionally notify user here
-        }
-      }
-    );
+    socket.emit("sendMessage", messagePayload);
+
+    setInputValue("");
+    setSelectedFile(null);
+    setFilePreview(null);
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
