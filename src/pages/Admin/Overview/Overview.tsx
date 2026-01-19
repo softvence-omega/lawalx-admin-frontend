@@ -1,11 +1,10 @@
 import { ActivityLog } from "./Components/ActivityLog";
 import { AlertCenter } from "./Components/AlertCenter";
 import { CustomerInsights } from "./Components/CustomerInsight/CustomerInsight";
-// import EarningReportsChart  from "./Components/EarningReport"; 
-import { MetricsCards } from "./Components/MetricsCards";
-import { SupportTicketsChart } from "./Components/SupportTicket";
-// import  TopClients  from "./Components/TopClients";
-import { TrendingIndustriesTable } from "./Components/TrendingIndustries";
+import { MetricsCards } from "./Components/metricsCards";
+import { SupportTicketsChart } from "./Components/supportTicket";
+import { TrendingIndustriesTable } from "./Components/trendingIndustries";
+
 
 
 const Overview = () => {
