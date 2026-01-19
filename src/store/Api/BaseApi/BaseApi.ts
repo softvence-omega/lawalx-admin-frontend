@@ -10,7 +10,7 @@ import { createApi } from "@reduxjs/toolkit/query/react";
 const baseQuery = fetchBaseQuery({
   baseUrl: import.meta.env.VITE_API_BASE_URL,
   prepareHeaders: (headers, { getState }) => {
-    const state = getState() as any;  
+    const state = getState() as any;
     const token = state.auth.user?.accessToken;
     if (token) {
       headers.set("Authorization", `${token}`);
@@ -25,12 +25,13 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
+  console.log("Result", result);
   if (result.error && result.error.status === 401) {
     const state = api.getState() as any;
     const refreshToken = state?.auth?.user?.refreshToken;
-    console.log(refreshToken,"refreshToken")
+    console.log(refreshToken, "refreshToken");
     if (!refreshToken) {
-      api.dispatch(logOut());
+      // api.dispatch(logOut());
       return result;
     }
     const refreshResult = await baseQuery(
@@ -40,13 +41,14 @@ const baseQueryWithReauth: BaseQueryFn<
         body: { refreshToken },
       },
       api,
-      extraOptions
+      extraOptions,
     );
     if (refreshResult.data) {
       api.dispatch(setUser(refreshResult.data));
       result = await baseQuery(args, api, extraOptions);
     } else {
-      api.dispatch(logOut());
+      console.log("else");
+      // api.dispatch(logOut());
     }
   }
   return result;
@@ -67,7 +69,7 @@ const baseApi = createApi({
     "Dashboard",
     "menuItems",
     "Favorite",
-    "Clients",  
+    "Clients",
     "Payments",
   ],
 });
