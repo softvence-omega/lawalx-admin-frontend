@@ -1,7 +1,7 @@
 import { useGetAllSupporterTicketsQuery } from "@/store/Api/SupportersApi/SupportersApi";
 
 const Supporter = () => {
-    const {data , isLoading} = useGetAllSupporterTicketsQuery({})
+    const {data } = useGetAllSupporterTicketsQuery({})
     console.log(data,"data")
     return (
         <div className="">
