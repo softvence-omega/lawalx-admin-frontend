@@ -31,7 +31,7 @@ const baseQueryWithReauth: BaseQueryFn<
     const refreshToken = state?.auth?.user?.refreshToken;
     console.log(refreshToken, "refreshToken");
     if (!refreshToken) {
-      // api.dispatch(logOut());
+      api.dispatch(logOut());
       return result;
     }
     const refreshResult = await baseQuery(
@@ -48,7 +48,7 @@ const baseQueryWithReauth: BaseQueryFn<
       result = await baseQuery(args, api, extraOptions);
     } else {
       console.log("else");
-      // api.dispatch(logOut());
+      api.dispatch(logOut());  
     }
   }
   return result;
