@@ -23,13 +23,13 @@ export const flattenRoutes = (routes: any[], base = "") => {
 
 const flattenNested = (children: any[], parentPath: string) => {
   let map: Record<string, { name: string; icon?: React.ReactNode }> = {};
-  children?.forEach((child) => {
+  children?.forEach((child: any) => {
     const fullPath = child?.index
       ? parentPath.replace(/\/+/g, "/")
       : `${parentPath}/${child?.path}`.replace(/\/+/g, "/");
     map[fullPath] = { name: child?.name, icon: child?.icon };
     if (child?.children) {
-      map = { ...map, ...flattenNested(child?.children, fullPath) };
+      map = { ...map, ...flattenNested(child.children, fullPath) };
     }
   });
   return map;
