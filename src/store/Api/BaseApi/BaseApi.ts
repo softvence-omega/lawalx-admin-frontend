@@ -29,7 +29,6 @@ const baseQueryWithReauth: BaseQueryFn<
   if (result.error && result.error.status === 401) {
     const state = api.getState() as any;
     const refreshToken = state?.auth?.user?.refreshToken;
-    console.log(refreshToken, "refreshToken");
     if (!refreshToken) {
       api.dispatch(logOut());
       return result;
@@ -72,7 +71,6 @@ const baseApi = createApi({
     "Clients",
     "Payments",
     "SupporterTickets",
-    
   ],
 });
 export default baseApi;

@@ -63,9 +63,9 @@ const incomeData = [
   { month: "Dec", value: 55, percentage: "55%" },
 ];
 
- const  EarningReportsChart = () => {
+const EarningReportsChart = () => {
   const [activeTab, setActiveTab] = useState<"orders" | "sales" | "income">(
-    "orders"
+    "orders",
   );
 
   const currentData = useMemo(() => {
@@ -101,7 +101,7 @@ const incomeData = [
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-wrap gap-3 md:gap-4 mb-6">
           <button
             onClick={() => setActiveTab("orders")}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
@@ -173,6 +173,6 @@ const incomeData = [
       </CardContent>
     </Card>
   );
-}
+};
 
 export default EarningReportsChart;

@@ -1,24 +1,31 @@
 import { useState } from "react";
-import { Link, 
+import {
+  Link,
   // Navigate,
-   NavLink, useLocation } from "react-router-dom";
+  NavLink,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { adminRoutes } from "@/routes/AdminRoutes";
 import { menuGenerator, MenuItem } from "@/utils/Generator/MenuGenerator";
 import { Location } from "react-router-dom";
 import UserProfile from "./UserProfile";
 import { supporterRoute } from "@/routes/SupporterRoutes";
-// import { useAppSelector } from "@/hooks/useRedux";
+import { useAppSelector } from "@/hooks/useRedux";
+import { X } from "lucide-react";
 // Sub-component to handle recursive levels and isolated hover states
 const NavItem = ({
   item,
   level,
   location,
   isCollapsed,
+  closeMobile,
 }: {
   item: MenuItem;
   level: number;
   location: Location;
   isCollapsed: boolean;
+  closeMobile?: () => void;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const hasChildren = !!item.children?.length;
@@ -54,6 +61,11 @@ const NavItem = ({
         to={item.path || "#"}
         title={isCollapsed ? item.label : ""}
         className={`${itemClasses} cursor-pointer whitespace-nowrap`}
+        onClick={() => {
+          if (!hasChildren && closeMobile) {
+            closeMobile();
+          }
+        }}
       >
         <span
           className={`${
@@ -94,6 +106,7 @@ const NavItem = ({
                   level={level + 1}
                   location={location}
                   isCollapsed={false} // Sub-menus are always expanded
+                  closeMobile={closeMobile}
                 />
               ))}
             </div>
@@ -106,58 +119,77 @@ const NavItem = ({
 
 interface SidebarProps {
   isCollapsed: boolean;
+  closeMobile?: () => void;
 }
 
-const Sidebar = ({ isCollapsed }: SidebarProps) => {
+const Sidebar = ({ isCollapsed, closeMobile }: SidebarProps) => {
   const location = useLocation();
-  // const user = useAppSelector((state) => state.auth.user);
-  // const ROLE = ["ADMIN", "SUPERADMIN"];
-
+  const user = useAppSelector((state) => state.auth.user);
+  const ROLE = ["ADMIN", "SUPERADMIN"];
   const menu =
-    // ROLE.includes(user?.role as string) &&
+    ROLE.includes(user?.role as string) &&
     location.pathname.split("/")[1] === "admin"
       ? menuGenerator(adminRoutes, "/admin")
-      // : user?.role === "SUPPORTER" &&
-          // location.pathname.split("/")[1] === "supporter"
-        : menuGenerator(supporterRoute, "/supporter")
-        // : [];
-  // if (menu.length === 0) return Navigate({ to: "/unauthorized" });
+      : user?.role === "SUPPORTER" &&
+          location.pathname.split("/")[1] === "supporter"
+        ? menuGenerator(supporterRoute, "/supporter")
+        : [];
+  if (menu.length === 0) return Navigate({ to: "/unauthorized" });
+
   const groupedMenu = menu.reduce<Record<string, MenuItem[]>>((acc, item) => {
     const group = item.group || "General";
     if (!acc[group]) acc[group] = [];
     acc[group].push(item);
     return acc;
   }, {});
+
   return (
     <aside
       className={`h-screen bg-white text-gray-800 sticky top-0 z-40 flex flex-col transition-all duration-300 border-r border-gray-200 ${
-        isCollapsed ? "w-20" : "w-72"
+        isCollapsed ? "lg:w-20 w-64" : "w-64"
       }`}
     >
       <div
-        className={`p-4 h-24 text-xl font-bold flex items-center ${
-          isCollapsed ? "justify-center" : ""
+        className={`p-4 h-24 text-xl font-bold flex items-center justify-between ${
+          isCollapsed ? "lg:justify-center" : ""
         }`}
       >
         <Link to="/" className="no-underline">
           {isCollapsed ? (
-            <div className=" flex items-center justify-center text-white text-xs">
+            <div className="hidden lg:flex items-center justify-center text-white text-xs">
               <img src="/sitelogo.png" alt="" />
             </div>
           ) : (
             <img src="/sitelogo.png" alt="Logo" className="max-h-12" />
           )}
+          {isCollapsed && (
+            <img
+              src="/sitelogo.png"
+              alt="Logo"
+              className="max-h-12 lg:hidden"
+            />
+          )}
         </Link>
+        {/* Mobile Close Button */}
+        <button
+          onClick={closeMobile}
+          className="lg:hidden p-2 text-gray-500 hover:bg-gray-100 rounded-md"
+        >
+          <X className="w-6 h-6" />
+        </button>
       </div>
 
       <nav
-        className={`p-2 my-5 space-y-10 flex-1 overflow-y-visible overflow-x-visible ${
-          isCollapsed ? "px-2" : ""
+        className={`p-2 my-5 space-y-10 flex-1 overflow-y-auto overflow-x-hidden ${
+          isCollapsed ? "lg:px-2 px-4" : "px-4"
         }`}
       >
         {Object.entries(groupedMenu).map(([group, items], index, arr) => (
           <div key={group}>
-            {!isCollapsed && (
+            {(!isCollapsed ||
+              (isCollapsed &&
+                typeof window !== "undefined" &&
+                window.innerWidth < 1024)) && (
               <p className="px-3 mb-2 text-xs font-semibold capitalize text-gray-500 tracking-widest">
                 {group}
               </p>
@@ -169,26 +201,36 @@ const Sidebar = ({ isCollapsed }: SidebarProps) => {
                   item={item}
                   level={0}
                   location={location}
-                  isCollapsed={isCollapsed}
+                  isCollapsed={
+                    isCollapsed &&
+                    typeof window !== "undefined" &&
+                    window.innerWidth >= 1024
+                  }
+                  closeMobile={closeMobile}
                 />
               ))}
             </div>
             {/* Divider */}
-            {index !== arr.length - 1 && !isCollapsed && (
-              <div className="my-6 border-t border-gray-200" />
-            )}
-            {index !== arr.length - 1 && isCollapsed && (
-              <div className="my-4 border-t border-gray-100 mx-2" />
+            {index !== arr.length - 1 && (
+              <div
+                className={`my-6 border-t border-gray-200 ${isCollapsed ? "lg:mx-0 mx-2" : "mx-2"}`}
+              />
             )}
           </div>
         ))}
       </nav>
       <div
         className={`mt-auto p-4 border-t border-gray-200 overflow-hidden ${
-          isCollapsed ? "px-2" : ""
+          isCollapsed ? "lg:px-2 px-4" : "px-4"
         }`}
       >
-        <UserProfile isCollapsed={isCollapsed} />
+        <UserProfile
+          isCollapsed={
+            isCollapsed &&
+            typeof window !== "undefined" &&
+            window.innerWidth >= 1024
+          }
+        />
       </div>
     </aside>
   );

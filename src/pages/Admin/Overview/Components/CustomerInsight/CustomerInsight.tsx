@@ -18,7 +18,7 @@ export const CustomerInsights = memo(function CustomerInsights() {
   // Calculate the total number of pages
   const totalPages = useMemo(
     () => Math.ceil((customers?.length || 0) / itemsPerPage) || 1,
-    [customers, itemsPerPage]
+    [customers, itemsPerPage],
   );
 
   // Calculate the customers to display on the current page
@@ -38,7 +38,6 @@ export const CustomerInsights = memo(function CustomerInsights() {
         <div className="flex items-center gap-3">
           <Button
             variant={viewMode === "Boards" ? "secondary" : "outline"}
-            size="sm"
             className={
               viewMode === "Boards"
                 ? "bg-gray-800 text-white gap-2 cursor-pointer"
@@ -50,7 +49,7 @@ export const CustomerInsights = memo(function CustomerInsights() {
             Boards
           </Button>
           <Button
-            size="sm"
+            variant={viewMode === "Tables" ? "secondary" : "outline"}
             className={
               viewMode === "Tables"
                 ? "bg-gray-800 text-white gap-2 cursor-pointer"
@@ -61,7 +60,7 @@ export const CustomerInsights = memo(function CustomerInsights() {
             <Table className="h-4 w-4" />
             Tables
           </Button>
-          <Button variant="outline" size="sm" className="gap-2 bg-transparent">
+          <Button variant="outline" className="gap-2 bg-transparent">
             <Filter className="h-4 w-4" />
             Filter By
           </Button>
