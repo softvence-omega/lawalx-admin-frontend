@@ -9,6 +9,7 @@ import { supporterRoute } from "@/routes/SupporterRoutes";
 
 const DashboardLayout = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
   const location = useLocation();
   const user = useAppSelector((state) => state.auth.user);
 
@@ -23,28 +24,41 @@ const DashboardLayout = () => {
     isAdmin && firstPath === "admin"
       ? adminRoutes
       : isSupporter && firstPath === "supporter"
-      ? supporterRoute
-      : [];
+        ? supporterRoute
+        : [];
 
   const toggleSidebar = () => {
-    setIsCollapsed(!isCollapsed);
+    if (window.innerWidth < 1024) {
+      setIsMobileOpen(!isMobileOpen);
+    } else {
+      setIsCollapsed(!isCollapsed);
+    }
   };
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* 1. Fixed Sidebar */}
+      {/* Mobile Sidebar Overlay */}
+      {isMobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-[60] lg:hidden transition-opacity"
+          onClick={() => setIsMobileOpen(false)}
+        />
+      )}
+
+      {/* 1. Sidebar Container */}
       <div
-        className={`z-90 border-r border-gray-200 transition-all duration-300 ease-in-out ${
-          isCollapsed ? "w-20" : "w-64"
-        }`}
+        className={`fixed inset-y-0 left-0 z-[70] w-64 lg:relative lg:z-40 transition-all duration-300 ease-in-out transform
+          ${isMobileOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+          ${isCollapsed ? "lg:w-20" : "lg:w-64"}
+        `}
       >
-        <Sidebar isCollapsed={isCollapsed} />
+        <Sidebar isCollapsed={isCollapsed} closeMobile={() => setIsMobileOpen(false)} />
       </div>
 
       {/* 2. Main Content Area */}
-      <div className="flex-1 flex flex-col max-w-full bg-white">
+      <div className="flex-1 flex flex-col min-w-0 bg-white">
         <Header toggleSidebar={toggleSidebar} isCollapsed={isCollapsed} />
-        <main className="p-6 overflow-y-auto">
+        <main className="p-4 md:p-6 overflow-y-auto">
           {/* Breadcrumbs (Optional) */}
           <div className="mb-6">
             <div className="flex items-center gap-2 space-y-2">

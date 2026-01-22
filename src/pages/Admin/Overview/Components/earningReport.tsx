@@ -101,7 +101,7 @@ const incomeData = [
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-4 mb-6">
+        <div className="flex flex-wrap gap-3 md:gap-4 mb-6">
           <button
             onClick={() => setActiveTab("orders")}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${

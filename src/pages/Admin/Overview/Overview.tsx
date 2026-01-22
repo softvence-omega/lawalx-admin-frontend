@@ -1,37 +1,38 @@
 import { ActivityLog } from "./Components/ActivityLog";
 import { AlertCenter } from "./Components/AlertCenter";
 import { CustomerInsights } from "./Components/CustomerInsight/CustomerInsight";
-import { MetricsCards } from "./Components/metricsCards";
-import { SupportTicketsChart } from "./Components/supportTicket";
-import { TrendingIndustriesTable } from "./Components/trendingIndustries";
-
-
+import EarningReportsChart from "./Components/EarningReport";
+import { MetricsCards } from "./Components/MetricsCards";
+import { SupportTicketsChart } from "./Components/SupportTicket";
+import { TrendingIndustriesTable } from "./Components/TrendingIndustries";
 
 const Overview = () => {
-  console.log("Inside Overview")
+  console.log("Inside Overview");
   return (
-    <>
+    <div className="container mx-auto space-y-10 pb-10 px-0">
       <MetricsCards />
+
       <CustomerInsights />
-      <div className="grid grid-cols-12 gap-6 mx-auto mt-10">
-        <div className="col-span-12 lg:col-span-9 space-y-6">
-          <div className="grid grid-cols-2 gap-6">
-            <div className="w-full h-full">
-              {/* <TopClients /> */}
-            </div>
-            <div className="w-full h-full">
-              <SupportTicketsChart />
-            </div>
+      <div className="grid grid-cols-12 gap-6">
+        {/* Main Content Area */}
+        <div className="col-span-12 xl:col-span-9 space-y-10">
+          <EarningReportsChart />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <SupportTicketsChart />
+            {/* You can add another small chart or metric card here */}
           </div>
-          {/* <EarningReportsChart /> */}
+
           <TrendingIndustriesTable />
         </div>
-        <div className="col-span-12 lg:col-span-3 space-y-6">
+
+        {/* Sidebar Area - Stacks on bottom on mobile/tablet */}
+        <div className="col-span-12 xl:col-span-3 space-y-6">
           <AlertCenter />
-          <ActivityLog /> 
+          <ActivityLog />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 
