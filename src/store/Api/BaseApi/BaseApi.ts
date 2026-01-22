@@ -25,7 +25,6 @@ const baseQueryWithReauth: BaseQueryFn<
   FetchBaseQueryError
 > = async (args, api, extraOptions) => {
   let result = await baseQuery(args, api, extraOptions);
-  console.log("Result", result);
   if (result.error && result.error.status === 401) {
     const state = api.getState() as any;
     const refreshToken = state?.auth?.user?.refreshToken;
@@ -46,8 +45,7 @@ const baseQueryWithReauth: BaseQueryFn<
       api.dispatch(setUser(refreshResult.data));
       result = await baseQuery(args, api, extraOptions);
     } else {
-      console.log("else");
-      api.dispatch(logOut());  
+      api.dispatch(logOut());
     }
   }
   return result;
