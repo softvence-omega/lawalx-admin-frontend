@@ -7,7 +7,6 @@ import { TrendingIndustriesTable } from "./Components/TrendingIndustries";
 import EarningReportsChart from "./Components/EarningReport";
 
 const Overview = () => {
-  console.log("Inside Overview");
   return (
     <div className="container mx-auto space-y-10 pb-10 px-0">
       <MetricsCards />

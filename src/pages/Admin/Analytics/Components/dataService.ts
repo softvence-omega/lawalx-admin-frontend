@@ -1,8 +1,8 @@
-import trendingIndustriesData from "./MockData/trendingIndustries.json";
-import chartUsagesData from "./MockData/chartUsages.json";
-import loginData from "./MockData/loginData.json";
-import bounceRateData from "./MockData/bounceRateData.json";
-import renderingStatusData from "./MockData/renderingStatus.json";
+import trendingIndustriesData from "./Mockdata/trendingIndustries.json";
+import chartUsagesData from "./Mockdata/chartUsages.json";
+import loginData from "./Mockdata/loginData.json";
+import bounceRateData from "./Mockdata/bounceRateData.json";
+import renderingStatusData from "./Mockdata/renderingStatus.json";
 
 export interface TrendingIndustry {
   id: number;
@@ -50,7 +50,7 @@ export const dataService = {
   getTrendingIndustries: async (): Promise<TrendingIndustry[]> => {
     // Simulate network delay
     await new Promise((resolve) => setTimeout(resolve, 100));
-    return trendingIndustriesData.trendingIndustries;
+    return trendingIndustriesData?.trendingIndustries;
   },
 
   getChartUsages: async (): Promise<{
@@ -63,35 +63,35 @@ export const dataService = {
 
   getLoginData: async (): Promise<LoginData> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    return loginData.loginData;
+    return loginData?.loginData;
   },
 
   getBounceRateData: async (): Promise<BounceRateData[]> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    return bounceRateData.bounceRateData;
+    return bounceRateData?.bounceRateData;
   },
 
   getRenderingStatus: async (): Promise<RenderingStatus> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
-    return renderingStatusData.renderingStatus;
+    return renderingStatusData?.renderingStatus;
   },
 
   // Filter functions for future use
   filterTrendingIndustries: async (
     industry: string,
-    sortBy: string
+    sortBy: string,
   ): Promise<TrendingIndustry[]> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
     let data = [...trendingIndustriesData.trendingIndustries];
 
     if (industry !== "Industry") {
-      data = data.filter((item) => item.name === industry);
+      data = data?.filter((item) => item?.name === industry);
     }
 
     if (sortBy === "Usage") {
-      data.sort((a, b) => b.usage - a.usage);
+      data?.sort((a, b) => b?.usage - a?.usage);
     } else if (sortBy === "Monthly Comp.") {
-      data.sort((a, b) => b.monthlyComp - a.monthlyComp);
+      data?.sort((a, b) => b?.monthlyComp - a?.monthlyComp);
     }
 
     return data;
