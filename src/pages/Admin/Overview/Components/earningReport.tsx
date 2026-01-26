@@ -1,7 +1,6 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   BarChart,
   Bar,
@@ -10,13 +9,15 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
-import {
-  ChevronDown,
-  ShoppingCart,
-  CreditCard,
-  DollarSign,
-} from "lucide-react";
+import { ShoppingCart, CreditCard, DollarSign } from "lucide-react";
 import { useState, useMemo } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const ordersData = [
   { month: "Jan", value: 18, percentage: "18%" },
@@ -67,19 +68,34 @@ const EarningReportsChart = () => {
   const [activeTab, setActiveTab] = useState<"orders" | "sales" | "income">(
     "orders",
   );
+  const [sortBy, setSortBy] = useState<"default" | "highest" | "lowest">(
+    "default",
+  );
 
   const currentData = useMemo(() => {
+    let baseData;
     switch (activeTab) {
       case "orders":
-        return ordersData;
+        baseData = ordersData;
+        break;
       case "sales":
-        return salesData;
+        baseData = salesData;
+        break;
       case "income":
-        return incomeData;
+        baseData = incomeData;
+        break;
       default:
-        return ordersData;
+        baseData = ordersData;
     }
-  }, [activeTab]);
+
+    const data = [...baseData];
+    if (sortBy === "highest") {
+      data.sort((a, b) => b.value - a.value);
+    } else if (sortBy === "lowest") {
+      data.sort((a, b) => a.value - b.value);
+    }
+    return data;
+  }, [activeTab, sortBy]);
 
   return (
     <Card className="border-gray-200">
@@ -91,13 +107,19 @@ const EarningReportsChart = () => {
           <p className="text-sm text-gray-500 mt-1">Yearly Earnings Overview</p>
         </div>
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="text-gray-500 hover:text-gray-700"
+          <Select
+            value={sortBy}
+            onValueChange={(value: any) => setSortBy(value)}
           >
-            Sort By <ChevronDown className="ml-1 h-4 w-4" />
-          </Button>
+            <SelectTrigger className="w-[150px] h-8 text-xs border border-gray-200 shadow-none focus:ring-0 text-gray-500 hover:text-gray-700 bg-transparent ">
+              <SelectValue placeholder="Sort By" />
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="highest">Highest Earning</SelectItem>
+              <SelectItem value="lowest">Lowest Earning</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </CardHeader>
       <CardContent>

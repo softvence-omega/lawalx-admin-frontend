@@ -5,6 +5,7 @@ import { MetricsCards } from "./Components/MetricsCards";
 import { SupportTicketsChart } from "./Components/SupportTicket";
 import { TrendingIndustriesTable } from "./Components/TrendingIndustries";
 import EarningReportsChart from "./Components/EarningReport";
+import TopClients from "./Components/TopClients";
 
 const Overview = () => {
   return (
@@ -15,12 +16,12 @@ const Overview = () => {
       <div className="grid grid-cols-12 gap-6">
         {/* Main Content Area */}
         <div className="col-span-12 xl:col-span-9 space-y-10">
-          <EarningReportsChart />
-
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <TopClients />
             <SupportTicketsChart />
             {/* You can add another small chart or metric card here */}
           </div>
+          <EarningReportsChart />
 
           <TrendingIndustriesTable />
         </div>

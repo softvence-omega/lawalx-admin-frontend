@@ -1,9 +1,16 @@
 "use client";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, TrendingUp, TrendingDown } from "lucide-react";
+import { TrendingUp, TrendingDown } from "lucide-react";
+import { useState, useMemo } from "react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const trendingIndustries = [
   {
@@ -59,19 +66,44 @@ const trendingIndustries = [
 ];
 
 export function TrendingIndustriesTable() {
+  const [sortBy, setSortBy] = useState<string>("default");
+
+  const sortedIndustries = useMemo(() => {
+    const data = [...trendingIndustries];
+    switch (sortBy) {
+      case "name-asc":
+        return data.sort((a, b) => a.name.localeCompare(b.name));
+      case "name-desc":
+        return data.sort((a, b) => b.name.localeCompare(a.name));
+      case "usage-high":
+        return data.sort((a, b) => b.totalUsage - a.totalUsage);
+      case "usage-low":
+        return data.sort((a, b) => a.totalUsage - b.totalUsage);
+      default:
+        return data;
+    }
+  }, [sortBy]);
+
   return (
     <Card className="lg:col-span-3 border-gray-200">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
         <CardTitle className="text-lg font-semibold text-gray-900">
           Trending Industries
         </CardTitle>
-        <Button
-          variant="ghost"
-          size="sm"
-          className="text-gray-500 hover:text-gray-700"
-        >
-          Sort By <ChevronDown className="ml-1 h-4 w-4" />
-        </Button>
+        <div className="flex items-center gap-2">
+          <Select value={sortBy} onValueChange={setSortBy}>
+            <SelectTrigger className="w-[150px] h-8 text-xs border border-gray-200 shadow-none focus:ring-0 text-gray-500 hover:text-gray-700 bg-transparent">
+              <SelectValue placeholder="Sort By" />
+            </SelectTrigger>
+            <SelectContent align="end">
+              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="name-asc">Name (A-Z)</SelectItem>
+              <SelectItem value="name-desc">Name (Z-A)</SelectItem>
+              <SelectItem value="usage-high">High Usage</SelectItem>
+              <SelectItem value="usage-low">Low Usage</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="overflow-x-auto">
@@ -96,7 +128,7 @@ export function TrendingIndustriesTable() {
               </tr>
             </thead>
             <tbody>
-              {trendingIndustries.map((industry) => (
+              {sortedIndustries.map((industry) => (
                 <tr
                   key={industry.id}
                   className="border-b border-gray-100 hover:bg-gray-50"
@@ -140,15 +172,15 @@ export function TrendingIndustriesTable() {
                         industry.status === "Active"
                           ? "default"
                           : industry.status === "Reviewing"
-                          ? "secondary"
-                          : "destructive"
+                            ? "secondary"
+                            : "destructive"
                       }
                       className={
                         industry.status === "Active"
                           ? "bg-green-100 text-green-700 hover:bg-green-100"
                           : industry.status === "Reviewing"
-                          ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
-                          : "bg-red-100 text-red-700 hover:bg-red-100"
+                            ? "bg-yellow-100 text-yellow-700 hover:bg-yellow-100"
+                            : "bg-red-100 text-red-700 hover:bg-red-100"
                       }
                     >
                       {industry.status}
