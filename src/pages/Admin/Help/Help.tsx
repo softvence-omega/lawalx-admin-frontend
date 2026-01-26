@@ -29,10 +29,10 @@ const Help: React.FC = () => {
   const [showStatusDropdown, setShowStatusDropdown] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
   const [selectedEmployees, setSelectedEmployees] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [showActionMenu, setShowActionMenu] = useState<string | null>(null);
-
+  
   const employees: Employee[] = [
     {
       id: "1",
@@ -423,7 +423,7 @@ const Help: React.FC = () => {
                     className="text-gray-400 hover:text-gray-600"
                     onClick={() =>
                       setShowActionMenu(
-                        showActionMenu === employee.id ? null : employee.id
+                        showActionMenu === employee.id ? null : employee.id,
                       )
                     }
                   >

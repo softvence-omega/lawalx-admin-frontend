@@ -47,20 +47,35 @@ export function SingleClient() {
         <div className="flex-1 p-6">
           {/* Tabs */}
           <Tabs defaultValue="overview" className="w-full">
-            <TabsList className="grid w-full grid-cols-6">
-              <TabsTrigger className="cursor-pointer" value="overview">
+            <TabsList className="container mx-auto justify-start h-auto p-0 bg-transparent rounded-none gap-10 border-b border-gray-200">
+              <TabsTrigger
+                className="cursor-pointer bg-transparent py-3 px-0 border-b-2 border-transparent data-[state=active]:border-b-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none font-semibold text-gray-600 transition-all text-base mb-[-1px] relative z-10"
+                value="overview"
+              >
                 Overview
               </TabsTrigger>
-              <TabsTrigger className="cursor-pointer" value="program">
+              <TabsTrigger
+                className="cursor-pointer bg-transparent py-3 px-0 border-b-2 border-transparent data-[state=active]:border-b-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none font-semibold text-gray-600 transition-all text-base mb-[-1px] relative z-10"
+                value="program"
+              >
                 Program
               </TabsTrigger>
-              <TabsTrigger className="cursor-pointer" value="alerts">
+              <TabsTrigger
+                className="cursor-pointer bg-transparent py-3 px-0 border-b-2 border-transparent data-[state=active]:border-b-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none font-semibold text-gray-600 transition-all text-base mb-[-1px] relative z-10"
+                value="alerts"
+              >
                 Alerts
               </TabsTrigger>
-              <TabsTrigger className="cursor-pointer" value="subscription">
+              <TabsTrigger
+                className="cursor-pointer bg-transparent py-3 px-0 border-b-2 border-transparent data-[state=active]:border-b-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none font-semibold text-gray-600 transition-all text-base mb-[-1px] relative z-10"
+                value="subscription"
+              >
                 Subscription
               </TabsTrigger>
-              <TabsTrigger className="cursor-pointer" value="activity">
+              <TabsTrigger
+                className="cursor-pointer bg-transparent py-3 px-0 border-b-2 border-transparent data-[state=active]:border-b-blue-600 data-[state=active]:text-blue-600 data-[state=active]:bg-transparent data-[state=active]:shadow-none rounded-none font-semibold text-gray-600 transition-all text-base mb-[-1px] relative z-10"
+                value="activity"
+              >
                 Activity Log
               </TabsTrigger>
             </TabsList>

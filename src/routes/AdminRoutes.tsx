@@ -20,12 +20,12 @@ import SystemHealth from "@/pages/Admin/SystemHealth/SystemHealth";
 import BillingPlans from "@/pages/Admin/BillingsPlans/BillingsPlans";
 import APIIntegrations from "@/pages/Admin/ApiIntegration/APIIntegrations";
 import SecurityPrivacy from "@/pages/Admin/SecurityPrivacy/SecurityPrivacy";
-import Help from "@/pages/Admin/Help/Help";
 import GlobalSettings from "@/pages/Admin/GlobalSettings/GlobalSettings";
 import AddClientForm from "@/pages/Admin/Clients/Components/AddClient/AddClientForm";
 import ManageBillings from "@/pages/Admin/ManageBillings/ManageBillings";
 import PlatformAnalyticsOverview from "@/pages/Admin/PlatformAnalyticsOverview/Analytics";
 import ClientsParent from "@/pages/Admin/Clients/ClientsParent";
+import Support from "@/pages/Admin/Support/Support";
 export const adminRoutes: RouteGroup[] = [
   {
     group: "Main Menu",
@@ -95,7 +95,7 @@ export const adminRoutes: RouteGroup[] = [
         icon: <HelpCircle />,
         name: "Support",
         path: "support",
-        element: <Help />,
+        element: <Support />,
       },
       {
         icon: <Settings />,

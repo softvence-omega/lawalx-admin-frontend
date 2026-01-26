@@ -1,7 +1,11 @@
+import WorkInProgress from "@/common/WorkInProgress";
+
 const APIIntegrations = () => {
   return (
-    <div>APIIntegrations</div>
-  )
-}
+    <div className="h-[60vh] w-[80vw] flex items-center justify-center">
+      <WorkInProgress title="Work In Progress" />
+    </div>
+  );
+};
 
-export default APIIntegrations
+export default APIIntegrations;

@@ -66,7 +66,7 @@ const ClientSingleActivityLog: React.FC<ActivityLogsProps> = ({
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-8">
+    <div className="flex flex-col items-center justify-center">
       <div className="w-full max-w-7xl rounded-2xl shadow-lg border border-gray-200 bg-white p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold text-gray-800">Activity Log</h2>
