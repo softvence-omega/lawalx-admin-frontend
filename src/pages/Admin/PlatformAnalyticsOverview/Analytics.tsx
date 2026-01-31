@@ -90,7 +90,7 @@ const PlatformAnalyticsOverview: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <div className="grid grid-cols-12 gap-6">
+      <div className="grid grid-cols-12 gap-6 mt-6">
         {/* Left Section - Trending Industries */}
         <div className="col-span-6">
           <div className="bg-white rounded-lg border border-gray-200">
@@ -158,7 +158,7 @@ const PlatformAnalyticsOverview: React.FC = () => {
                       <td className="py-3">
                         <span
                           className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                            item.status
+                            item.status,
                           )}`}
                         >
                           {item.status}

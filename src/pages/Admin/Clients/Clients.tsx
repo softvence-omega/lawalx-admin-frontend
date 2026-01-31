@@ -39,7 +39,7 @@ const Clients: React.FC<Clientdata> = () => {
   }
   return (
     <>
-      <div className="flex gap-5 mt-11">
+      <div className="flex flex-wrap sm:flex-nowrap gap-5 mt-11">
         {summaryLoading ? (
           Array(4)
             .fill(0)
@@ -71,19 +71,19 @@ const Clients: React.FC<Clientdata> = () => {
       </div>
       <div className="space-y-6 mt-11">
         {/* Section Header */}
-        <div className="flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-gray-900">
+        <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between">
+          <h2 className="text-xl font-medium text-gray-900">
             Customer Insight
           </h2>
 
           <div className="flex items-center gap-3">
             <Button
               variant={viewMode === "Boards" ? "secondary" : "outline"}
-              size="sm"
+              size="lg"
               className={
                 viewMode === "Boards"
                   ? "bg-gray-800 text-white gap-2 cursor-pointer"
-                  : "gap-2 cursor-pointer"
+                  : "gap-2 cursor-pointer border border-gray-200"
               }
               onClick={() => setViewMode("Boards")}
             >
@@ -91,11 +91,11 @@ const Clients: React.FC<Clientdata> = () => {
               Boards
             </Button>
             <Button
-              size="sm"
+              size="lg"
               className={
                 viewMode === "Tables"
                   ? "bg-gray-800 text-white gap-2 cursor-pointer"
-                  : "gap-2 cursor-pointer"
+                  : "gap-2 cursor-pointer border border-gray-200"
               }
               onClick={() => setViewMode("Tables")}
             >
@@ -104,7 +104,7 @@ const Clients: React.FC<Clientdata> = () => {
             </Button>
             <Button
               variant="outline"
-              size="sm"
+              size="lg"
               className="gap-2 bg-transparent"
             >
               <Filter className="h-4 w-4" />

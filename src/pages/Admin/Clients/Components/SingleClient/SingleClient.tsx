@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -23,7 +23,8 @@ export function SingleClient() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useGetClientByIdAdminQuery(id as string);
   const clientData = data?.data;
-
+  console.log(clientData);
+  const navigate = useNavigate();
   if (isLoading) return <p>Loading...</p>;
   if (!clientData) return <p>Client not found</p>;
 
@@ -209,15 +210,16 @@ export function SingleClient() {
               <h3 className="text-lg font-semibold mb-4">Quick Action</h3>
               <div className="space-y-3">
                 <Button
-                  className="w-full justify-start gap-2 bg-transparent"
-                  variant="outline"
+                  className="w-full bg-blue-600 py-5 text-white justify-start gap-2"
+                  variant="default"
                 >
                   <Pause className="w-4 h-4" />
                   Suspend Client
                 </Button>
                 <Button
-                  className="w-full justify-start gap-2 bg-transparent"
-                  variant="outline"
+                  onClick={() => navigate("/admin/support")}
+                  className="w-full justify-start gap-2 py-5 bg-blue-600 text-white"
+                  variant="default"
                 >
                   <Ticket className="w-4 h-4" />
                   View Support Tickets

@@ -21,7 +21,7 @@ interface Props {
 const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
   const navigate = useNavigate();
   const [selectedClient, setSelectedClient] = useState<ClientData2 | null>(
-    null
+    null,
   );
   const [modal, setModal] = useState<"view" | "edit" | "delete" | null>(null);
 
@@ -53,14 +53,20 @@ const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
         <table className="min-w-full divide-y divide-gray-200 text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="px-5 py-3 text-left">Company</th>
-              <th className="px-5 py-3 text-left">Plan</th>
-              <th className="px-5 py-3 text-center">Dashboard</th>
-              <th className="px-5 py-3 text-center">Alerts</th>
-              <th className="px-5 py-3 text-center">Users</th>
-              <th className="px-5 py-3">Storage</th>
-              <th className="px-5 py-3 text-center">Status</th>
-              <th className="px-5 py-3 text-center">Action</th>
+              <th className="px-5 py-3 text-left font-semibold">
+                Company Name
+              </th>
+              <th className="px-5 py-3 text-left font-semibold">
+                Subscription Plan
+              </th>
+              <th className="px-5 py-3 text-center font-semibold">
+                Dashboard Updates
+              </th>
+              <th className="px-5 py-3 text-center font-semibold">Alerts</th>
+              <th className="px-5 py-3 text-center font-semibold">Users</th>
+              <th className="px-5 py-3 font-semibold">Storage Usage</th>
+              <th className="px-5 py-3 text-center font-semibold">Status</th>
+              <th className="px-5 py-3 text-center font-semibold">Action</th>
             </tr>
           </thead>
 
@@ -79,7 +85,8 @@ const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
                   onClick={() => navigate(`/admin/clients/${client.id}`)}
                   className="hover:bg-gray-50 cursor-pointer transition"
                 >
-                  <td className="px-5 py-4 font-semibold text-gray-900">
+                  <td className="px-5 py-4 font-semibold text-gray-900  flex items-center gap-2">
+                    <img src="/Logomark.png" className="size-10" alt="" />
                     {companyName}
                   </td>
 
@@ -87,8 +94,7 @@ const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
                     <Badge
                       variant="outline"
                       className={cn(
-                        "rounded-full px-3 py-1 text-xs capitalize",
-                        planColors[client.subscriptionPlan]
+                        `rounded-full px-3 py-1 text-sm capitalize ${planColors[client.subscriptionPlan] ? planColors[client.subscriptionPlan] : "bg-gray-100 text-gray-600 border-gray-200"}`,
                       )}
                     >
                       {client.subscriptionPlan}
@@ -100,7 +106,7 @@ const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
                   </td>
 
                   <td className="px-5 py-4 text-center text-yellow-600 font-medium">
-                    {client.usageWarningAlert ? "1 (Warning)" : "0"}
+                    {client.usageWarningAlert ? "1 Warning" : "0"}
                   </td>
 
                   <td className="px-5 py-4 text-center text-gray-400">—</td>
@@ -116,8 +122,10 @@ const ClientInsightsTable: React.FC<Props> = ({ customers }) => {
                     <Badge
                       variant="outline"
                       className={cn(
-                        "rounded-full px-3 py-1 text-xs min-w-[90px]",
-                        client.isActive ? statusColors["true"] : statusColors["false"]
+                        "rounded-full px-3 py-1 text-sm min-w-[90px]",
+                        client.isActive
+                          ? statusColors["true"]
+                          : statusColors["false"],
                       )}
                     >
                       {client.isActive ? "Active" : "Inactive"}

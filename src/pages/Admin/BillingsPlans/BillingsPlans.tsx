@@ -1,6 +1,14 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { Search, Eye, Edit2, ChevronDown, X } from "lucide-react";
+import { Search, Eye, Edit2, X } from "lucide-react";
 
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { clientBillingService } from "./Components/clientBillingService";
 import BillingStats from "./Components/BillingStats";
 
@@ -19,17 +27,15 @@ export interface ClientBilling {
 const BillingPlans: React.FC = () => {
   const [clientBillings, setClientBillings] = useState<ClientBilling[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [planTypeFilter, setPlanTypeFilter] = useState<string>("Plan Type");
-  const [statusFilter, setStatusFilter] = useState<string>("Status");
-  const [showPlanDropdown, setShowPlanDropdown] = useState<boolean>(false);
-  const [showStatusDropdown, setShowStatusDropdown] = useState<boolean>(false);
+  const [planTypeFilter, setPlanTypeFilter] = useState<string>("All Plans");
+  const [statusFilter, setStatusFilter] = useState<string>("All Status");
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [selectedClients, setSelectedClients] = useState<Set<string>>(
-    new Set()
+    new Set(),
   );
   const [selectAll, setSelectAll] = useState<boolean>(false);
   const [editingClient, setEditingClient] = useState<ClientBilling | null>(
-    null
+    null,
   );
   const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
@@ -61,10 +67,10 @@ const BillingPlans: React.FC = () => {
         client.clientId.toLowerCase().includes(searchTerm.toLowerCase());
 
       const matchesPlan =
-        planTypeFilter === "Plan Type" || client.planType === planTypeFilter;
+        planTypeFilter === "All Plans" || client.planType === planTypeFilter;
 
       const matchesStatus =
-        statusFilter === "Status" || client.status === statusFilter;
+        statusFilter === "All Status" || client.status === statusFilter;
 
       return matchesSearch && matchesPlan && matchesStatus;
     });
@@ -143,8 +149,8 @@ const BillingPlans: React.FC = () => {
           prev.map((client) =>
             client.id === editingClient.id
               ? { ...client, ...editingClient }
-              : client
-          )
+              : client,
+          ),
         );
 
         setIsEditModalOpen(false);
@@ -156,7 +162,7 @@ const BillingPlans: React.FC = () => {
   };
 
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
   ) => {
     if (!editingClient) return;
 
@@ -193,136 +199,37 @@ const BillingPlans: React.FC = () => {
 
               <div className="flex items-center space-x-3">
                 {/* Plan Type Filter */}
-                <div className="relative">
-                  <button
-                    onClick={() => {
-                      setShowPlanDropdown(!showPlanDropdown);
-                      setShowStatusDropdown(false);
-                    }}
-                    className="flex items-center justify-between w-32 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  >
-                    <span className="text-gray-700">{planTypeFilter}</span>
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
-                  </button>
-
-                  {showPlanDropdown && (
-                    <div className="absolute right-0 z-10 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg">
-                      <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setPlanTypeFilter("Plan Type");
-                            setShowPlanDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          All Plans
-                        </button>
-                        <button
-                          onClick={() => {
-                            setPlanTypeFilter("Business");
-                            setShowPlanDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Business
-                        </button>
-                        <button
-                          onClick={() => {
-                            setPlanTypeFilter("Enterprise");
-                            setShowPlanDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Enterprise
-                        </button>
-                        <button
-                          onClick={() => {
-                            setPlanTypeFilter("Professional");
-                            setShowPlanDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Professional
-                        </button>
-                        <button
-                          onClick={() => {
-                            setPlanTypeFilter("Starter");
-                            setShowPlanDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Starter
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Select
+                  value={planTypeFilter}
+                  onValueChange={setPlanTypeFilter}
+                >
+                  <SelectTrigger className="w-40 h-10 border-gray-300 shadow-none focus:ring-1 focus:ring-blue-500 bg-white">
+                    <SelectValue placeholder="Plan Type" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-white top-10">
+                    <SelectGroup>
+                      <SelectItem value="All Plans">All Plans</SelectItem>
+                      <SelectItem value="Business">Business</SelectItem>
+                      <SelectItem value="Enterprise">Enterprise</SelectItem>
+                      <SelectItem value="Professional">Professional</SelectItem>
+                      <SelectItem value="Starter">Starter</SelectItem>
+                    </SelectGroup>
+                  </SelectContent>
+                </Select>
 
                 {/* Status Filter */}
-                <div className="relative">
-                  <button
-                    onClick={() => {
-                      setShowStatusDropdown(!showStatusDropdown);
-                      setShowPlanDropdown(false);
-                    }}
-                    className="flex items-center justify-between w-24 px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50 focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  >
-                    <span className="text-gray-700">{statusFilter}</span>
-                    <ChevronDown className="w-4 h-4 text-gray-400" />
-                  </button>
-
-                  {showStatusDropdown && (
-                    <div className="absolute right-0 z-10 mt-1 w-36 bg-white border border-gray-200 rounded-md shadow-lg">
-                      <div className="py-1">
-                        <button
-                          onClick={() => {
-                            setStatusFilter("Status");
-                            setShowStatusDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          All Status
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("Active");
-                            setShowStatusDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Active
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("Suspended");
-                            setShowStatusDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Suspended
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("Trial");
-                            setShowStatusDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Trial
-                        </button>
-                        <button
-                          onClick={() => {
-                            setStatusFilter("Expired");
-                            setShowStatusDropdown(false);
-                          }}
-                          className="block w-full px-4 py-2 text-sm text-left text-gray-700 hover:bg-gray-100"
-                        >
-                          Expired
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                  <SelectTrigger className="w-32 h-10 border-gray-300 shadow-none focus:ring-1 focus:ring-blue-500 bg-white">
+                    <SelectValue placeholder="Status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All Status">All Status</SelectItem>
+                    <SelectItem value="Active">Active</SelectItem>
+                    <SelectItem value="Suspended">Suspended</SelectItem>
+                    <SelectItem value="Trial">Trial</SelectItem>
+                    <SelectItem value="Expired">Expired</SelectItem>
+                  </SelectContent>
+                </Select>
 
                 {/* Search */}
                 <div className="relative">
@@ -360,25 +267,25 @@ const BillingPlans: React.FC = () => {
                       className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
                     />
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Client ID
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Company Name
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Subscription Plan
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Billing Cycle
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Renews Date
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase tracking-wider">
                     Action
                   </th>
                 </tr>
@@ -411,7 +318,7 @@ const BillingPlans: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex px-2 py-1 rounded-md text-xs font-medium border ${getPlanBadgeColor(
-                            client.planType
+                            client.planType,
                           )}`}
                         >
                           {client.subscriptionPlan}
@@ -426,7 +333,7 @@ const BillingPlans: React.FC = () => {
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span
                           className={`inline-flex px-2 py-1 rounded-md text-xs font-medium border ${getStatusBadgeColor(
-                            client.status
+                            client.status,
                           )}`}
                         >
                           {client.status}
@@ -479,7 +386,7 @@ const BillingPlans: React.FC = () => {
                 </button>
 
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
-                  let pageNum;
+                  let pageNum: number;
                   if (totalPages <= 5) {
                     pageNum = i + 1;
                   } else if (currentPage <= 3) {

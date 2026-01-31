@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Card, CardContent } from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -21,26 +20,23 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+
 import {
   Ticket,
   UserCheck,
-  AlertCircle,
   Clock,
   Search,
   Filter,
   Eye,
   Pencil,
-  ArrowUpRight,
-  ArrowDownRight,
   ChevronLeft,
   ChevronRight,
-  X,
-  Building2,
-  Calendar,
 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import SupportDetailsModal from "./Components/SupportDetailsModal";
+import EditTicketModal from "./Components/EditTicketModal";
+import DashboardStatsCard from "@/components/Dashboard/DashboardStatsCard";
 
 // --- Mock Data ---
 
@@ -48,46 +44,46 @@ const overviewStats = [
   {
     title: "Opened Tickets",
     value: "520",
-    change: "+12%",
-    changeType: "up",
-    footer: "355 ticket already solved in this month",
-    icon: Ticket,
-    iconColor: "text-emerald-600",
-    iconBg: "bg-emerald-100",
-    footerBg: "bg-emerald-50",
+    growth: "+12%",
+    growthType: "up",
+    growthColor: "green",
+    description: "355 ticket already solved in this month",
+    descriptionType: "good",
+    icon: <Ticket />,
+    iconBgColor: "#0F947E",
   },
   {
     title: "Assigned Ticket",
     value: "150",
-    change: "+5%",
-    changeType: "up",
-    footer: "34 ticket more then previous month",
-    icon: UserCheck,
-    iconColor: "text-indigo-600",
-    iconBg: "bg-indigo-100",
-    footerBg: "bg-indigo-50",
+    growth: "+5%",
+    growthType: "up",
+    growthColor: "green",
+    description: "34 ticket more then previous month",
+    descriptionType: "good",
+    icon: <UserCheck />,
+    iconBgColor: "#7C5CFB",
   },
   {
     title: "Unassigned Ticket",
     value: "15",
-    change: "-5%",
-    changeType: "down",
-    footer: "3 ticket lesser then previous month",
-    icon: AlertCircle,
-    iconColor: "text-blue-600",
-    iconBg: "bg-blue-100",
-    footerBg: "bg-blue-50",
+    growth: "-5%",
+    growthType: "down",
+    growthColor: "green",
+    description: "3 ticket lesser then previous month",
+    descriptionType: "good",
+    icon: <Ticket />,
+    iconBgColor: "#2E82FD",
   },
   {
     title: "Average Response Time",
     value: "2h 15m",
-    change: "+12%",
-    changeType: "up",
-    footer: "15 minutes slower then previous month",
-    icon: Clock,
-    iconColor: "text-rose-600",
-    iconBg: "bg-rose-100",
-    footerBg: "bg-rose-50",
+    growth: "+12%",
+    growthType: "up",
+    growthColor: "red",
+    description: "15 minutes slower then previous month",
+    descriptionType: "bad",
+    icon: <Clock />,
+    iconBgColor: "#E04B59",
   },
 ];
 
@@ -295,8 +291,8 @@ export function SupportTickets() {
     setIsEditModalOpen(false);
   };
 
-  const handleResolve = () => {
-    toast.success("Ticket marked as resolved!");
+  const handleResolve = (id: string) => {
+    toast.success("Ticket marked as resolved!" + id);
     setIsViewModalOpen(false);
   };
 
@@ -305,45 +301,18 @@ export function SupportTickets() {
       {/* Overview Tracker */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {overviewStats.map((stat, index) => (
-          <Card key={index} className="overflow-hidden border-none shadow-sm">
-            <CardContent className="p-0">
-              <div className="p-6 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className={cn("p-2 rounded-lg", stat.iconBg)}>
-                    <stat.icon className={cn("h-6 w-6", stat.iconColor)} />
-                  </div>
-                  <span className="text-sm font-medium text-gray-400">
-                    {stat.title}
-                  </span>
-                </div>
-                <div className="flex items-baseline justify-between">
-                  <h3 className="text-3xl font-bold text-gray-900">
-                    {stat.value}
-                  </h3>
-                  <div
-                    className={cn(
-                      "flex items-center text-xs font-semibold px-2 py-0.5 rounded-full border",
-                      stat.changeType === "up"
-                        ? "bg-emerald-50 text-emerald-600 border-emerald-100"
-                        : "bg-rose-50 text-rose-600 border-rose-100",
-                    )}
-                  >
-                    {stat.change}
-                    {stat.changeType === "up" ? (
-                      <ArrowUpRight className="h-3 w-3 ml-0.5" />
-                    ) : (
-                      <ArrowDownRight className="h-3 w-3 ml-0.5" />
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className={cn("px-6 py-3", stat.footerBg)}>
-                <p className="text-xs text-gray-500 font-medium">
-                  {stat.footer}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+          <DashboardStatsCard
+            key={index}
+            title={stat.title}
+            value={stat.value}
+            growth={stat.growth}
+            growthType={stat.growthType as any}
+            growthColor={stat.growthColor as any}
+            description={stat.description}
+            descriptionType={stat.descriptionType as any}
+            icon={stat.icon}
+            iconBgColor={stat.iconBgColor}
+          />
         ))}
       </div>
 
@@ -570,304 +539,18 @@ export function SupportTickets() {
       </div>
 
       {/* --- Modals --- */}
-
-      {/* View Details Modal */}
-      <Dialog open={isViewModalOpen} onOpenChange={setIsViewModalOpen}>
-        <DialogContent className="min-w-2xl p-0 border-none shadow-2xl rounded-2xl">
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-semibold text-gray-900">
-                Support Ticket Details
-              </DialogTitle>
-              <button
-                onClick={() => setIsViewModalOpen(false)}
-                className="p-2 text-gray-400 hover:bg-gray-50 rounded-full transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-          <div className="p-8 space-y-8 max-h-[80vh] overflow-y-auto">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-500">
-                    Ticket ID:{" "}
-                    <span className="font-semibold text-gray-900">
-                      {selectedTicket?.id}
-                    </span>
-                  </span>
-                  <Badge
-                    className={cn(
-                      "px-3 py-1 rounded-full text-[11px] border-none font-medium",
-                      statusStyles[selectedTicket?.status],
-                    )}
-                  >
-                    {selectedTicket?.status}
-                  </Badge>
-                  <Badge
-                    className={cn(
-                      "px-3 py-1 rounded-full text-[11px] border-none font-medium bg-rose-50 text-rose-500",
-                    )}
-                  >
-                    {selectedTicket?.priority} Priority
-                  </Badge>
-                </div>
-                <h2 className="text-2xl font-bold text-gray-900">
-                  {selectedTicket?.subject}
-                </h2>
-                <div className="flex flex-wrap items-center gap-6 text-sm">
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Building2 className="h-4 w-4 text-gray-400" />
-                    <span className="">
-                      {selectedTicket?.companyFullName ||
-                        selectedTicket?.company}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Calendar className="h-4 w-4 text-gray-400" />
-                    <span>Created: {selectedTicket?.createdDate || "N/A"}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-gray-600">
-                    <Clock className="h-4 w-4 text-gray-400" />
-                    <span>Updated: {selectedTicket?.updatedDate || "N/A"}</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <span className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
-                  Assigned to:
-                </span>
-                {selectedTicket?.assignedTo ? (
-                  <div className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 bg-gray-50/50">
-                    <Avatar className="h-10 w-10 border border-gray-200">
-                      {/* <AvatarImage src={selectedTicket.assignedTo.avatar} /> */}
-                      <AvatarImage className="" />
-                      <AvatarFallback>
-                        {selectedTicket.assignedTo.name[0]}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">
-                        {selectedTicket.assignedTo.name}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {selectedTicket.assignedTo.role}
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <span className="text-sm text-gray-400 italic">
-                    No one assigned
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-gray-900 uppercase tracking-widest">
-                  Issue Description
-                </span>
-                <AlertCircle className="h-3.5 w-3.5 text-gray-400" />
-              </div>
-              <div className="p-6 rounded-2xl border border-gray-100 bg-gray-50/30">
-                <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-line">
-                  {selectedTicket?.description || "No description provided."}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-              <Button
-                variant="outline"
-                className="h-11 px-6 rounded-xl text-gray-600 hover:bg-gray-50"
-                onClick={() => setIsViewModalOpen(false)}
-              >
-                <ChevronLeft className="mr-2 h-4 w-4" />
-                Back to Ticket list
-              </Button>
-              <div className="flex items-center gap-3">
-                <Button
-                  variant="outline"
-                  className="h-11 px-6 rounded-xl text-indigo-600 border-indigo-200 hover:bg-indigo-50"
-                  onClick={handleResolve}
-                >
-                  Mark as resolved
-                </Button>
-                <Button
-                  className="h-11 px-6 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white"
-                  onClick={() => toast.info("Opening message dialog...")}
-                >
-                  Reply to Customer
-                </Button>
-              </div>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Edit Ticket Modal */}
-      <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-2xl">
-          <div className="p-6 border-b border-gray-100">
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-bold text-gray-900">
-                Edit Support Ticket
-              </DialogTitle>
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="p-2 text-gray-400 hover:bg-gray-50 rounded-full transition-colors"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-          </div>
-          <div className="p-8 space-y-6 max-h-[80vh] overflow-y-auto bg-gray-50/10">
-            <div className="grid grid-cols-2 gap-4 p-5 rounded-2xl bg-indigo-50/30 border border-indigo-50">
-              <div className="space-y-1">
-                <p className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
-                  Ticket ID:
-                </p>
-                <p className="text-sm font-bold text-gray-900">
-                  {selectedTicket?.id}
-                </p>
-              </div>
-              <div className="space-y-1">
-                <p className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
-                  Subject:
-                </p>
-                <p className="text-sm font-bold text-gray-900 max-w-[150px] truncate">
-                  {selectedTicket?.subject}
-                </p>
-              </div>
-              <div className="space-y-1 mt-2">
-                <p className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
-                  Requested By:
-                </p>
-                <div className="flex items-center gap-2">
-                  <Building2 className="h-3 w-3 text-indigo-400" />
-                  <p className="text-sm font-bold text-gray-900">
-                    {selectedTicket?.company}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
-                  Ticket Status
-                </label>
-                <Select defaultValue={selectedTicket?.status}>
-                  <SelectTrigger className="h-11 rounded-xl bg-white border-gray-200">
-                    <SelectValue placeholder="Select status" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Opened">Opened</SelectItem>
-                    <SelectItem value="Unassigned">Unassigned</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Solved">Solved</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
-                  Priority
-                </label>
-                <Select defaultValue={selectedTicket?.priority}>
-                  <SelectTrigger className="h-11 rounded-xl bg-white border-gray-200">
-                    <SelectValue placeholder="Select priority" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="Low">Low</SelectItem>
-                    <SelectItem value="Normal">Normal</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
-                  Assign to
-                </label>
-                <Select
-                  defaultValue={
-                    selectedTicket?.assignedTo?.name || "unassigned"
-                  }
-                >
-                  <SelectTrigger className="h-11 rounded-xl bg-white border-gray-200">
-                    <SelectValue placeholder="Select staff" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="unassigned">Unassigned</SelectItem>
-                    <SelectItem value="Kathryn Murphy">
-                      Kathryn Murphy
-                    </SelectItem>
-                    <SelectItem value="Leslie Alexander">
-                      Leslie Alexander
-                    </SelectItem>
-                    <SelectItem value="Annette Black">Annette Black</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-2">
-                  <label className="text-sm font-bold text-gray-700">
-                    Admin Note
-                  </label>
-                  <div className="group relative">
-                    <AlertCircle className="h-3 w-3 text-gray-400" />
-                  </div>
-                </div>
-                <div className="relative">
-                  <textarea
-                    className="w-full min-h-[100px] p-4 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-sm text-gray-600 resize-none"
-                    placeholder="Customer reported this issue after the v2.4.0 deployment..."
-                  />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-3">
-                  <div className="h-3 w-7 bg-indigo-600 rounded-full relative">
-                    <div className="absolute left-4 top-0.5 h-2 w-2 rounded-full bg-white"></div>
-                  </div>
-                  <label className="text-sm font-bold text-gray-700 uppercase tracking-widest text-[11px]">
-                    Issue Description
-                  </label>
-                </div>
-                <textarea
-                  className="w-full min-h-[120px] p-4 rounded-2xl border border-gray-200 bg-gray-50/30 text-sm text-gray-500 cursor-not-allowed"
-                  disabled
-                  value={selectedTicket?.description}
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-              <Button
-                variant="outline"
-                className="h-11 px-6 rounded-xl text-gray-600"
-                onClick={() => setIsEditModalOpen(false)}
-              >
-                <ChevronLeft className="mr-2 h-4 w-4" />
-                Cancel
-              </Button>
-              <Button
-                className="h-11 px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100"
-                onClick={handleSave}
-              >
-                Save changes
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <SupportDetailsModal
+        open={isViewModalOpen}
+        onOpenChange={setIsViewModalOpen}
+        ticket={selectedTicket}
+        handleResolve={handleResolve}
+      />
+      <EditTicketModal
+        open={isEditModalOpen}
+        onOpenChange={setIsEditModalOpen}
+        selectedTicket={selectedTicket}
+        handleSave={handleSave}
+      />
     </div>
   );
 }

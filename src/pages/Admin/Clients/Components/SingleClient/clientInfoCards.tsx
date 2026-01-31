@@ -1,5 +1,6 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { AlertTriangle, HardDrive, TrendingUp, Users } from "lucide-react";
+import * as React from "react";
+import { Users, TrendingUp, AlertTriangle, HardDrive } from "lucide-react";
+import DashboardStatsCard from "@/components/Dashboard/DashboardStatsCard";
 
 export interface Metrics {
   totalUsers: {
@@ -25,96 +26,73 @@ export interface Metrics {
 interface MetricsProps {
   metrics: Metrics;
 }
+
 const ClientInfoCards: React.FC<MetricsProps> = ({ metrics }) => {
+  const cardsData = [
+    {
+      id: 1,
+      title: "Total User",
+      value: `${metrics?.totalUsers?.current || 0}/${metrics?.totalUsers?.total || 0}`,
+      growth: `${metrics?.totalUsers?.percentage || 0}%`,
+      growth_type: "up",
+      description: "of capacity used",
+      icon: <Users />,
+      icon_bg_color: "#169E7B",
+      link_text: "View Details",
+    },
+    {
+      id: 2,
+      title: "Active Program",
+      value: `${metrics?.activePrograms?.current || 0}`,
+      growth: `${metrics?.activePrograms?.newThisMonth || 0}`,
+      growth_type: "up",
+      description: "new Program in this month",
+      icon: <TrendingUp />,
+      icon_bg_color: "#0266F3",
+      link_text: "View Details",
+    },
+    {
+      id: 3,
+      title: "Critical Alerts",
+      value: `${metrics?.criticalAlerts?.current || 0}`,
+      growth: `${metrics?.criticalAlerts?.newIn24Hours || 0}`,
+      growth_type: "down",
+      description: "new alerts in the last 24 hours",
+      icon: <AlertTriangle />,
+      icon_bg_color: "#DC2626",
+      link_text: "View Details",
+    },
+    {
+      id: 4,
+      title: "Storage Usage",
+      value: `${metrics?.storageUsage?.current || 0}/${metrics?.storageUsage?.total || 0}`,
+      growth: `${metrics?.storageUsage?.percentage || 0}%`,
+      growth_type: "down",
+      description: "of storage used",
+      icon: <HardDrive />,
+      icon_bg_color: "#D97706",
+      link_text: "View Details",
+    },
+  ];
+
   return (
-    <div className="grid grid-cols-4 gap-6 mb-8">
-      <Card className="border border-gray-200 h-44">
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-green-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Total User</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {metrics?.totalUsers?.current}/{metrics?.totalUsers?.total}
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 bg-green-50 rounded-lg p-3">
-            <p className="text-sm text-green-700">
-              {metrics?.totalUsers?.percentage}% of capacity used
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-      <Card className="border border-gray-200 h-44">
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <TrendingUp className="w-6 h-6 text-blue-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">
-                Active Program
-              </p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {metrics?.activePrograms?.current}
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 bg-green-50 rounded-lg p-3">
-            <p className="text-sm text-green-700">
-              {metrics?.activePrograms?.newThisMonth} new Program in this month
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border border-gray-200 h-44">
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-              <AlertTriangle className="w-6 h-6 text-yellow-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">
-                Critical Alerts
-              </p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {metrics?.criticalAlerts?.current}
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 bg-green-50 rounded-lg p-3">
-            <p className="text-sm text-green-700">
-              {metrics?.criticalAlerts?.newIn24Hours} new alerts in the last 24
-              hours
-            </p>
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card className="border border-gray-200 h-44">
-        <CardContent>
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
-              <HardDrive className="w-6 h-6 text-red-600" />
-            </div>
-            <div className="flex-1">
-              <p className="text-sm font-medium text-gray-600">Storage Usage</p>
-              <p className="text-2xl font-semibold text-gray-900">
-                {metrics?.storageUsage?.current}/{metrics?.storageUsage?.total}
-              </p>
-            </div>
-          </div>
-          <div className="mt-8 bg-red-50 rounded-lg p-3">
-            <p className="text-sm text-red-700">
-              {metrics?.storageUsage?.percentage}% of storage used
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      {cardsData.map((item) => (
+        <DashboardStatsCard
+          key={item.id}
+          title={item.title}
+          value={item.value}
+          growth={item.growth}
+          growthType={item.growth_type as any}
+          growthColor={item.growth_type === "up" ? "green" : "red"}
+          description={item.description}
+          descriptionType={item.growth_type === "up" ? "good" : "bad"}
+          icon={item.icon}
+          iconBgColor={item.icon_bg_color}
+          // link="#" // Commented out in original as well
+          // linkText={item.link_text}
+        />
+      ))}
     </div>
   );
 };

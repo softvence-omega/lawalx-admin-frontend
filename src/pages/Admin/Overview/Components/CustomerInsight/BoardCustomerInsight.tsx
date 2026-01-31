@@ -1,18 +1,17 @@
 import { Card, CardContent } from "@/components/ui/card";
-import { DollarSign } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ClientData2 } from "@/types/Client";
 import { ProgressBar } from "../../../../../common/ProgressBarCustom";
+import { FaSackDollar } from "react-icons/fa6";
 
 interface CustomerProps {
   customer: ClientData2;
 }
 
 const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
-
   const statusColors = {
     true: "bg-emerald-100 text-emerald-700 border-emerald-200",
     false: "bg-red-100 text-red-700 border-red-200",
@@ -23,19 +22,19 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
   const storageUsed = customer.archiveThreshold ?? 0;
   const storageTotal = customer.storageQuotaGb;
 
-  const lastActive = new Date(customer.updatedAt).toLocaleDateString();
+  const lastActive = customer.updatedAt;
 
   const hasAlert = customer.usageWarningAlert;
 
   return (
-    <Card className="border border-gray-200 shadow-sm">
+    <Card className="border border-gray-200 shadow-sm min-w-[380px]">
       <Link to={`/admin/clients/${customer.id}`} className="no-underline">
         <CardContent className="p-0 space-y-4">
           {/* Header */}
           <div className="flex items-start justify-between px-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg">
-                <DollarSign className="h-5 w-5" />
+              <div className="p-3 bg-[#069576] text-white rounded-lg">
+                <FaSackDollar size={28} />
               </div>
               <div>
                 <h3 className="font-medium text-gray-900">
@@ -50,8 +49,10 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
             <Badge
               variant="outline"
               className={cn(
-                "text-xs font-medium",
-                customer.isActive ? statusColors["true"] : statusColors["false"]
+                "text-sm font-medium rounded-sm",
+                customer.isActive
+                  ? statusColors["true"]
+                  : statusColors["false"],
               )}
             >
               {customer.isActive ? "Active" : "Inactive"}
@@ -67,11 +68,19 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
 
             <div>
               <p className="text-gray-500 mb-1">Last Active</p>
-              <p className="font-medium text-gray-900">{lastActive}</p>
+              <p className="font-semibold text-gray-900">
+                {new Date(lastActive).getDate()}{" "}
+                {new Date(lastActive)
+                  .toLocaleString("en-GB", { month: "short" })
+                  .toString()}
+                , {new Date(lastActive).getFullYear()}
+              </p>
             </div>
 
             <div>
-              <p className="text-gray-500 mb-1">Dashboard</p>
+              <p className="text-gray-500 mb-1 text-nowrap">
+                Dashboard Updates
+              </p>
               <p className="font-medium text-gray-900">
                 {customer.autoGenDashboard ? "Enabled" : "Disabled"}
               </p>
@@ -82,7 +91,7 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
               <p
                 className={cn(
                   "font-medium",
-                  hasAlert ? "text-yellow-600" : "text-gray-900"
+                  hasAlert ? "text-yellow-600" : "text-gray-900",
                 )}
               >
                 {hasAlert ? "1 (Warning)" : "0"}
@@ -90,7 +99,7 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
             </div>
           </div>
           {/* Storage */}
-          <div className="space-y-2 px-6">
+          <div className="space-y-2 px-6 py-4">
             <div className="flex justify-between text-sm">
               <span className="text-gray-500">Storage Usage</span>
               <span className="font-medium text-gray-900">

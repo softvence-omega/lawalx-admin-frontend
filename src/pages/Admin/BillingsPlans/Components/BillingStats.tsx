@@ -26,7 +26,7 @@ const BillingStats = () => {
 
   const cards = [
     {
-      title: "Total Sales",
+      title: "Trial Period",
       value: summary?.totalSales?.value,
       growth: summary?.totalSales?.growth,
       growth_type: getGrowthType(summary?.totalSales?.growth),
@@ -35,7 +35,7 @@ const BillingStats = () => {
       description: "Overall sales performance",
     },
     {
-      title: "Revenue",
+      title: "Starter Plan",
       value: summary?.monthlyRecurringRevenue?.value,
       growth: summary?.monthlyRecurringRevenue?.growth,
       growth_type: getGrowthType(summary?.monthlyRecurringRevenue?.growth),
@@ -44,7 +44,7 @@ const BillingStats = () => {
       description: "Monthly recurring revenue",
     },
     {
-      title: "Retention Rate",
+      title: "Professional Plan",
       value: summary?.clientRetentionRate?.value,
       growth: summary?.clientRetentionRate?.growth,
       growth_type: getGrowthType(summary?.clientRetentionRate?.growth),
@@ -53,7 +53,7 @@ const BillingStats = () => {
       description: "Client retention health",
     },
     {
-      title: "Churn Rate",
+      title: "Business",
       value: summary?.clientChurnRate?.value,
       growth: summary?.clientChurnRate?.growth,
       growth_type: getGrowthType(summary?.clientChurnRate?.growth),
@@ -61,19 +61,10 @@ const BillingStats = () => {
       icon_bg_color: "#DC2626",
       description: "Clients lost over time",
     },
-    {
-      title: "NPS Score",
-      value: summary?.netPromoterScore?.value,
-      growth: summary?.netPromoterScore?.growth,
-      growth_type: getGrowthType(summary?.netPromoterScore?.growth),
-      icon: <FaChartPie />,
-      icon_bg_color: "#F59E0B",
-      description: "Customer satisfaction index",
-    },
   ];
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+    <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
       {cards.map((item, index) => (
         <BillingStatsCard key={index} item={item} />
       ))}

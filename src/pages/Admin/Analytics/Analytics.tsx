@@ -11,6 +11,7 @@ import {
 import AreaChart from "./Components/AnalyticsChart/AreaChart";
 import DonutChart from "./Components/AnalyticsChart/DonutChart";
 import BarChart from "./Components/AnalyticsChart/BarChart";
+import AnalyticsMetricsCards from "./Components/AnalyticsMetricsCards";
 
 const Analytics: React.FC = () => {
   const [showLivesOnly, setShowLivesOnly] = useState(true);
@@ -89,6 +90,7 @@ const Analytics: React.FC = () => {
 
   return (
     <div className="min-h-screen">
+      <AnalyticsMetricsCards />
       <div className="grid grid-cols-12 gap-6">
         {/* Left Section - Trending Industries */}
         <div className="col-span-6">
@@ -157,7 +159,7 @@ const Analytics: React.FC = () => {
                       <td className="py-3">
                         <span
                           className={`inline-flex px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(
-                            item.status
+                            item.status,
                           )}`}
                         >
                           {item.status}
