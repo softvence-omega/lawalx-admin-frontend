@@ -166,13 +166,13 @@ export const TeamTicketsTable = () => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
               <Input
                 placeholder="Search by ticket ID client or keywords..."
-                className="pl-10 h-11 w-[320px] bg-gray-50/50 border-gray-100 rounded-xl"
+                className="pl-10 h-11 w-[320px] bg-gray-50/50 border-gray-100 rounded-lg"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
             <Select defaultValue="all">
-              <SelectTrigger className="h-11 w-[130px] bg-white border-gray-200 rounded-xl">
+              <SelectTrigger className="h-11 w-[130px] bg-white border-gray-200 rounded-lg">
                 <SelectValue placeholder="All Status" />
               </SelectTrigger>
               <SelectContent>
@@ -182,7 +182,7 @@ export const TeamTicketsTable = () => {
               </SelectContent>
             </Select>
             <Select defaultValue="all">
-              <SelectTrigger className="h-11 w-[130px] bg-white border-gray-200 rounded-xl">
+              <SelectTrigger className="h-11 w-[130px] bg-white border-gray-200 rounded-lg">
                 <SelectValue placeholder="All Priority" />
               </SelectTrigger>
               <SelectContent>
@@ -192,7 +192,7 @@ export const TeamTicketsTable = () => {
               </SelectContent>
             </Select>
             <Select defaultValue="all">
-              <SelectTrigger className="h-11 w-[130px] bg-white border-gray-200 rounded-xl">
+              <SelectTrigger className="h-11 w-[130px] bg-white border-gray-200 rounded-lg">
                 <SelectValue placeholder="All Staff" />
               </SelectTrigger>
               <SelectContent>
@@ -200,7 +200,7 @@ export const TeamTicketsTable = () => {
                 <SelectItem value="staff1">Staff 1</SelectItem>
               </SelectContent>
             </Select>
-            <Button className="h-11 px-6 rounded-xl bg-blue-600 hover:bg-blue-700 text-white">
+            <Button className="h-11 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
               Staff List
             </Button>
           </div>

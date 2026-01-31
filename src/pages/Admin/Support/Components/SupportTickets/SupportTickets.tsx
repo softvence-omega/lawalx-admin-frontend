@@ -271,6 +271,10 @@ export function SupportTickets() {
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
+  // Pagination State
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
+
   const filteredTickets = useMemo(() => {
     return initialTickets.filter((ticket) => {
       const matchesSearch =
@@ -282,6 +286,18 @@ export function SupportTickets() {
       return matchesSearch && matchesStatus;
     });
   }, [searchQuery, filterStatus]);
+
+  const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
+  const paginatedTickets = useMemo(() => {
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    return filteredTickets.slice(startIndex, startIndex + itemsPerPage);
+  }, [filteredTickets, currentPage, itemsPerPage]);
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setCurrentPage(page);
+    }
+  };
 
   const handleAction = (type: "view" | "edit", ticket: any) => {
     setSelectedTicket(ticket);
@@ -329,13 +345,13 @@ export function SupportTickets() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   placeholder="Search by ticket ID or subject..."
-                  className="pl-10 h-11 w-full md:w-[320px] bg-gray-50/50 border-gray-100 rounded-xl"
+                  className="pl-10 h-11 w-full md:w-[320px] bg-gray-50/50 border-gray-100 rounded-lg"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger className="h-11 w-full md:w-[140px] border-gray-100 bg-white rounded-xl text-gray-500 shadow-sm">
+                <SelectTrigger className="h-11 w-full md:w-[160px] border-gray-100 bg-white rounded-lg text-gray-500">
                   <Filter className="h-4 w-4 mr-2" />
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
@@ -348,7 +364,7 @@ export function SupportTickets() {
                 </SelectContent>
               </Select>
               <Button
-                className="h-11 px-6 rounded-xl bg-[#1D4ED8] hover:bg-blue-800 text-white font-medium shadow-md shadow-blue-100 transition-all active:scale-[0.98]"
+                className="h-11 px-6 rounded-lg bg-[#1D4ED8] hover:bg-blue-800 text-white font-medium shadow-md shadow-blue-100 transition-all active:scale-[0.98]"
                 onClick={() => navigate("/admin/support/team-view")}
               >
                 <Users className="mr-2 h-4 w-4" />
@@ -361,7 +377,7 @@ export function SupportTickets() {
             <Table>
               <TableHeader className="bg-gray-50/50">
                 <TableRow className="hover:bg-transparent border-gray-50">
-                  <TableHead className="w-[50px]">
+                  <TableHead className="w-[50px] p-4">
                     <input
                       type="checkbox"
                       className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
@@ -394,12 +410,12 @@ export function SupportTickets() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredTickets.map((ticket, index) => (
+                {paginatedTickets.map((ticket, index) => (
                   <TableRow
                     key={index}
                     className="hover:bg-gray-50/50 border-gray-50"
                   >
-                    <TableCell>
+                    <TableCell className="p-4">
                       <input
                         type="checkbox"
                         className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
@@ -492,56 +508,59 @@ export function SupportTickets() {
           </div>
         </div>
 
-        {/* Pagination */}
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-5 mb-5">
           <p className="text-sm text-gray-500">
-            Showing <span className="font-semibold text-gray-900">1 to 11</span>{" "}
-            of <span className="font-semibold text-blue-600">500</span> client
+            Showing{" "}
+            <span className="font-semibold text-gray-900">
+              {Math.min(
+                (currentPage - 1) * itemsPerPage + 1,
+                filteredTickets.length,
+              )}{" "}
+              to {Math.min(currentPage * itemsPerPage, filteredTickets.length)}
+            </span>{" "}
+            of{" "}
+            <span className="font-semibold text-blue-600">
+              {filteredTickets.length}
+            </span>{" "}
+            tickets
           </p>
           <div className="flex items-center gap-2">
             <Button
               variant="outline"
               size="sm"
               className="h-9 px-4 text-gray-500 border-gray-200"
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
             >
               <ChevronLeft className="h-4 w-4 mr-2" />
               Prev
             </Button>
             <div className="flex items-center gap-1 mx-2">
-              <Button
-                variant="default"
-                size="sm"
-                className="h-9 w-9 p-0 bg-indigo-600 hover:bg-indigo-700 font-bold"
-              >
-                1
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 w-9 p-0 text-gray-400 font-medium"
-              >
-                2
-              </Button>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 w-9 p-0 text-gray-400 font-medium"
-              >
-                3
-              </Button>
-              <span className="px-2 text-gray-300">...</span>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-9 w-9 p-0 text-gray-400 font-medium"
-              >
-                30
-              </Button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <Button
+                    key={page}
+                    variant={currentPage === page ? "default" : "ghost"}
+                    size="sm"
+                    className={cn(
+                      "h-9 w-9 p-0 font-medium",
+                      currentPage === page
+                        ? "bg-indigo-600 hover:bg-indigo-700 text-white font-bold"
+                        : "text-gray-400",
+                    )}
+                    onClick={() => handlePageChange(page)}
+                  >
+                    {page}
+                  </Button>
+                ),
+              )}
             </div>
             <Button
               variant="outline"
               size="sm"
               className="h-9 px-4 text-gray-500 border-gray-200"
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
             >
               Next
               <ChevronRight className="h-4 w-4 ml-2" />
