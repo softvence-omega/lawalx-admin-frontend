@@ -48,7 +48,7 @@ export function SupportTicketsChart() {
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent align="end">
-              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="default">Sort By</SelectItem>
               <SelectItem value="highest">Highest Value</SelectItem>
               <SelectItem value="lowest">Lowest Value</SelectItem>
             </SelectContent>

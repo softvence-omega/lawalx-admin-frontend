@@ -50,8 +50,8 @@ const Login = () => {
       console.log(res);
       if (res.success) {
         dispatch(setUser(res?.data));
-        toast.success("Logged in successfully", { id: toastId });
         if (res?.data?.specialToken) {
+          toast.success("Logged in successfully", { id: toastId });
           navigate("/verification");
         } else {
           const { role } = jwtDecode<{
@@ -60,15 +60,24 @@ const Login = () => {
           if (Role[role]) {
             console.log("Inside Role", role);
             console.log(`/${Role[role]}`);
+            toast.success("Logged in successfully", { id: toastId });
             navigate(`/${Role[role]}`);
           } else {
             console.log("Inside Catch", role);
-            navigate("/unauthorized");
+            toast.error("You are not authorized", {
+              id: toastId,
+            });
+            // navigate("/unauthorized");
           }
         }
       }
-    } catch {
-      toast.error("Login Failed", { id: toastId });
+    } catch (error: unknown) {
+      let message = "Login Failed";
+      if (typeof error === "object" && error !== null) {
+        const err = error as any;
+        message = err?.data?.message || message;
+      }
+      toast.error(message, { id: toastId });
     }
   };
 

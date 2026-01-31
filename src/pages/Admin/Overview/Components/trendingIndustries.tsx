@@ -96,7 +96,7 @@ export function TrendingIndustriesTable() {
               <SelectValue placeholder="Sort By" />
             </SelectTrigger>
             <SelectContent align="end">
-              <SelectItem value="default">Default</SelectItem>
+              <SelectItem value="default">Sort By</SelectItem>
               <SelectItem value="name-asc">Name (A-Z)</SelectItem>
               <SelectItem value="name-desc">Name (Z-A)</SelectItem>
               <SelectItem value="usage-high">High Usage</SelectItem>

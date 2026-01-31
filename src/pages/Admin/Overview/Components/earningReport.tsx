@@ -99,7 +99,7 @@ const EarningReportsChart = () => {
 
   return (
     <Card className="border-gray-200">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 ">
         <div>
           <CardTitle className="text-lg font-semibold text-gray-900">
             Earning Reports
@@ -126,47 +126,53 @@ const EarningReportsChart = () => {
         <div className="flex flex-wrap gap-3 md:gap-4 mb-6">
           <button
             onClick={() => setActiveTab("orders")}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+            className={`flex flex-col items-center gap-2 size-28 p-6 rounded-lg border transition-colors ${
               activeTab === "orders"
-                ? "bg-blue-50 border-blue-200 text-blue-700"
+                ? " border-blue-200 text-blue-500"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            <ShoppingCart
-              className={`h-4 w-4 ${
-                activeTab === "orders" ? "text-blue-600" : "text-gray-600"
-              }`}
-            />
+            <div className="p-3 rounded-lg bg-slate-200">
+              <ShoppingCart
+                className={`size-6  ${
+                  activeTab === "orders" ? "text-blue-500" : "text-gray-600"
+                }`}
+              />
+            </div>
             <span className="text-sm font-medium">Orders</span>
           </button>
           <button
             onClick={() => setActiveTab("sales")}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+            className={`flex flex-col items-center gap-2 size-28 p-6 rounded-lg border transition-colors ${
               activeTab === "sales"
-                ? "bg-blue-50 border-blue-200 text-blue-700"
+                ? "border-blue-200 text-blue-500"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            <CreditCard
-              className={`h-4 w-4 ${
-                activeTab === "sales" ? "text-blue-600" : "text-gray-600"
-              }`}
-            />
+            <div className="p-3 rounded-lg bg-slate-200">
+              <CreditCard
+                className={`size-6  ${
+                  activeTab === "sales" ? "text-blue-500" : "text-gray-600"
+                }`}
+              />
+            </div>
             <span className="text-sm font-medium">Sales</span>
           </button>
           <button
             onClick={() => setActiveTab("income")}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border transition-colors ${
+            className={`flex flex-col items-center gap-2 size-28 p-6 rounded-lg border transition-colors ${
               activeTab === "income"
-                ? "bg-blue-50 border-blue-200 text-blue-700"
+                ? "border-blue-200 text-blue-500"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
             }`}
           >
-            <DollarSign
-              className={`h-4 w-4 ${
-                activeTab === "income" ? "text-blue-600" : "text-gray-600"
-              }`}
-            />
+            <div className="p-3 rounded-lg bg-slate-200">
+              <DollarSign
+                className={`size-6  ${
+                  activeTab === "income" ? "text-blue-600" : "text-gray-600"
+                }`}
+              />
+            </div>
             <span className="text-sm font-medium">Income</span>
           </button>
         </div>

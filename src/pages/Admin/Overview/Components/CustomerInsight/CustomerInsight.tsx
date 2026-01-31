@@ -82,7 +82,7 @@ export const CustomerInsights = memo(function CustomerInsights() {
           </Button>
           <div className="flex items-center gap-2">
             <Select value={filterPlan} onValueChange={setFilterPlan}>
-              <SelectTrigger className="w-[150px] h-10 text-sm border-gray-200 shadow-none focus:ring-0 text-gray-700 bg-white">
+              <SelectTrigger className="w-[180px] h-10 text-sm border-gray-200 shadow-none focus:ring-0 text-gray-700 bg-white">
                 <Filter className="h-4 w-4 mr-2" />
                 <SelectValue placeholder="Filter By" />
               </SelectTrigger>
