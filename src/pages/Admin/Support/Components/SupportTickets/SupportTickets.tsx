@@ -339,7 +339,9 @@ export function SupportTickets() {
       <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
         <div className="p-8 space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <h2 className="text-xl font-bold text-gray-900">Ticket Records</h2>
+            <h2 className="text-xl font-semibold text-gray-900">
+              Ticket Records
+            </h2>
             <div className="flex flex-wrap items-center gap-3">
               <div className="relative">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />

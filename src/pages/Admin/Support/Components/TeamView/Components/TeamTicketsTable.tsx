@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/select";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { useNavigate } from "react-router-dom";
 import { AssignTicketModal } from "./AssignTicketModal";
 
 const tickets = [
@@ -143,6 +144,7 @@ const statusStyles: Record<string, string> = {
 };
 
 export const TeamTicketsTable = () => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isAssignModalOpen, setIsAssignModalOpen] = useState(false);
   const [selectedTicketId, setSelectedTicketId] = useState<
@@ -200,7 +202,10 @@ export const TeamTicketsTable = () => {
                 <SelectItem value="staff1">Staff 1</SelectItem>
               </SelectContent>
             </Select>
-            <Button className="h-11 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white">
+            <Button 
+              className="h-11 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => navigate("/admin/support/support-employee")}
+            >
               Staff List
             </Button>
           </div>
