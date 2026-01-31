@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   TableBody,
@@ -22,6 +23,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import {
+  Users,
   Ticket,
   UserCheck,
   Clock,
@@ -262,6 +264,7 @@ const priorityStyles: Record<string, string> = {
 // --- Main Component ---
 
 export function SupportTickets() {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
@@ -297,7 +300,7 @@ export function SupportTickets() {
   };
 
   return (
-    <div className="space-y-8 p-6 bg-white min-h-screen">
+    <div className="space-y-14 min-h-screen">
       {/* Overview Tracker */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {overviewStats.map((stat, index) => (
@@ -316,168 +319,177 @@ export function SupportTickets() {
         ))}
       </div>
 
-      {/* Support Tickets Section */}
-      <div className="space-y-4 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <h2 className="text-xl font-bold text-gray-900">Support Tickets</h2>
-          <div className="flex items-center gap-3">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-              <Input
-                placeholder="Search user..."
-                className="pl-10 h-10 w-[240px] border-gray-100 bg-gray-50/50 rounded-lg focus-visible:ring-indigo-500"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+      {/* Support Tickets Table Section */}
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+        <div className="p-8 space-y-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <h2 className="text-xl font-bold text-gray-900">Ticket Records</h2>
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+                <Input
+                  placeholder="Search by ticket ID or subject..."
+                  className="pl-10 h-11 w-full md:w-[320px] bg-gray-50/50 border-gray-100 rounded-xl"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <Select value={filterStatus} onValueChange={setFilterStatus}>
+                <SelectTrigger className="h-11 w-full md:w-[140px] border-gray-100 bg-white rounded-xl text-gray-500 shadow-sm">
+                  <Filter className="h-4 w-4 mr-2" />
+                  <SelectValue placeholder="All Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Status</SelectItem>
+                  <SelectItem value="Opened">Opened</SelectItem>
+                  <SelectItem value="Unassigned">Unassigned</SelectItem>
+                  <SelectItem value="In Progress">In Progress</SelectItem>
+                  <SelectItem value="Solved">Solved</SelectItem>
+                </SelectContent>
+              </Select>
+              <Button
+                className="h-11 px-6 rounded-xl bg-[#1D4ED8] hover:bg-blue-800 text-white font-medium shadow-md shadow-blue-100 transition-all active:scale-[0.98]"
+                onClick={() => navigate("/admin/support/team-view")}
+              >
+                <Users className="mr-2 h-4 w-4" />
+                Team View
+              </Button>
             </div>
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger className="w-[120px] h-10 border-gray-100 bg-gray-50/50 rounded-lg text-gray-500">
-                <Filter className="h-4 w-4 mr-2" />
-                <SelectValue placeholder="Filter By" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Status</SelectItem>
-                <SelectItem value="Opened">Opened</SelectItem>
-                <SelectItem value="Unassigned">Unassigned</SelectItem>
-                <SelectItem value="In Progress">In Progress</SelectItem>
-                <SelectItem value="Solved">Solved</SelectItem>
-              </SelectContent>
-            </Select>
           </div>
-        </div>
 
-        <div className="overflow-hidden border border-gray-50 rounded-xl">
-          <Table>
-            <TableHeader className="bg-gray-50/50">
-              <TableRow className="hover:bg-transparent border-gray-50">
-                <TableHead className="w-[50px]">
-                  <input
-                    type="checkbox"
-                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                  />
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm">
-                  Ticket ID
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm">
-                  Company Name
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm">
-                  Subject
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm">
-                  Status
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm">
-                  Last Updated
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm text-center">
-                  Priority
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm">
-                  Assigned To
-                </TableHead>
-                <TableHead className="font-semibold text-gray-700 text-sm text-right pr-6">
-                  Action
-                </TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredTickets.map((ticket, index) => (
-                <TableRow
-                  key={index}
-                  className="hover:bg-gray-50/50 border-gray-50"
-                >
-                  <TableCell>
+          <div className="overflow-hidden border border-gray-50 rounded-xl">
+            <Table>
+              <TableHeader className="bg-gray-50/50">
+                <TableRow className="hover:bg-transparent border-gray-50">
+                  <TableHead className="w-[50px]">
                     <input
                       type="checkbox"
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                     />
-                  </TableCell>
-                  <TableCell className="text-gray-900 font-medium text-sm">
-                    {ticket.id}
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-3">
-                      <div className="p-1.5 rounded-lg border border-gray-100 bg-white shadow-sm">
-                        <Avatar className="h-6 w-6">
-                          <AvatarImage src={ticket.logo} />
-                          <AvatarFallback>{ticket.company[0]}</AvatarFallback>
-                        </Avatar>
-                      </div>
-                      <span className="font-medium text-gray-700 text-sm">
-                        {ticket.company}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-gray-500 text-sm max-w-[200px] truncate">
-                    {ticket.subject}
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "px-3 py-1 rounded-full text-[11px] border-none font-medium",
-                        statusStyles[ticket.status],
-                      )}
-                    >
-                      {ticket.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-gray-500 text-sm whitespace-nowrap">
-                    {ticket.lastUpdated}
-                  </TableCell>
-                  <TableCell className="text-center">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "px-3 py-1 rounded-md text-[11px] border-none font-medium min-w-[60px] inline-block",
-                        priorityStyles[ticket.priority] ||
-                          priorityStyles.Normal,
-                      )}
-                    >
-                      {ticket.priority || "Normal"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    {ticket.assignedTo ? (
-                      <div className="flex items-center gap-2">
-                        <Avatar className="h-7 w-7 border-2 border-white shadow-sm">
-                          <AvatarImage src={ticket.assignedTo.avatar} />
-                          <AvatarFallback>
-                            {ticket.assignedTo.name[0]}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="text-sm text-gray-700 font-medium">
-                          {ticket.assignedTo.name}
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm">
+                    Ticket ID
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm">
+                    Company Name
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm">
+                    Subject
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm">
+                    Status
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm">
+                    Last Updated
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm text-center">
+                    Priority
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm">
+                    Assigned To
+                  </TableHead>
+                  <TableHead className="font-semibold text-gray-700 text-sm text-right pr-6">
+                    Action
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredTickets.map((ticket, index) => (
+                  <TableRow
+                    key={index}
+                    className="hover:bg-gray-50/50 border-gray-50"
+                  >
+                    <TableCell>
+                      <input
+                        type="checkbox"
+                        className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
+                      />
+                    </TableCell>
+                    <TableCell className="text-gray-900 font-medium text-sm">
+                      {ticket.id}
+                    </TableCell>
+                    <TableCell>
+                      <div className="flex items-center gap-3">
+                        <div className="p-1.5 rounded-lg border border-gray-100 bg-white shadow-sm">
+                          <Avatar className="h-6 w-6">
+                            <AvatarImage src={ticket.logo} />
+                            <AvatarFallback>{ticket.company[0]}</AvatarFallback>
+                          </Avatar>
+                        </div>
+                        <span className="font-medium text-gray-700 text-sm">
+                          {ticket.company}
                         </span>
                       </div>
-                    ) : (
-                      <span className="text-sm text-gray-400 italic">
-                        Unassigned
-                      </span>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right pr-6">
-                    <div className="flex items-center justify-end gap-3">
-                      <button
-                        onClick={() => handleAction("view", ticket)}
-                        className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                    </TableCell>
+                    <TableCell className="text-gray-500 text-sm max-w-[200px] truncate">
+                      {ticket.subject}
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "px-3 py-1 rounded-full text-[11px] border-none font-medium",
+                          statusStyles[ticket.status],
+                        )}
                       >
-                        <Eye className="h-4 w-4" />
-                      </button>
-                      <button
-                        onClick={() => handleAction("edit", ticket)}
-                        className="p-1.5 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors"
+                        {ticket.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-gray-500 text-sm whitespace-nowrap">
+                      {ticket.lastUpdated}
+                    </TableCell>
+                    <TableCell className="text-center">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "px-3 py-1 rounded-md text-[11px] border-none font-medium min-w-[60px] inline-block",
+                          priorityStyles[ticket.priority] ||
+                            priorityStyles.Normal,
+                        )}
                       >
-                        <Pencil className="h-4 w-4" />
-                      </button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+                        {ticket.priority || "Normal"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {ticket.assignedTo ? (
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-7 w-7 border-2 border-white shadow-sm">
+                            <AvatarImage src={ticket.assignedTo.avatar} />
+                            <AvatarFallback>
+                              {ticket.assignedTo.name[0]}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm text-gray-700 font-medium">
+                            {ticket.assignedTo.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-sm text-gray-400 italic">
+                          Unassigned
+                        </span>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right pr-6">
+                      <div className="flex items-center justify-end gap-3">
+                        <button
+                          onClick={() => handleAction("view", ticket)}
+                          className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors"
+                        >
+                          <Eye className="h-4 w-4" />
+                        </button>
+                        <button
+                          onClick={() => handleAction("edit", ticket)}
+                          className="p-1.5 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors"
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
 
         {/* Pagination */}
@@ -499,29 +511,29 @@ export function SupportTickets() {
               <Button
                 variant="default"
                 size="sm"
-                className="h-9 w-9 p-0 bg-indigo-600 hover:bg-indigo-700"
+                className="h-9 w-9 p-0 bg-indigo-600 hover:bg-indigo-700 font-bold"
               >
                 1
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 w-9 p-0 text-gray-500"
+                className="h-9 w-9 p-0 text-gray-400 font-medium"
               >
                 2
               </Button>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 w-9 p-0 text-gray-500"
+                className="h-9 w-9 p-0 text-gray-400 font-medium"
               >
                 3
               </Button>
-              <span className="px-2 text-gray-400">...</span>
+              <span className="px-2 text-gray-300">...</span>
               <Button
                 variant="ghost"
                 size="sm"
-                className="h-9 w-9 p-0 text-gray-500"
+                className="h-9 w-9 p-0 text-gray-400 font-medium"
               >
                 30
               </Button>

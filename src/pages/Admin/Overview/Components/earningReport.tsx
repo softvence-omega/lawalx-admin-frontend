@@ -126,7 +126,7 @@ const EarningReportsChart = () => {
         <div className="flex flex-wrap gap-3 md:gap-4 mb-6">
           <button
             onClick={() => setActiveTab("orders")}
-            className={`flex flex-col items-center gap-2 size-28 p-6 rounded-lg border transition-colors ${
+            className={`flex flex-col items-center justify-center gap-1 size-26 p-4 rounded-lg border transition-colors ${
               activeTab === "orders"
                 ? " border-blue-200 text-blue-500"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
@@ -143,7 +143,7 @@ const EarningReportsChart = () => {
           </button>
           <button
             onClick={() => setActiveTab("sales")}
-            className={`flex flex-col items-center gap-2 size-28 p-6 rounded-lg border transition-colors ${
+            className={`flex flex-col items-center justify-center gap-1 size-26 p-4 rounded-lg border transition-colors ${
               activeTab === "sales"
                 ? "border-blue-200 text-blue-500"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"
@@ -160,7 +160,7 @@ const EarningReportsChart = () => {
           </button>
           <button
             onClick={() => setActiveTab("income")}
-            className={`flex flex-col items-center gap-2 size-28 p-6 rounded-lg border transition-colors ${
+            className={`flex flex-col items-center justify-center gap-1 size-26 p-4 rounded-lg border transition-colors ${
               activeTab === "income"
                 ? "border-blue-200 text-blue-500"
                 : "border-gray-200 text-gray-600 hover:bg-gray-50"

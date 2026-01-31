@@ -103,7 +103,9 @@ export function MetricsCards() {
         return (
           <DashboardStatsCard
             key={item.id}
-            className={isNetPromoter ? "md:col-span-2 lg:col-span-2 xl:col-span-1" : ""}
+            className={
+              isNetPromoter ? "md:col-span-2 lg:col-span-2 xl:col-span-1" : ""
+            }
             title={title}
             value={value}
             growth={growth}

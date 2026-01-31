@@ -26,6 +26,9 @@ import ManageBillings from "@/pages/Admin/ManageBillings/ManageBillings";
 import PlatformAnalyticsOverview from "@/pages/Admin/PlatformAnalyticsOverview/Analytics";
 import ClientsParent from "@/pages/Admin/Clients/ClientsParent";
 import Support from "@/pages/Admin/Support/Support";
+import { SupportTickets } from "@/pages/Admin/Support/Components/SupportTickets/SupportTickets";
+import TeamView from "@/pages/Admin/Support/Components/TeamView/TeamView";
+import SupportEmployeeList from "@/pages/Admin/Support/Components/SupportEmployeeList/SupportEmployeeList";
 export const adminRoutes: RouteGroup[] = [
   {
     group: "Main Menu",
@@ -96,6 +99,20 @@ export const adminRoutes: RouteGroup[] = [
         name: "Support",
         path: "support",
         element: <Support />,
+        children: [
+          {
+            index: true,
+            element: <SupportTickets />,
+          },
+          {
+            path: "team-view",
+            element: <TeamView />,
+          },
+          {
+            path: "support-employee",
+            element: <SupportEmployeeList />,
+          },
+        ],
       },
       {
         icon: <Settings />,

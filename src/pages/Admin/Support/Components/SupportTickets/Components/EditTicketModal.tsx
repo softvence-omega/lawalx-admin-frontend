@@ -27,7 +27,7 @@ const EditTicketModal = ({
         <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-2xl">
           <div className="p-6 border-b border-gray-100">
             <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-bold text-gray-900">
+              <DialogTitle className="text-xl font-medium text-gray-900">
                 Edit Support Ticket
               </DialogTitle>
               <button
@@ -38,13 +38,13 @@ const EditTicketModal = ({
               </button>
             </div>
           </div>
-          <div className="p-8 space-y-6 max-h-[80vh] overflow-y-auto bg-gray-50/10">
+          <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto bg-gray-50/10">
             <div className="grid grid-cols-2 gap-4 p-5 rounded-2xl bg-indigo-50/30 border border-indigo-50">
               <div className="space-y-1">
                 <p className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
                   Ticket ID:
                 </p>
-                <p className="text-sm font-bold text-gray-900">
+                <p className="text-sm font-medium text-gray-900">
                   {selectedTicket?.id}
                 </p>
               </div>
@@ -52,7 +52,7 @@ const EditTicketModal = ({
                 <p className="text-xs text-indigo-400 font-semibold uppercase tracking-wider">
                   Subject:
                 </p>
-                <p className="text-sm font-bold text-gray-900 max-w-[150px] truncate">
+                <p className="text-sm font-medium text-gray-900 max-w-[150px] truncate">
                   {selectedTicket?.subject}
                 </p>
               </div>
@@ -62,7 +62,7 @@ const EditTicketModal = ({
                 </p>
                 <div className="flex items-center gap-2">
                   <Building2 className="h-3 w-3 text-indigo-400" />
-                  <p className="text-sm font-bold text-gray-900">
+                  <p className="text-sm font-medium text-gray-900">
                     {selectedTicket?.company}
                   </p>
                 </div>
@@ -71,11 +71,11 @@ const EditTicketModal = ({
 
             <div className="space-y-5">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
+                <label className="text-sm font-medium pb-2 text-gray-700">
                   Ticket Status
                 </label>
                 <Select defaultValue={selectedTicket?.status}>
-                  <SelectTrigger className="h-11 rounded-xl bg-white border-gray-200">
+                  <SelectTrigger className="h-11 w-full rounded-lg bg-white border-gray-200">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
@@ -88,11 +88,11 @@ const EditTicketModal = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
+                <label className="text-sm font-medium pb-2 text-gray-700">
                   Priority
                 </label>
                 <Select defaultValue={selectedTicket?.priority}>
-                  <SelectTrigger className="h-11 rounded-xl bg-white border-gray-200">
+                  <SelectTrigger className="h-11 w-full rounded-lg bg-white border-gray-200">
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
@@ -105,7 +105,7 @@ const EditTicketModal = ({
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-bold text-gray-700">
+                <label className="text-sm font-medium pb-2 text-gray-700">
                   Assign to
                 </label>
                 <Select
@@ -113,7 +113,7 @@ const EditTicketModal = ({
                     selectedTicket?.assignedTo?.name || "unassigned"
                   }
                 >
-                  <SelectTrigger className="h-11 rounded-xl bg-white border-gray-200">
+                  <SelectTrigger className="h-11 w-full rounded-lg bg-white border-gray-200">
                     <SelectValue placeholder="Select staff" />
                   </SelectTrigger>
                   <SelectContent>
@@ -131,7 +131,7 @@ const EditTicketModal = ({
 
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <label className="text-sm font-bold text-gray-700">
+                  <label className="text-sm font-medium pb-2 text-gray-700">
                     Admin Note
                   </label>
                   <div className="group relative">
@@ -140,7 +140,7 @@ const EditTicketModal = ({
                 </div>
                 <div className="relative">
                   <textarea
-                    className="w-full min-h-[100px] p-4 rounded-2xl border border-gray-200 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-sm text-gray-600 resize-none"
+                    className="w-full min-h-[100px] p-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-sm text-gray-600 resize-none"
                     placeholder="Customer reported this issue after the v2.4.0 deployment..."
                   />
                 </div>
@@ -156,7 +156,7 @@ const EditTicketModal = ({
                   </label>
                 </div>
                 <textarea
-                  className="w-full min-h-[120px] p-4 rounded-2xl border border-gray-200 bg-gray-50/30 text-sm text-gray-500 cursor-not-allowed"
+                  className="w-full min-h-[120px] p-4 rounded-lg border border-gray-200 bg-gray-50/30 text-sm text-gray-500 cursor-not-allowed"
                   disabled
                   value={selectedTicket?.description}
                 />
@@ -166,14 +166,14 @@ const EditTicketModal = ({
             <div className="flex items-center justify-between pt-4 border-t border-gray-100">
               <Button
                 variant="outline"
-                className="h-11 px-6 rounded-xl text-gray-600"
+                className="h-11 px-6 rounded-lg text-gray-600"
                 onClick={() => onOpenChange(false)}
               >
                 <ChevronLeft className="mr-2 h-4 w-4" />
                 Cancel
               </Button>
               <Button
-                className="h-11 px-8 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100"
+                className="h-11 px-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100"
                 onClick={handleSave}
               >
                 Save changes
