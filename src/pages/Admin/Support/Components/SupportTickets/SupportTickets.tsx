@@ -39,6 +39,9 @@ import { cn } from "@/lib/utils";
 import SupportDetailsModal from "./Components/SupportDetailsModal";
 import EditTicketModal from "./Components/EditTicketModal";
 import DashboardStatsCard from "@/components/Dashboard/DashboardStatsCard";
+import { useGetAllTicketsQuery } from "@/store/Api/AdminApi/SupportApi";
+import SupportTicketsSkeleton from "../../../../../common/Skeleton/SupportTicketsSkeleton";
+// import { SupportTicket } from "@/types/SupportTypes";
 
 // --- Mock Data ---
 
@@ -89,163 +92,163 @@ const overviewStats = [
   },
 ];
 
-const initialTickets = [
-  {
-    id: "CN#252024",
-    company: "Acme",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
-    subject: "CSV file upload failed",
-    status: "Opened",
-    lastUpdated: "2 hours ago",
-    priority: "High",
-    assignedTo: {
-      name: "Kathryn Murphy",
-      avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
-      role: "DevOps Eng.",
-    },
-    description:
-      "Hello Support Team, I'm trying to export our analytics data to CSV format but keep getting an error message. When I click on the 'Export to CSV' button in the Reports section, the loading spinner appears for about 10 seconds and then displays 'Export Failed: Unknown Error'. I've tried this on multiple browsers (Chrome, Firefox, and Edge) with the same result. This functionality was working fine last week. Could you please look into this issue as soon as possible? We need this data for our quarterly review.",
-    createdDate: "3-July-2025",
-    updatedDate: "3-July-2025",
-    companyFullName: "Acme Corporation",
-  },
-  {
-    id: "CN#252025",
-    company: "Global Tech",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
-    subject: "Chart render failed",
-    status: "Opened",
-    lastUpdated: "4 hours ago",
-    priority: "High",
-    assignedTo: {
-      name: "Leslie Alexander",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Leslie",
-      role: "Support Specialist",
-    },
-  },
-  {
-    id: "CN#252026",
-    company: "Tech Stark",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=TS",
-    subject: "I don't know what happen...",
-    status: "Unassigned",
-    lastUpdated: "Yesterday",
-    priority: "Medium",
-    assignedTo: {
-      name: "Annette Black",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Annette",
-      role: "Lead Support",
-    },
-  },
-  {
-    id: "CN#252027",
-    company: "Next Gen",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
-    subject: "Chart render failed",
-    status: "In Progress",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Low",
-    assignedTo: {
-      name: "Arlene McCoy",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Arlene",
-      role: "Frontend Dev",
-    },
-  },
-  {
-    id: "CN#252028",
-    company: "Softvence",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=SV",
-    subject: "Chart render failed",
-    status: "In Progress",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Normal",
-    assignedTo: {
-      name: "Debian Junior",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Debian",
-      role: "Backend Dev",
-    },
-  },
-  {
-    id: "CN#252029",
-    company: "Next Gen",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
-    subject: "Chart render failed",
-    status: "Solved",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Low",
-    assignedTo: {
-      name: "Arlene McCoy",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Arlene",
-      role: "Frontend Dev",
-    },
-  },
-  {
-    id: "CN#252030",
-    company: "Acme",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
-    subject: "Chart render failed",
-    status: "Solved",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Normal",
-    assignedTo: {
-      name: "Kathryn Murphy",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kathryn",
-      role: "DevOps Eng.",
-    },
-  },
-  {
-    id: "CN#252031",
-    company: "Global Tech",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
-    subject: "Chart render failed",
-    status: "Solved",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Low",
-    assignedTo: {
-      name: "Debian Junior",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Debian",
-      role: "Backend Dev",
-    },
-  },
-  {
-    id: "CN#252032",
-    company: "Tech Stark",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=TS",
-    subject: "Chart render failed",
-    status: "In Progress",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Normal",
-    assignedTo: {
-      name: "Annette Black",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Annette",
-      role: "Lead Support",
-    },
-  },
-  {
-    id: "CN#252033",
-    company: "Softvence",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=SV",
-    subject: "Chart render failed",
-    status: "Unassigned",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Low",
-    assignedTo: {
-      name: "Leslie Alexander",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Leslie",
-      role: "Support Specialist",
-    },
-  },
-  {
-    id: "CN#252034",
-    company: "Acme",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
-    subject: "Chart render failed",
-    status: "In Progress",
-    lastUpdated: "Jun 25, 10:20AM",
-    priority: "Normal",
-    assignedTo: null,
-  },
-];
+// const initialTickets = [
+//   {
+//     id: "CN#252024",
+//     company: "Acme",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
+//     subject: "CSV file upload failed",
+//     status: "Opened",
+//     lastUpdated: "2 hours ago",
+//     priority: "High",
+//     assignedTo: {
+//       name: "Kathryn Murphy",
+//       avatar: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
+//       role: "DevOps Eng.",
+//     },
+//     description:
+//       "Hello Support Team, I'm trying to export our analytics data to CSV format but keep getting an error message. When I click on the 'Export to CSV' button in the Reports section, the loading spinner appears for about 10 seconds and then displays 'Export Failed: Unknown Error'. I've tried this on multiple browsers (Chrome, Firefox, and Edge) with the same result. This functionality was working fine last week. Could you please look into this issue as soon as possible? We need this data for our quarterly review.",
+//     createdDate: "3-July-2025",
+//     updatedDate: "3-July-2025",
+//     companyFullName: "Acme Corporation",
+//   },
+//   {
+//     id: "CN#252025",
+//     company: "Global Tech",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
+//     subject: "Chart render failed",
+//     status: "Opened",
+//     lastUpdated: "4 hours ago",
+//     priority: "High",
+//     assignedTo: {
+//       name: "Leslie Alexander",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Leslie",
+//       role: "Support Specialist",
+//     },
+//   },
+//   {
+//     id: "CN#252026",
+//     company: "Tech Stark",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=TS",
+//     subject: "I don't know what happen...",
+//     status: "Unassigned",
+//     lastUpdated: "Yesterday",
+//     priority: "Medium",
+//     assignedTo: {
+//       name: "Annette Black",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Annette",
+//       role: "Lead Support",
+//     },
+//   },
+//   {
+//     id: "CN#252027",
+//     company: "Next Gen",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
+//     subject: "Chart render failed",
+//     status: "In Progress",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Low",
+//     assignedTo: {
+//       name: "Arlene McCoy",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Arlene",
+//       role: "Frontend Dev",
+//     },
+//   },
+//   {
+//     id: "CN#252028",
+//     company: "Softvence",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=SV",
+//     subject: "Chart render failed",
+//     status: "In Progress",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Normal",
+//     assignedTo: {
+//       name: "Debian Junior",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Debian",
+//       role: "Backend Dev",
+//     },
+//   },
+//   {
+//     id: "CN#252029",
+//     company: "Next Gen",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
+//     subject: "Chart render failed",
+//     status: "Solved",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Low",
+//     assignedTo: {
+//       name: "Arlene McCoy",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Arlene",
+//       role: "Frontend Dev",
+//     },
+//   },
+//   {
+//     id: "CN#252030",
+//     company: "Acme",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
+//     subject: "Chart render failed",
+//     status: "Solved",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Normal",
+//     assignedTo: {
+//       name: "Kathryn Murphy",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Kathryn",
+//       role: "DevOps Eng.",
+//     },
+//   },
+//   {
+//     id: "CN#252031",
+//     company: "Global Tech",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
+//     subject: "Chart render failed",
+//     status: "Solved",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Low",
+//     assignedTo: {
+//       name: "Debian Junior",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Debian",
+//       role: "Backend Dev",
+//     },
+//   },
+//   {
+//     id: "CN#252032",
+//     company: "Tech Stark",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=TS",
+//     subject: "Chart render failed",
+//     status: "In Progress",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Normal",
+//     assignedTo: {
+//       name: "Annette Black",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Annette",
+//       role: "Lead Support",
+//     },
+//   },
+//   {
+//     id: "CN#252033",
+//     company: "Softvence",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=SV",
+//     subject: "Chart render failed",
+//     status: "Unassigned",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Low",
+//     assignedTo: {
+//       name: "Leslie Alexander",
+//       avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Leslie",
+//       role: "Support Specialist",
+//     },
+//   },
+//   {
+//     id: "CN#252034",
+//     company: "Acme",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
+//     subject: "Chart render failed",
+//     status: "In Progress",
+//     lastUpdated: "Jun 25, 10:20AM",
+//     priority: "Normal",
+//     assignedTo: null,
+//   },
+// ];
 
 const statusStyles: Record<string, string> = {
   Opened: "bg-rose-100 text-rose-600 border-rose-100",
@@ -270,29 +273,32 @@ export function SupportTickets() {
   const [selectedTicket, setSelectedTicket] = useState<any>(null);
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-
+  const { data, isLoading } = useGetAllTicketsQuery();
+  const allTickets = data?.data;
   // Pagination State
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 8;
 
   const filteredTickets = useMemo(() => {
-    return initialTickets.filter((ticket) => {
+    return allTickets?.filter((ticket) => {
       const matchesSearch =
-        ticket.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        ticket.companyName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
         ticket.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ticket.subject.toLowerCase().includes(searchQuery.toLowerCase());
+        ticket.issueType.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesStatus =
         filterStatus === "all" || ticket.status === filterStatus;
       return matchesSearch && matchesStatus;
     });
-  }, [searchQuery, filterStatus]);
-
-  const totalPages = Math.ceil(filteredTickets.length / itemsPerPage);
+  }, [searchQuery, filterStatus, allTickets]);
+  const totalPages = Math.ceil(filteredTickets?.length || 0 / itemsPerPage);
   const paginatedTickets = useMemo(() => {
     const startIndex = (currentPage - 1) * itemsPerPage;
-    return filteredTickets.slice(startIndex, startIndex + itemsPerPage);
+    return filteredTickets?.slice(startIndex, startIndex + itemsPerPage);
   }, [filteredTickets, currentPage, itemsPerPage]);
 
+  if (isLoading) {
+    return <SupportTicketsSkeleton />;
+  }
   const handlePageChange = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -412,7 +418,7 @@ export function SupportTickets() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {paginatedTickets.map((ticket, index) => (
+                {paginatedTickets?.map((ticket, index) => (
                   <TableRow
                     key={index}
                     className="hover:bg-gray-50/50 border-gray-50"
@@ -430,17 +436,19 @@ export function SupportTickets() {
                       <div className="flex items-center gap-3">
                         <div className="p-1.5 rounded-lg border border-gray-100 bg-white shadow-sm">
                           <Avatar className="h-6 w-6">
-                            <AvatarImage src={ticket.logo} />
-                            <AvatarFallback>{ticket.company[0]}</AvatarFallback>
+                            {/* <AvatarImage src={ticket} /> */}
+                            <AvatarFallback>
+                              {ticket.companyName}
+                            </AvatarFallback>
                           </Avatar>
                         </div>
                         <span className="font-medium text-gray-700 text-sm">
-                          {ticket.company}
+                          {ticket.companyName}
                         </span>
                       </div>
                     </TableCell>
                     <TableCell className="text-gray-500 text-sm max-w-[200px] truncate">
-                      {ticket.subject}
+                      {ticket.issueType}
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -454,7 +462,7 @@ export function SupportTickets() {
                       </Badge>
                     </TableCell>
                     <TableCell className="text-gray-500 text-sm whitespace-nowrap">
-                      {ticket.lastUpdated}
+                      {ticket.updatedAt}
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge
@@ -469,20 +477,22 @@ export function SupportTickets() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {ticket.assignedTo ? (
+                      {ticket.assignments?.name ? (
                         <div className="flex items-center gap-2">
                           <Avatar className="h-7 w-7 border-2 border-white shadow-sm">
-                            <AvatarImage src={ticket.assignedTo.avatar} />
+                            <AvatarImage
+                              src={ticket.assignments?.avatar || ""}
+                            />
                             <AvatarFallback>
-                              {ticket.assignedTo.name[0]}
+                              {ticket.assignments?.name || ""}
                             </AvatarFallback>
                           </Avatar>
                           <span className="text-sm text-gray-700 font-medium">
-                            {ticket.assignedTo.name}
+                            {ticket.assignments?.name || ""}
                           </span>
                         </div>
                       ) : (
-                        <span className="text-sm text-gray-400 italic">
+                        <span className="text-sm text-gray-400 ">
                           Unassigned
                         </span>
                       )}
@@ -516,13 +526,17 @@ export function SupportTickets() {
             <span className="font-semibold text-gray-900">
               {Math.min(
                 (currentPage - 1) * itemsPerPage + 1,
-                filteredTickets.length,
+                filteredTickets?.length || 0,
               )}{" "}
-              to {Math.min(currentPage * itemsPerPage, filteredTickets.length)}
+              to{" "}
+              {Math.min(
+                currentPage * itemsPerPage,
+                filteredTickets?.length || 0,
+              )}
             </span>{" "}
             of{" "}
             <span className="font-semibold text-blue-600">
-              {filteredTickets.length}
+              {filteredTickets?.length}
             </span>{" "}
             tickets
           </p>

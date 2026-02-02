@@ -69,6 +69,8 @@ const baseApi = createApi({
     "Clients",
     "Payments",
     "SupporterTickets",
+    "Tickets",
+    "Supporters",
   ],
 });
 export default baseApi;
