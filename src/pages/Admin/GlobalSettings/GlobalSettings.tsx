@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Upload, ChevronDown } from "lucide-react";
+import { useUpdateUsersMutation } from "@/store/Api/UserApi/UserApi";
+import { toast } from "sonner";
+import { useGetUser } from "@/hooks/useGetUser";
+
+import GlobalSettingsSkeleton from "./Components/GlobalSettingsSkeleton";
 
 const GlobalSettings = () => {
+  const { verification2FA, loading } = useGetUser();
   const [defaultLanguage, setDefaultLanguage] = useState("English (US)");
   const [defaultTimezone, setDefaultTimezone] = useState(
-    "(UTC-08:00) Pacific Time (US & Canada)"
+    "(UTC-08:00) Pacific Time (US & Canada)",
   );
   const [allowTimezoneOverride, setAllowTimezoneOverride] = useState(true);
   const [showRelativeTimestamps, setShowRelativeTimestamps] = useState(true);
@@ -13,7 +19,8 @@ const GlobalSettings = () => {
   const [firstDayOfWeek, setFirstDayOfWeek] = useState("Sunday");
   const [primaryColor, setPrimaryColor] = useState("#7F56D9");
   const [secondaryColor, setSecondaryColor] = useState("#6366F1");
-
+  const [twoFactor, setTwoFactor] = useState(false);
+  const [updateUsers] = useUpdateUsersMutation();
   const languages = [
     "English (US)",
     "English (UK)",
@@ -34,9 +41,42 @@ const GlobalSettings = () => {
     "(UTC+02:00) Athens",
     "(UTC+05:30) India",
   ];
+  useEffect(() => {
+    if (!loading) {
+      setTwoFactor(verification2FA);
+    }
+  }, [loading, verification2FA]);
   const dateFormats = ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD", "DD MMM YYYY"];
   const timeFormats = ["12 hour", "24 hour"];
   const weekDays = ["Sunday", "Monday"];
+
+  const handleSubmit = async () => {
+    try {
+      const res = await updateUsers({
+        // defaultLanguage,
+        // defaultTimezone,
+        // allowTimezoneOverride,
+        // showRelativeTimestamps,
+        // dateFormat,
+        // timeFormat,
+        // firstDayOfWeek,
+        // primaryColor,
+        // secondaryColor,
+        verification2FA: twoFactor,
+      }).unwrap();
+      if (res.success) {
+        toast.success(res.message || "Settings updated successfully");
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "An error occurred";
+      toast.error(message);
+    }
+  };
+
+  if (loading) {
+    return <GlobalSettingsSkeleton />;
+  }
 
   return (
     <div className="min-h-screen">
@@ -87,26 +127,48 @@ const GlobalSettings = () => {
                 </div>
               </div>
 
-              {/* Timezone Override - TOGGLE */}
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={() =>
-                    setAllowTimezoneOverride(!allowTimezoneOverride)
-                  }
-                  className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors ${
-                    allowTimezoneOverride ? "bg-blue-600" : "bg-gray-300"
-                  }`}
-                >
-                  <span
-                    className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-                      allowTimezoneOverride ? "translate-x-6" : "translate-x-1"
+              <div className="flex items-center justify-between">
+                {/* Timezone Override - TOGGLE */}
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() =>
+                      setAllowTimezoneOverride(!allowTimezoneOverride)
+                    }
+                    className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors ${
+                      allowTimezoneOverride ? "bg-blue-600" : "bg-gray-300"
                     }`}
-                  />
-                </button>
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                        allowTimezoneOverride
+                          ? "translate-x-6"
+                          : "translate-x-1"
+                      }`}
+                    />
+                  </button>
 
-                <span className="text-sm text-gray-700">
-                  Allow user-level time zone override
-                </span>
+                  <span className="text-sm text-gray-700">
+                    Allow user-level time zone override
+                  </span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <button
+                    onClick={() => setTwoFactor(!twoFactor)}
+                    className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors ${
+                      twoFactor ? "bg-blue-600" : "bg-gray-300"
+                    }`}
+                  >
+                    <span
+                      className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                        twoFactor ? "translate-x-6" : "translate-x-1"
+                      }`}
+                    />
+                  </button>
+
+                  <span className="text-sm text-gray-700">
+                    Two-factor authentication
+                  </span>
+                </div>
               </div>
 
               {/* Date Format & Time Format */}
@@ -296,7 +358,10 @@ const GlobalSettings = () => {
 
           {/* Save Button */}
           <div className="flex justify-end pt-8 mt-8 border-t border-gray-200">
-            <button className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors">
+            <button
+              onClick={handleSubmit}
+              className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+            >
               Save Settings
             </button>
           </div>

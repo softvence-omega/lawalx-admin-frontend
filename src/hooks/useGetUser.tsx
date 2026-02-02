@@ -20,5 +20,6 @@ export const useGetUser = () => {
     id: user?.id || "",
     status: user?.status || "",
     currentRoute,
+    verification2FA: user?.verification2FA || false,
   };
 };

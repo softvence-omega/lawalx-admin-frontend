@@ -58,12 +58,9 @@ const Login = () => {
             role: "ADMIN" | "SUPERADMIN" | "SUPPORTER";
           }>(res?.data?.accessToken);
           if (Role[role]) {
-            console.log("Inside Role", role);
-            console.log(`/${Role[role]}`);
             toast.success("Logged in successfully", { id: toastId });
             navigate(`/${Role[role]}`);
           } else {
-            console.log("Inside Catch", role);
             toast.error("You are not authorized", {
               id: toastId,
             });
