@@ -51,6 +51,7 @@ const GlobalSettings = () => {
   const weekDays = ["Sunday", "Monday"];
 
   const handleSubmit = async () => {
+    const toastId = toast.loading("Updating settings...");
     try {
       const res = await updateUsers({
         // defaultLanguage,
@@ -65,12 +66,14 @@ const GlobalSettings = () => {
         verification2FA: twoFactor,
       }).unwrap();
       if (res.success) {
-        toast.success(res.message || "Settings updated successfully");
+        toast.success(res.message || "Settings updated successfully", {
+          id: toastId,
+        });
       }
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "An error occurred";
-      toast.error(message);
+      toast.error(message, { id: toastId });
     }
   };
 
