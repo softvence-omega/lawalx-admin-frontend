@@ -29,12 +29,14 @@ const supportApi = baseApi.injectEndpoints({
         { type: "Tickets", id: ticketId },
       ],
     }),
-    updateTicketStatus: builder.mutation({
-      query: ({ ticketId, status }) => ({
-        url: `/admin/${ticketId}/ticket`,
-        method: "PATCH",
-        body: { status },
-      }),
+    updateTicket: builder.mutation({
+      query: ({ ticketId, payload }) => {
+        return {
+          url: `/admin/${ticketId}/ticket`,
+          method: "PATCH",
+          body: payload,
+        };
+      },
       invalidatesTags: (_result, _error, { ticketId }) => [
         { type: "Tickets", id: ticketId },
       ],
@@ -50,16 +52,16 @@ const supportApi = baseApi.injectEndpoints({
     }),
     getAllSupporter: builder.query({
       query: () => "/admin/all-supporters",
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.map((supporter: any) => ({
-                type: "Supporters" as const,
-                id: supporter._id || supporter.id,
-              })),
-              { type: "Supporters", id: "LIST" },
-            ]
-          : [{ type: "Supporters", id: "LIST" }],
+      // providesTags: (result) =>
+      //   result
+      //     ? [
+      //         ...result.data.map((supporter: any) => ({
+      //           type: "Supporters" as const,
+      //           id: supporter._id || supporter.id,
+      //         })),
+      //         { type: "Supporters", id: "LIST" },
+      //       ]
+      //     : [{ type: "Supporters", id: "LIST" }],
     }),
     updateSupporter: builder.mutation({
       query: ({ supporterId, data }) => ({
@@ -95,7 +97,7 @@ const supportApi = baseApi.injectEndpoints({
 export const {
   useGetAllTicketsQuery,
   useAssignTicketMutation,
-  useUpdateTicketStatusMutation,
+  useUpdateTicketMutation,
   useDeleteTicketMutation,
   useGetAllSupporterQuery,
   useUpdateSupporterMutation,

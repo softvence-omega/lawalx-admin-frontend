@@ -477,18 +477,20 @@ export function SupportTickets() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {ticket.assignments?.name ? (
+                      {ticket.assignments[0].user?.name ? (
                         <div className="flex items-center gap-2">
                           <Avatar className="h-7 w-7 border-2 border-white shadow-sm">
                             <AvatarImage
-                              src={ticket.assignments?.avatar || ""}
+                              src={
+                                ticket.assignments[0].user?.profileImage || ""
+                              }
                             />
                             <AvatarFallback>
-                              {ticket.assignments?.name || ""}
+                              {ticket.assignments[0].user?.name || ""}
                             </AvatarFallback>
                           </Avatar>
                           <span className="text-sm text-gray-700 font-medium">
-                            {ticket.assignments?.name || ""}
+                            {ticket.assignments[0].user?.name || ""}
                           </span>
                         </div>
                       ) : (
@@ -561,7 +563,7 @@ export function SupportTickets() {
                     className={cn(
                       "h-9 w-9 p-0 font-medium",
                       currentPage === page
-                        ? "bg-indigo-600 hover:bg-indigo-700 text-white font-bold"
+                        ? "bg-blue-600 hover:bg-blue-700 text-white font-bold"
                         : "text-gray-400",
                     )}
                     onClick={() => handlePageChange(page)}

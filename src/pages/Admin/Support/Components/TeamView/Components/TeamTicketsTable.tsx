@@ -202,7 +202,7 @@ export const TeamTicketsTable = () => {
                 <SelectItem value="staff1">Staff 1</SelectItem>
               </SelectContent>
             </Select>
-            <Button 
+            <Button
               className="h-11 px-6 rounded-lg bg-blue-600 hover:bg-blue-700 text-white"
               onClick={() => navigate("/admin/support/support-employee")}
             >

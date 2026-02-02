@@ -1,7 +1,24 @@
+import { ApiResponse } from "@/types/ApiTypes/ApiResponse";
 import baseApi from "../BaseApi/BaseApi";
+import { Supporter } from "@/types/Supporters/SuppoprtersApi";
 
 const supportersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    // 00. GET all supporters
+    getAllSupporters: builder.query<ApiResponse<Supporter[]>, void>({
+      query: () => "/supporters",
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.map((supporter) => ({
+                type: "Supporters" as const,
+                id: supporter.id,
+              })),
+              { type: "Supporters" as const, id: "LIST" },
+            ]
+          : [{ type: "Supporters" as const, id: "LIST" }],
+    }),
+
     // 01. GET all tickets (supporter scope)
     getAllSupporterTickets: builder.query({
       query: () => "/supporters-support/all-tickets",
@@ -38,6 +55,7 @@ const supportersApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetAllSupportersQuery,
   useGetAllSupporterTicketsQuery,
   useGetMyTicketsQuery,
   useUpdateTicketStatusMutation,

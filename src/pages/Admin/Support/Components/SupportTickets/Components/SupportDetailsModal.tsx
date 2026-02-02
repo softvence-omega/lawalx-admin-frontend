@@ -11,6 +11,8 @@ import {
   AlertCircle,
   ChevronLeft,
 } from "lucide-react";
+import { SupportTicket } from "@/types/SupportTypes";
+import { formatDate } from "@/hooks/useFormatedDate";
 
 // Status styles removed as they are now handled with direct hex codes or utility classes matching the design.
 
@@ -22,7 +24,7 @@ const SupportDetailsModal = ({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  ticket: any;
+  ticket: SupportTicket;
   handleResolve: (id: string) => void;
 }) => {
   return (
@@ -67,7 +69,7 @@ const SupportDetailsModal = ({
               </div>
 
               <h2 className="text-xl font-medium text-[#1E293B] leading-tight max-w-lg">
-                {ticket?.subject || "Subject not available"}
+                {ticket?.issueType || "Subject not available"}
               </h2>
             </div>
             {/* Assigned Section */}
@@ -77,17 +79,17 @@ const SupportDetailsModal = ({
               </span>
               <div className="flex items-center gap-3">
                 <Avatar className="h-12 w-12 border-2 border-white shadow-sm ring-1 ring-gray-100">
-                  <AvatarImage src={ticket?.assignedTo?.avatar} />
+                  <AvatarImage src={ticket?.assignments[0].user?.profileImage} />
                   <AvatarFallback className="bg-indigo-50 text-indigo-600 font-bold">
-                    {ticket?.assignedTo?.name?.[0] || "U"}
+                    {ticket?.assignments[0].user?.name || ""}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
                   <span className="text-[15px] font-medium text-[#1E293B]">
-                    {ticket?.assignedTo?.name || "Kathryn Murphy"}
+                    {ticket?.assignments[0].user?.name || "Unassigned"}
                   </span>
                   <span className="text-[13px] text-[#64748B] font-medium">
-                    {ticket?.assignedTo?.role || "DevOPS Eng."}
+                    {/* {ticket?.assignments?.role || "DevOPS Eng."} */}
                   </span>
                 </div>
               </div>
@@ -96,19 +98,19 @@ const SupportDetailsModal = ({
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
             <div className="flex items-center gap-2 text-[#475569] text-[13px] font-medium">
               <Building2 className="h-4 w-4 text-[#94A3B8]" />
-              <span>
-                {ticket?.companyFullName ||
-                  ticket?.company ||
-                  "Acme Corporation"}
-              </span>
+              <span>{ticket?.companyName || "No Information"}</span>
             </div>
             <div className="flex items-center gap-2 text-[#475569] text-[13px] font-medium">
               <Calendar className="h-4 w-4 text-[#94A3B8]" />
-              <span>Created: {ticket?.createdDate || "3-July-2025"}</span>
+              <span>
+                Created: {formatDate(ticket?.createdAt) || "No Information"}
+              </span>
             </div>
             <div className="flex items-center gap-2 text-[#475569] text-[13px] font-medium">
               <Clock className="h-4 w-4 text-[#94A3B8]" />
-              <span>Updated: {ticket?.updatedDate || "3-July-2025"}</span>
+              <span>
+                Updated: {formatDate(ticket?.updatedAt) || "No Information"}
+              </span>
             </div>
           </div>
           {/* Issue Description Section */}
@@ -122,7 +124,7 @@ const SupportDetailsModal = ({
             <div className="relative group">
               <div className="w-full bg-[#FAFBFF] border border-[#E2E8F0] rounded-xl p-6 min-h-[180px] transition-all hover:border-[#CBD5E1]">
                 <p className="text-[#334155] text-[15px] leading-[1.6] whitespace-pre-wrap font-medium">
-                  {ticket?.description ||
+                  {ticket?.issueType ||
                     'Hello Support Team,\nI\'m trying to export our analytics data to CSV format but keep getting an error message. When I click on the "Export to CSV" button in the Reports section, the loading spinner appears for about 10 seconds and then displays "Export Failed: Unknown Error". I\'ve tried this on multiple browsers (Chrome, Firefox, and Edge) with the same result. This functionality was working fine last week.\nCould you please look into this issue as soon as possible? We need this data for our quarterly review.'}
                 </p>
                 <div className="absolute bottom-3 right-3 opacity-30">

@@ -204,7 +204,11 @@ const Header = ({ toggleSidebar, isCollapsed }: HeaderProps) => {
         </div>
         <div className="block bg-gray-200 mx-1 md:mx-2 w-[1px] h-8"></div>
         <NavLink to="/admin/clients/addClient" className="block">
-          <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white transition-[300ms] cursor-pointer">
+          <Button
+            variant="default"
+            size="lg"
+            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white transition-[300ms] cursor-pointer"
+          >
             <Plus className="w-4 h-4 text-white" />
             <span className="hidden xl:inline">Add Client</span>
           </Button>
