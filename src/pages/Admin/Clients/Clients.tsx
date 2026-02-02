@@ -10,6 +10,7 @@ import {
 } from "@/store/Api/ClientApi/ClientApi";
 import ClientInsightsTable from "../Overview/Components/CustomerInsight/TableCustomerInsight";
 import CounterCardSkeleton from "@/common/Skeleton/CounterCardSkeleton";
+import ClientsSkeleton from "./Components/ClientsSkeleton";
 
 interface Clientdata {
   customer?: ClientData2;
@@ -35,7 +36,7 @@ const Clients: React.FC<Clientdata> = () => {
   const endIndex = startIndex + itemsPerPage;
   const currentCustomers = customers?.slice(startIndex, endIndex);
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <ClientsSkeleton />;
   }
   return (
     <>
