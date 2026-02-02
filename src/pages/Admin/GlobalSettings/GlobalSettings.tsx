@@ -42,10 +42,28 @@ const GlobalSettings = () => {
     "(UTC+05:30) India",
   ];
   useEffect(() => {
+    const toastId = toast.loading("Updating settings...");
     if (!loading) {
-      setTwoFactor(verification2FA);
+      // setTwoFactor(verification2FA);
+      updateUsers({
+        verification2FA: twoFactor,
+      })
+        .unwrap()
+        .then((res) => {
+          if (res.success) {
+            toast.success(res.message || "Settings updated successfully");
+          }
+        })
+        .catch((error) => {
+          const message =
+            error instanceof Error ? error.message : "An error occurred";
+          toast.error(message);
+        })
+        .finally(() => {
+          toast.dismiss(toastId);
+        });
     }
-  }, [loading, verification2FA]);
+  }, [loading, twoFactor, updateUsers]);
   const dateFormats = ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD", "DD MMM YYYY"];
   const timeFormats = ["12 hour", "24 hour"];
   const weekDays = ["Sunday", "Monday"];

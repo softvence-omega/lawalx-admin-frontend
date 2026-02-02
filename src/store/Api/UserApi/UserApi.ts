@@ -95,7 +95,6 @@ const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Manager"],
     }),
-
     getEmployeeById: builder.query({
       query: (id) => ({
         url: `/users/employees/${id}`,
@@ -103,7 +102,6 @@ const userApi = baseApi.injectEndpoints({
       }),
       providesTags: ["Employee"],
     }),
-
     getViewerById: builder.query({
       query: (id) => ({
         url: `/users/viewers/${id}`,
