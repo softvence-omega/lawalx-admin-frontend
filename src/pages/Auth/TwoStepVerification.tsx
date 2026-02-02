@@ -24,7 +24,9 @@ const TwoStepVerification = () => {
   const [open, setOpen] = useState(false);
   const handleOpen = (selectedType: VerificationType) => {
     setType(selectedType);
-    setValue(selectedType === "email" ? user?.email ?? "" : user?.phone ?? "");
+    setValue(
+      selectedType === "email" ? (user?.email ?? "") : (user?.phone ?? ""),
+    );
     setOpen(true);
   };
 

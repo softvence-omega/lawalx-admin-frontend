@@ -36,7 +36,7 @@ const Login = () => {
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "sakibsoftvence@gmail.com",
+      email: "mdkazinaim0018@gmail.com",
       password: "123456789",
     },
   });
@@ -47,8 +47,8 @@ const Login = () => {
     const toastId = toast.loading("Logging in...");
     try {
       const res = await login(data).unwrap();
-      console.log(res);
       if (res.success) {
+        console.log("inside success");
         dispatch(setUser(res?.data));
         if (res?.data?.specialToken) {
           toast.success("Logged in successfully", { id: toastId });

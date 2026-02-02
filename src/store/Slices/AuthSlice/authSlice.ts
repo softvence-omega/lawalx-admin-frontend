@@ -5,6 +5,7 @@ export interface User {
   email: string;
   phone: string;
   userId: string;
+  userEmail?: string;
   role: string;
   accessToken?: string;
   refreshToken?: string;
@@ -22,8 +23,11 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, action) => {
-      const decode = jwtDecode(action.payload?.accessToken as string) as User;
-      console.log(decode)
+      const token = action.payload?.specialToken
+        ? action.payload?.specialToken
+        : action.payload?.accessToken;
+      const decode = jwtDecode(token as string) as User;
+      console.log(decode);
       if (action.payload.refreshToken) {
         state.user = {
           ...state.user,
@@ -36,10 +40,10 @@ const authSlice = createSlice({
       } else {
         state.user = {
           ...state.user,
-          email: decode.email,
+          email: decode.userEmail,
           userId: decode.userId,
           role: decode.role,
-          accessToken: action.payload.accessToken,
+          accessToken: action.payload.specialToken,
         };
       }
     },
