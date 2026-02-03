@@ -12,9 +12,7 @@ import {
 } from "@/components/ui/select";
 import BillingStats from "./Components/BillingStats";
 import BillingPlansSkeleton from "../../../common/Skeleton/BillingPlansSkeleton";
-import {
-  useGetPaymentsQuery,
-} from "@/store/Api/PaymentApi/PaymentApi";
+import { useGetPaymentsQuery } from "@/store/Api/PaymentApi/PaymentApi";
 
 export interface ClientBilling {
   id: string;
@@ -235,9 +233,9 @@ const BillingPlans: React.FC = () => {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
+          <div className="overflow-x-auto p-6">
+            <table className="w-full overflow-hidden rounded-t-lg">
+              <thead className="bg-gray-50 rounded-t-lg border border-gray-200">
                 <tr>
                   <th className="px-6 py-3 text-left">
                     <input
@@ -270,7 +268,7 @@ const BillingPlans: React.FC = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200 border border-gray-200">
                 {paginatedClients.length > 0 ? (
                   paginatedClients.map((client) => (
                     <tr key={client.id} className="hover:bg-gray-50">
@@ -323,14 +321,18 @@ const BillingPlans: React.FC = () => {
                         <div className="flex items-center space-x-2">
                           <button
                             className="p-1 text-blue-600 hover:text-blue-800"
-                            onClick={() => navigate(`/admin/billings/${client.id}`)}
+                            onClick={() =>
+                              navigate(`/admin/billings/${client.id}`)
+                            }
                             title="View Details"
                           >
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
                             className="p-1 text-green-600 hover:text-green-800"
-                            onClick={() => navigate(`/admin/billings/edit/${client.id}`)}
+                            onClick={() =>
+                              navigate(`/admin/billings/edit/${client.id}`)
+                            }
                             title="Edit Billing"
                           >
                             <Edit2 className="w-4 h-4" />
