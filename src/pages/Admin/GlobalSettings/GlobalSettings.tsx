@@ -7,11 +7,15 @@ import { useGetUser } from "@/hooks/useGetUser";
 import GlobalSettingsSkeleton from "./Components/GlobalSettingsSkeleton";
 
 const GlobalSettings = () => {
-  const { verification2FA, loading } = useGetUser();
-  const [defaultLanguage, setDefaultLanguage] = useState("English (US)");
-  const [defaultTimezone, setDefaultTimezone] = useState(
-    "(UTC-08:00) Pacific Time (US & Canada)",
-  );
+  const {
+    verification2FA,
+    loading,
+    profileImage: existingProfileImage,
+  } = useGetUser();
+  const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [profileImageUrl, setProfileImageUrl] = useState<string>("");
+  const [defaultLanguage, setDefaultLanguage] = useState("ENGLISH");
+  const [defaultTimezone, setDefaultTimezone] = useState("America/Los_Angeles");
   const [allowTimezoneOverride, setAllowTimezoneOverride] = useState(true);
   const [showRelativeTimestamps, setShowRelativeTimestamps] = useState(true);
   const [dateFormat, setDateFormat] = useState("DD/MM/YYYY");
@@ -23,26 +27,69 @@ const GlobalSettings = () => {
   const [updateUsers] = useUpdateUsersMutation();
   useEffect(() => {
     setTwoFactor(verification2FA);
-  }, [verification2FA]);
+    if (existingProfileImage) {
+      setProfileImageUrl(existingProfileImage);
+    }
+  }, [verification2FA, existingProfileImage]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (profileImageUrl && profileImageUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(profileImageUrl);
+      }
+      setProfileImage(file);
+      setProfileImageUrl(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    if (profileImageUrl && profileImageUrl.startsWith("blob:")) {
+      URL.revokeObjectURL(profileImageUrl);
+    }
+    setProfileImage(null);
+    setProfileImageUrl("");
+  };
+
+  useEffect(() => {
+    return () => {
+      if (profileImageUrl && profileImageUrl.startsWith("blob:")) {
+        URL.revokeObjectURL(profileImageUrl);
+      }
+    };
+  }, [profileImageUrl]);
+
   const languages = [
-    "English (US)",
-    "English (UK)",
-    "Spanish",
-    "French",
-    "German",
-    "Japanese",
-    "Chinese",
-    "Arabic",
+    "ENGLISH",
+    "SPANISH",
+    "FRENCH",
+    "GERMAN",
+    "JAPANESE",
+    "CHINESE",
+    "ARABIC",
   ];
+
   const timezones = [
-    "(UTC-08:00) Pacific Time (US & Canada)",
-    "(UTC-07:00) Mountain Time (US & Canada)",
-    "(UTC-06:00) Central Time (US & Canada)",
-    "(UTC-05:00) Eastern Time (US & Canada)",
-    "(UTC+00:00) London",
-    "(UTC+01:00) Paris",
-    "(UTC+02:00) Athens",
-    "(UTC+05:30) India",
+    {
+      label: "(UTC-08:00) Pacific Time (US & Canada)",
+      value: "America/Los_Angeles",
+    },
+    {
+      label: "(UTC-07:00) Mountain Time (US & Canada)",
+      value: "America/Denver",
+    },
+    {
+      label: "(UTC-06:00) Central Time (US & Canada)",
+      value: "America/Chicago",
+    },
+    {
+      label: "(UTC-05:00) Eastern Time (US & Canada)",
+      value: "America/New_York",
+    },
+    { label: "(UTC+00:00) London", value: "Europe/London" },
+    { label: "(UTC+01:00) Paris", value: "Europe/Paris" },
+    { label: "(UTC+02:00) Athens", value: "Europe/Athens" },
+    { label: "(UTC+05:30) India", value: "Asia/Kolkata" },
   ];
 
   const dateFormats = ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD", "DD MMM YYYY"];
@@ -52,9 +99,9 @@ const GlobalSettings = () => {
   const handleTwoFactor = async () => {
     const toastId = toast.loading("Updating settings...");
     try {
-      const res = await updateUsers({
-        verification2FA: !twoFactor,
-      }).unwrap();
+      const formData = new FormData();
+      formData.append("verification2FA", String(!twoFactor));
+      const res = await updateUsers(formData).unwrap();
       if (res.success) {
         toast.success(
           !twoFactor
@@ -77,18 +124,14 @@ const GlobalSettings = () => {
   const handleSubmit = async () => {
     const toastId = toast.loading("Updating settings...");
     try {
-      const res = await updateUsers({
-        // defaultLanguage,
-        // defaultTimezone,
-        // allowTimezoneOverride,
-        // showRelativeTimestamps,
-        // dateFormat,
-        // timeFormat,
-        // firstDayOfWeek,
-        // primaryColor,
-        // secondaryColor,
-        verification2FA: twoFactor,
-      }).unwrap();
+      const formData = new FormData();
+      if (profileImage) {
+        formData.append("profileImage", profileImage);
+      }
+      formData.append("language", defaultLanguage);
+      // formData.append("timezone", defaultTimezone);
+      formData.append("verification2FA", String(twoFactor));
+      const res = await updateUsers(formData).unwrap();
       if (res.success) {
         toast.success(res.message || "Settings updated successfully", {
           id: toastId,
@@ -147,7 +190,9 @@ const GlobalSettings = () => {
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 appearance-none bg-white text-sm"
                   >
                     {timezones.map((tz) => (
-                      <option key={tz}>{tz}</option>
+                      <option key={tz.value} value={tz.value}>
+                        {tz.label}
+                      </option>
                     ))}
                   </select>
                   <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
@@ -286,8 +331,72 @@ const GlobalSettings = () => {
               </div>
             </div>
 
-            {/* Right Column - Branding */}
+            {/* Right Column - User Profile & Branding */}
             <div className="space-y-8">
+              <div>
+                <h2 className="text-xl font-semibold text-gray-900 mb-6">
+                  User Profile
+                </h2>
+                <div className="flex items-center gap-6">
+                  <div className="relative group">
+                    <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
+                      {profileImageUrl ? (
+                        <img
+                          src={profileImageUrl}
+                          alt="Profile"
+                          className="w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-400">
+                          <Upload className="w-8 h-8" />
+                        </div>
+                      )}
+                    </div>
+                    <label className="absolute inset-0 flex items-center justify-center bg-black/40 text-white opacity-0 group-hover:opacity-100 transition-opacity rounded-full cursor-pointer">
+                      <Upload className="w-6 h-6" />
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                      />
+                    </label>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-medium text-gray-900">
+                      Profile Photo
+                    </h3>
+                    <p className="text-xs text-gray-500 mt-1">
+                      JPG, GIF or PNG. Max size of 2MB
+                    </p>
+                    <div className="mt-2 flex gap-3">
+                      <button
+                        type="button"
+                        onClick={() =>
+                          document
+                            .querySelector<HTMLInputElement>(
+                              'input[type="file"]',
+                            )
+                            ?.click()
+                        }
+                        className="text-sm font-medium text-blue-600 hover:text-blue-700"
+                      >
+                        Update photo
+                      </button>
+                      {profileImageUrl && (
+                        <button
+                          type="button"
+                          onClick={handleRemoveImage}
+                          className="text-sm font-medium text-red-600 hover:text-red-700"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <h2 className="text-xl font-semibold text-gray-900">
                 Default Branding
               </h2>

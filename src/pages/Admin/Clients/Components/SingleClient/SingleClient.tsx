@@ -23,11 +23,9 @@ export function SingleClient() {
   const { id } = useParams<{ id: string }>();
   const { data, isLoading } = useGetClientByIdAdminQuery(id as string);
   const clientData = data?.data;
-  console.log(clientData);
   const navigate = useNavigate();
   if (isLoading) return <p>Loading...</p>;
   if (!clientData) return <p>Client not found</p>;
-
   const {
     contactPersonName,
     subdomain,
@@ -39,6 +37,58 @@ export function SingleClient() {
     region,
     supportContactLink,
   } = clientData;
+  // const {
+  //   id,
+  //   createdAt,
+  //   updatedAt,
+  //   name,
+  //   contactPersonName,
+  //   isReferred,
+  //   referrerName,
+  //   referrerEmail,
+  //   referrerPhone,
+  //   discoverySource,
+  //   logoUrl,
+  //   faviconUrl,
+  //   primaryColor,
+  //   secondaryColor,
+  //   showFooter,
+  //   customFooterText,
+  //   supportContactLink,
+  //   subdomain,
+  //   region,
+  //   timeZone,
+  //   language,
+  //   enableOnboarding,
+  //   autoGenDashboard,
+  //   industryTemplate,
+  //   isActive,
+  //   enableCustomCharts,
+  //   storageQuotaGb,
+  //   archiveThreshold,
+  //   archiveAfterDays,
+  //   usageWarningAlert,
+  //   billingCycle,
+  //   subscriptionPlan,
+  //   discountCode,
+  //   startBillingDate,
+  //   trialPeriodDays,
+  //   paymentMethod,
+  //   internalNotes,
+  //   userId,
+  //   assignedCharts,
+  // } = clientData;
+
+  // const subscriptionPlanData = {
+  //   plan: subscriptionPlan,
+  //   discountCode,
+  //   startBillingDate,
+  //   trialPeriodDays,
+  //   paymentMethod,
+  //   internalNotes,
+  //   userId,
+  //   assignedCharts,
+  // };
 
   return (
     <div className=" h-full">

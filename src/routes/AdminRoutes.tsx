@@ -5,10 +5,10 @@ import {
   Clock,
   Users,
   BarChart3,
-  Activity,
+  // Activity,
   CreditCard,
   Plug,
-  Shield,
+  // Shield,
   HelpCircle,
   Settings,
 } from "lucide-react";
@@ -16,10 +16,10 @@ import Overview from "@/pages/Admin/Overview/Overview";
 import Clients from "@/pages/Admin/Clients/Clients";
 import { SingleClient } from "@/pages/Admin/Clients/Components/SingleClient/SingleClient";
 import Analytics from "@/pages/Admin/Analytics/Analytics";
-import SystemHealth from "@/pages/Admin/SystemHealth/SystemHealth";
+// import SystemHealth from "@/pages/Admin/SystemHealth/SystemHealth";
 import BillingPlans from "@/pages/Admin/BillingsPlans/BillingsPlans";
 import APIIntegrations from "@/pages/Admin/ApiIntegration/APIIntegrations";
-import SecurityPrivacy from "@/pages/Admin/SecurityPrivacy/SecurityPrivacy";
+// import SecurityPrivacy from "@/pages/Admin/SecurityPrivacy/SecurityPrivacy";
 import GlobalSettings from "@/pages/Admin/GlobalSettings/GlobalSettings";
 import AddClientForm from "@/pages/Admin/Clients/Components/AddClient/AddClientForm";
 import ManageBillings from "@/pages/Admin/ManageBillings/ManageBillings";
@@ -29,6 +29,8 @@ import Support from "@/pages/Admin/Support/Support";
 import { SupportTickets } from "@/pages/Admin/Support/Components/SupportTickets/SupportTickets";
 import TeamView from "@/pages/Admin/Support/Components/TeamView/TeamView";
 import SupportEmployeeList from "@/pages/Admin/Support/Components/SupportEmployeeList/SupportEmployeeList";
+import BillingsContainer from "@/pages/Admin/BillingsPlans/BillingsContainer";
+import BillingDetails from "@/pages/Admin/BillingsPlans/Components/BillingDetailsPage/BillingDetails";
 export const adminRoutes: RouteGroup[] = [
   {
     group: "Main Menu",
@@ -65,17 +67,31 @@ export const adminRoutes: RouteGroup[] = [
         path: "analytics",
         element: <Analytics />,
       },
-      {
-        icon: <Activity />,
-        name: "System Health",
-        path: "systemHealth",
-        element: <SystemHealth />,
-      },
+      // {
+      //   icon: <Activity />,
+      //   name: "System Health",
+      //   path: "systemHealth",
+      //   element: <SystemHealth />,
+      // },
       {
         icon: <CreditCard />,
         name: "Billing & Plans",
         path: "billings",
-        element: <BillingPlans />,
+        element: <BillingsContainer />,
+        children: [
+          {
+            path: "",
+            element: <BillingPlans />,
+          },
+          {
+            path: ":id",
+            element: <BillingDetails />,
+          },
+          {
+            path: "edit/:id",
+            element: <BillingDetails />,
+          },
+        ],
       },
     ],
   },
@@ -88,12 +104,12 @@ export const adminRoutes: RouteGroup[] = [
         path: "apiIntegration",
         element: <APIIntegrations />,
       },
-      {
-        icon: <Shield />,
-        name: "Security & Privacy",
-        path: "security",
-        element: <SecurityPrivacy />,
-      },
+      // {
+      //   icon: <Shield />,
+      //   name: "Security & Privacy",
+      //   path: "security",
+      //   element: <SecurityPrivacy />,
+      // },
       {
         icon: <HelpCircle />,
         name: "Support",
