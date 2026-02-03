@@ -6,6 +6,7 @@ export interface User {
   phone: string;
   userId: string;
   userEmail?: string;
+  userPhone?: string;
   role: string;
   accessToken?: string;
   refreshToken?: string;
@@ -40,8 +41,11 @@ const authSlice = createSlice({
       } else {
         state.user = {
           ...state.user,
+          userEmail: action.payload.email,
+          userPhone: action.payload.phone,
           email: decode.userEmail,
-          userId: decode.userId,
+          phone: decode.userPhone,
+          userId: action.payload.userId,
           role: decode.role,
           accessToken: action.payload.specialToken,
         };

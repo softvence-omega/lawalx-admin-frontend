@@ -19,8 +19,11 @@ const GlobalSettings = () => {
   const [firstDayOfWeek, setFirstDayOfWeek] = useState("Sunday");
   const [primaryColor, setPrimaryColor] = useState("#7F56D9");
   const [secondaryColor, setSecondaryColor] = useState("#6366F1");
-  const [twoFactor, setTwoFactor] = useState(false);
+  const [twoFactor, setTwoFactor] = useState<boolean>(false);
   const [updateUsers] = useUpdateUsersMutation();
+  useEffect(() => {
+    setTwoFactor(verification2FA);
+  }, [verification2FA]);
   const languages = [
     "English (US)",
     "English (UK)",
@@ -41,32 +44,35 @@ const GlobalSettings = () => {
     "(UTC+02:00) Athens",
     "(UTC+05:30) India",
   ];
-  useEffect(() => {
-    const toastId = toast.loading("Updating settings...");
-    if (!loading) {
-      // setTwoFactor(verification2FA);
-      updateUsers({
-        verification2FA: twoFactor,
-      })
-        .unwrap()
-        .then((res) => {
-          if (res.success) {
-            toast.success(res.message || "Settings updated successfully");
-          }
-        })
-        .catch((error) => {
-          const message =
-            error instanceof Error ? error.message : "An error occurred";
-          toast.error(message);
-        })
-        .finally(() => {
-          toast.dismiss(toastId);
-        });
-    }
-  }, [loading, twoFactor, updateUsers]);
+
   const dateFormats = ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD", "DD MMM YYYY"];
   const timeFormats = ["12 hour", "24 hour"];
   const weekDays = ["Sunday", "Monday"];
+
+  const handleTwoFactor = async () => {
+    const toastId = toast.loading("Updating settings...");
+    try {
+      const res = await updateUsers({
+        verification2FA: !twoFactor,
+      }).unwrap();
+      if (res.success) {
+        toast.success(
+          !twoFactor
+            ? "Two factor authentication enabled successfully"
+            : "Two factor authentication disabled successfully",
+          {
+            id: toastId,
+          },
+        );
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to update settings";
+      toast.error(message, {
+        id: toastId,
+      });
+    }
+  };
 
   const handleSubmit = async () => {
     const toastId = toast.loading("Updating settings...");
@@ -102,12 +108,12 @@ const GlobalSettings = () => {
   return (
     <div className="min-h-screen">
       <div>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8">
+        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6 lg:p-8">
           <h1 className="text-2xl font-semibold text-gray-900 mb-8">
             Language, Date & Time zone Settings
           </h1>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10">
             {/* Left Column */}
             <div className="space-y-8">
               {/* Default Language */}
@@ -148,7 +154,7 @@ const GlobalSettings = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 {/* Timezone Override - TOGGLE */}
                 <div className="flex items-center gap-1.5">
                   <button
@@ -174,7 +180,7 @@ const GlobalSettings = () => {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <button
-                    onClick={() => setTwoFactor(!twoFactor)}
+                    onClick={() => handleTwoFactor()}
                     className={`relative inline-flex h-6 w-12 items-center rounded-full transition-colors ${
                       twoFactor ? "bg-blue-600" : "bg-gray-300"
                     }`}
@@ -287,7 +293,7 @@ const GlobalSettings = () => {
               </h2>
 
               {/* Client Logo + Favicon side by side */}
-              <div className="flex  gap-8">
+              <div className="flex flex-wrap gap-6 lg:gap-8">
                 {/* Client Logo */}
                 <div className="flex-1 min-w-[280px]">
                   <label className="block text-sm font-medium text-gray-700 mb-3">
@@ -378,10 +384,10 @@ const GlobalSettings = () => {
           </div>
 
           {/* Save Button */}
-          <div className="flex justify-end pt-8 mt-8 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row justify-end pt-8 mt-8 border-t border-gray-200">
             <button
               onClick={handleSubmit}
-              className="px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
+              className="w-full sm:w-auto px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors"
             >
               Save Settings
             </button>

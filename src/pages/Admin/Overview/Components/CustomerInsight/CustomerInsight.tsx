@@ -13,12 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLocation } from "react-router-dom";
 export const CustomerInsights = memo(function CustomerInsights() {
+  const location = useLocation();
+  const isClient = location.pathname.includes("/admin/clients");
   const { data, isLoading } = useGetAllClientByAdminQuery({});
   const customers: ClientData2[] = useMemo(() => data?.data || [], [data]);
   const [viewMode, setViewMode] = useState("Boards");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = isClient ? 16 : 4;
   const [filterPlan, setFilterPlan] = useState<string>("all");
 
   // Filter customers based on plan
@@ -129,29 +132,31 @@ export const CustomerInsights = memo(function CustomerInsights() {
           )}
 
           {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-6">
-            <Button
-              className="border border-green-500 text-green-500 cursor-pointer"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </Button>
-            <span className="text-blue-400">
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button
-              className="border border-blue-500 text-blue-500 cursor-pointer"
-              size="sm"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </Button>
-          </div>
+          {currentCustomers.length > itemsPerPage && (
+            <div className="flex justify-between items-center mt-6">
+              <Button
+                className="border border-green-500 text-green-500 cursor-pointer"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+              <span className="text-blue-400">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                className="border border-blue-500 text-blue-500 cursor-pointer"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </>
       )}
     </div>

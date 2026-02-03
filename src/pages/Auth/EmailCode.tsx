@@ -28,7 +28,7 @@ const EmailCode = () => {
 
   const type = state?.type;
   const value = state?.value;
-
+  console.log(value, "value");
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
   const [code, setCode] = useState(Array(6).fill(""));
   const [timer, setTimer] = useState(600); // 10 minutes

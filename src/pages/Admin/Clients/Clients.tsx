@@ -1,16 +1,17 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { LayoutGrid, Table, Filter } from "lucide-react";
+// import { useState } from "react";
+// import { Button } from "@/components/ui/button";
+// import { LayoutGrid, Table, Filter } from "lucide-react";
 import { ClientData2 } from "@/types/Client";
 import CounterCard from "./Components/CounterCard";
-import BoardCustomerInsight from "../Overview/Components/CustomerInsight/BoardCustomerInsight";
+// import BoardCustomerInsight from "../Overview/Components/CustomerInsight/BoardCustomerInsight";
 import {
-  useGetAllClientByAdminQuery,
+  // useGetAllClientByAdminQuery,
   useGetClientDashboardSummaryQuery,
 } from "@/store/Api/ClientApi/ClientApi";
-import ClientInsightsTable from "../Overview/Components/CustomerInsight/TableCustomerInsight";
+// import ClientInsightsTable from "../Overview/Components/CustomerInsight/TableCustomerInsight";
 import CounterCardSkeleton from "@/common/Skeleton/CounterCardSkeleton";
-import ClientsSkeleton from "./Components/ClientsSkeleton";
+// import ClientsSkeleton from "./Components/ClientsSkeleton";
+import { CustomerInsights } from "../Overview/Components/CustomerInsight/CustomerInsight";
 
 interface Clientdata {
   customer?: ClientData2;
@@ -19,25 +20,25 @@ interface Clientdata {
 const Clients: React.FC<Clientdata> = () => {
   const { data: summary, isLoading: summaryLoading } =
     useGetClientDashboardSummaryQuery({});
-  const { data, isLoading } = useGetAllClientByAdminQuery({});
-  const [viewMode, setViewMode] = useState("Boards");
+  // const { data, isLoading } = useGetAllClientByAdminQuery({});
+  // const [viewMode, setViewMode] = useState("Boards");
 
-  const customers: ClientData2[] = data?.data || [];
+  // const customers: ClientData2[] = data?.data || [];
   const summaryData = summary?.data || [];
-  // Pagination states
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 50;
+  // // Pagination states
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const itemsPerPage = 50;
 
-  // Calculate the total number of pages
-  const totalPages = Math.ceil(customers?.length / itemsPerPage);
+  // // Calculate the total number of pages
+  // const totalPages = Math.ceil(customers?.length / itemsPerPage);
 
-  // Calculate the customers to display on the current page
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const currentCustomers = customers?.slice(startIndex, endIndex);
-  if (isLoading) {
-    return <ClientsSkeleton />;
-  }
+  // // Calculate the customers to display on the current page
+  // const startIndex = (currentPage - 1) * itemsPerPage;
+  // const endIndex = startIndex + itemsPerPage;
+  // const currentCustomers = customers?.slice(startIndex, endIndex);
+  // if (isLoading) {
+  //   return <ClientsSkeleton />;
+  // }
   return (
     <>
       <div className="flex flex-wrap sm:flex-nowrap gap-5 mt-11">
@@ -71,8 +72,8 @@ const Clients: React.FC<Clientdata> = () => {
         )}
       </div>
       <div className="space-y-6 mt-11">
-        {/* Section Header */}
-        <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between">
+        <CustomerInsights />
+        {/* <div className="flex flex-col gap-4 sm:gap-0 sm:flex-row items-center justify-between">
           <h2 className="text-xl font-medium text-gray-900">
             Customer Insight
           </h2>
@@ -124,7 +125,7 @@ const Clients: React.FC<Clientdata> = () => {
           <ClientInsightsTable customers={currentCustomers} />
         )}
 
-        {/* Pagination Controls */}
+     
         <div className="flex justify-between items-center mt-6">
           <Button
             className="border border-green-500 text-green-500 cursor-pointer"
@@ -147,7 +148,7 @@ const Clients: React.FC<Clientdata> = () => {
           >
             Next
           </Button>
-        </div>
+        </div> */}
       </div>
     </>
   );
