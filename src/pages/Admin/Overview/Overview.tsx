@@ -9,7 +9,7 @@ import { TrendingIndustriesTable } from "./Components/trendingIndustries";
 
 const Overview = () => {
   return (
-    <div className="space-y-10 mx-auto px-0 pb-10 container">
+    <div className="space-y-10 mx-auto px-0 pb-10 ">
       <MetricsCards />
 
       <CustomerInsights />

@@ -60,18 +60,18 @@ export const CustomerInsights = memo(function CustomerInsights() {
 
         <div className="flex items-center gap-3">
           <Button
+            size="lg"
             variant={viewMode === "Boards" ? "secondary" : "outline"}
-            className={
-              viewMode === "Boards"
-                ? "bg-gray-800 text-white gap-2 cursor-pointer"
-                : "gap-2 cursor-pointer"
-            }
+            className={`
+              ${viewMode === "Boards" ? "bg-gray-800 text-white gap-2 cursor-pointer" : "gap-2 cursor-pointer"}
+            `}
             onClick={() => setViewMode("Boards")}
           >
             <LayoutGrid className="h-4 w-4" />
             Boards
           </Button>
           <Button
+            size="lg"
             variant={viewMode === "Tables" ? "secondary" : "outline"}
             className={
               viewMode === "Tables"
@@ -120,9 +120,11 @@ export const CustomerInsights = memo(function CustomerInsights() {
       ) : (
         <>
           {viewMode === "Boards" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2">
               {currentCustomers.map((customer) => (
-                <BoardCustomerInsight key={customer.id} customer={customer} />
+                <div className="">
+                  <BoardCustomerInsight key={customer.id} customer={customer} />
+                </div>
               ))}
             </div>
           ) : (

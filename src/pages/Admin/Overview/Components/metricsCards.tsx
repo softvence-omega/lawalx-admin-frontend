@@ -9,64 +9,8 @@ import {
 import * as React from "react";
 import { FaChartPie, FaUsers } from "react-icons/fa";
 import DashboardStatsCard from "@/components/Dashboard/DashboardStatsCard";
-
-const metricsData = [
-  {
-    id: 1,
-    title: "Total Sales",
-    value: "$2150k",
-    growth: "+5%",
-    growth_type: "up",
-    description: "$80k+ Sales growth",
-    icon: "Chart",
-    icon_bg_color: "#0266F3",
-    link_text: "View report",
-  },
-  {
-    id: 2,
-    title: "Monthly Recurring Revenue",
-    value: "850",
-    growth: "+2%",
-    growth_type: "up",
-    description: "150 New user joined",
-    icon: "LiveProject",
-    icon_bg_color: "#169E7B",
-    link_text: "View report",
-  },
-  {
-    id: 3,
-    title: "Client Retention Rate",
-    value: "92.2%",
-    growth: "+11%",
-    growth_type: "up",
-    description: "5 new clients joined",
-    icon: "Users",
-    icon_bg_color: "#7E3AF2",
-    link_text: "View report",
-  },
-  {
-    id: 4,
-    title: "Client Churn Rate",
-    value: "7.8%",
-    growth: "2%",
-    growth_type: "down",
-    description: "50 Clients left",
-    icon: "SubmissionOverdue",
-    icon_bg_color: "#DC2626",
-    link_text: "View report",
-  },
-  {
-    id: 5,
-    title: "Net Promoter Score",
-    value: "75",
-    growth: "+5%",
-    growth_type: "up",
-    description: "25 score growth",
-    icon: "Check",
-    icon_bg_color: "#D97706",
-    link_text: "View report",
-  },
-];
+import DashboardStatsCardSkeleton from "@/common/Skeleton/DashboardStatsCardSkeleton";
+import { useGetPaymentsDashboardSummaryQuery } from "@/store/Api/PaymentApi/PaymentApi";
 
 export function MetricsCards() {
   const IconCollection: Record<string, React.ReactNode> = {
@@ -79,6 +23,82 @@ export function MetricsCards() {
     Users: <FaUsers />,
     Chart: <FaChartPie />,
   };
+  const { data, isLoading } = useGetPaymentsDashboardSummaryQuery({});
+  const summaryData = data?.data;
+  const metricsData = [
+    {
+      id: 1,
+      title: "Total Sales",
+      value: summaryData?.totalSales?.value,
+      growth: summaryData?.totalSales?.growth,
+      growth_type: `${parseFloat(summaryData?.totalSales?.growth) > 0 ? "up" : "down"}`,
+      description: `${summaryData?.totalSales?.value} Sales growth`,
+      icon: "Chart",
+      icon_bg_color: "#0266F3",
+      link_text: "View report",
+    },
+    {
+      id: 2,
+      title: "Monthly Recurring Revenue",
+      value: summaryData?.monthlyRecurringRevenue?.value,
+      growth: summaryData?.monthlyRecurringRevenue?.growth,
+      growth_type: `${parseFloat(summaryData?.monthlyRecurringRevenue?.growth) > 0 ? "up" : "down"}`,
+      description: `${summaryData?.monthlyRecurringRevenue?.value} New user joined`,
+      icon: "LiveProject",
+      icon_bg_color: "#169E7B",
+      link_text: "View report",
+    },
+    {
+      id: 3,
+      title: "Client Retention Rate",
+      value: summaryData?.clientRetentionRate.value,
+      growth: summaryData?.clientRetentionRate.growth,
+      growth_type: `${parseFloat(summaryData?.clientRetentionRate.growth) > 0 ? "up" : "down"}`,
+      description: `${summaryData?.clientRetentionRate.value} Client retention rate`,
+      icon: "Users",
+      icon_bg_color: "#7E3AF2",
+      link_text: "View report",
+    },
+    {
+      id: 4,
+      title: "Client Churn Rate",
+      value: summaryData?.clientChurnRate.value,
+      growth: summaryData?.clientChurnRate.growth,
+      growth_type: `${parseFloat(summaryData?.clientChurnRate.growth) > 0 ? "up" : "down"}`,
+      description: `${summaryData?.clientChurnRate.value} Client churn rate`,
+      icon: "SubmissionOverdue",
+      icon_bg_color: "#DC2626",
+      link_text: "View report",
+    },
+    {
+      id: 5,
+      title: "Net Promoter Score",
+      value: summaryData?.netPromoterScore?.value,
+      growth: summaryData?.netPromoterScore?.growth,
+      growth_type: `${parseFloat(summaryData?.netPromoterScore?.growth) > 0 ? "up" : "down"}`,
+      description: `${summaryData?.netPromoterScore?.value} Net promoter score`,
+      icon: "Check",
+      icon_bg_color: "#D97706",
+      link_text: "View report",
+    },
+  ];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10">
+        {metricsData?.map((item) => (
+          <DashboardStatsCardSkeleton
+            key={item.id}
+            className={
+              item.title === "Net Promoter Score"
+                ? "md:col-span-2 lg:col-span-2 xl:col-span-1"
+                : ""
+            }
+          />
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mt-10">

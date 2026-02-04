@@ -342,7 +342,13 @@ const GlobalSettings = () => {
                     <div className="w-24 h-24 rounded-full overflow-hidden bg-gray-100 border-2 border-gray-200">
                       {profileImageUrl ? (
                         <img
-                          src={profileImageUrl}
+                          src={
+                            profileImageUrl.startsWith("blob:") ||
+                            profileImageUrl.startsWith("http")
+                              ? profileImageUrl
+                              : "https://lawaladmin.sakibalhasa.xyz/" +
+                                profileImageUrl
+                          }
                           alt="Profile"
                           className="w-full h-full object-cover"
                         />

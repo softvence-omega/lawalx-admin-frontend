@@ -23,11 +23,11 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
   const storageTotal = customer.storageQuotaGb;
 
   const lastActive = customer.updatedAt;
-
+  const updatedDate = customer.updatedAt;
   const hasAlert = customer.usageWarningAlert;
 
   return (
-    <Card className="border border-gray-200 shadow-sm min-w-[380px]">
+    <Card className="border border-gray-200 shadow-sm">
       <Link to={`/admin/clients/${customer.id}`} className="no-underline">
         <CardContent className="p-0 space-y-4">
           {/* Header */}
@@ -37,9 +37,9 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
                 <FaSackDollar size={28} />
               </div>
               <div>
-                <h3 className="font-medium text-gray-900">
+                <h4 className="font-medium text-gray-900 truncate">
                   {customer.contactPersonName}
-                </h3>
+                </h4>
                 <p className="text-sm text-gray-500">
                   {customer.subscriptionPlan}
                 </p>
@@ -63,7 +63,7 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
           <div className="grid grid-cols-2 gap-x-18 gap-y-5 text-sm px-6">
             <div>
               <p className="text-gray-500 mb-1">Users</p>
-              <p className="font-medium text-gray-900">—</p>
+              <p className="font-medium text-gray-900">0 / 600</p>
             </div>
 
             <div>
@@ -82,7 +82,11 @@ const BoardCustomerInsight: React.FC<CustomerProps> = ({ customer }) => {
                 Dashboard Updates
               </p>
               <p className="font-medium text-gray-900">
-                {customer.autoGenDashboard ? "Enabled" : "Disabled"}
+                {new Date(updatedDate).getDate()}{" "}
+                {new Date(updatedDate)
+                  .toLocaleString("en-GB", { month: "short" })
+                  .toString()}
+                , {new Date(updatedDate).getFullYear()}
               </p>
             </div>
 
