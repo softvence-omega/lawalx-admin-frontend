@@ -53,7 +53,7 @@ export const CustomerInsights = memo(function CustomerInsights() {
   return (
     <div className="space-y-6 mt-11 min-h-[55vh]">
       {/* Section Header - Kept stable to prevent layout shifts */}
-      <div className="flex items-center justify-between">
+      <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900">
           Customer Insight
         </h2>

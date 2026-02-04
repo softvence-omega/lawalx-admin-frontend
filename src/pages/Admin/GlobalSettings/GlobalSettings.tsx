@@ -346,7 +346,7 @@ const GlobalSettings = () => {
                             profileImageUrl.startsWith("blob:") ||
                             profileImageUrl.startsWith("http")
                               ? profileImageUrl
-                              : "https://lawaladmin.sakibalhasa.xyz/" +
+                              : import.meta.env.VITE_SOCKET_URL +
                                 profileImageUrl
                           }
                           alt="Profile"

@@ -169,7 +169,7 @@ const BillingPlans: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           {/* Header */}
           <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
+            <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
               <h1 className="text-xl font-semibold text-gray-900">
                 Client Billings
               </h1>
@@ -217,7 +217,7 @@ const BillingPlans: React.FC = () => {
                     placeholder="Search Company..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 pr-4 py-2 w-48 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="pl-9 pr-4 py-2 w-full md:w-48 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   />
                   {searchTerm && (
                     <button

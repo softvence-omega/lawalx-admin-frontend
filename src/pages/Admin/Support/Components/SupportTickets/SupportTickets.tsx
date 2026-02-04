@@ -482,7 +482,7 @@ export function SupportTickets() {
                           <Avatar className="h-7 w-7 border-2 border-white shadow-sm">
                             <AvatarImage
                               src={
-                                ticket.assignments[0].user?.profileImage || ""
+                                import.meta.env.VITE_SOCKET_URL + ticket.assignments[0].user?.profileImage || ""
                               }
                             />
                             <AvatarFallback>
