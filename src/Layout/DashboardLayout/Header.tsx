@@ -76,7 +76,7 @@ const Header = ({ toggleSidebar, isCollapsed }: HeaderProps) => {
   const unreadCount = notifications.filter((n) => n.unread).length;
 
   return (
-    <header className="top-0 z-50 sticky grid grid-cols-3 items-center gap-2 md:gap-6 bg-white px-4 md:px-6 border-gray-200 border-b h-16 md:h-24">
+    <header className="top-0 z-50 sticky grid grid-cols-2 lg:grid-cols-3 items-center gap-2 lg:gap-6 bg-white px-4 md:px-6 border-gray-200 border-b h-16 md:h-24">
       {/* Left Side: Search */}
       <div className=" flex items-center gap-2 md:gap-4 overflow-hidden">
         <Button
@@ -113,11 +113,11 @@ const Header = ({ toggleSidebar, isCollapsed }: HeaderProps) => {
       </div>
 
       {/* Right Side: Actions & Profile */}
-      <div className="flex flex-shrink-0 items-center justify-end gap-1 md:gap-4">
+      <div className="flex flex-shrink-0 items-center justify-end gap-1 md:gap-4 ">
         <div className="lg:hidden">
-          <Button variant="ghost" size="icon" className="text-gray-500">
-            <Search className="w-5 h-5" />
-          </Button>
+          <button className="relative hover:bg-gray-100 p-2 md:p-3 border border-gray-200 rounded-lg text-gray-500 transition-colors">
+            <Search className="size-5" />
+          </button>
         </div>
 
         {/* Notifications */}
@@ -207,9 +207,9 @@ const Header = ({ toggleSidebar, isCollapsed }: HeaderProps) => {
           <Button
             variant="default"
             size="lg"
-            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white transition-[300ms] cursor-pointer"
+            className="gap-2 bg-blue-600 hover:bg-blue-700 text-white transition-[300ms] py-5 cursor-pointer"
           >
-            <Plus className="w-4 h-4 text-white" />
+            <Plus className="size-5 text-white" />
             <span className="hidden xl:inline">Add Client</span>
           </Button>
         </NavLink>
