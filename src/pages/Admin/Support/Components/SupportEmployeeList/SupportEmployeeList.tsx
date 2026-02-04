@@ -27,6 +27,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 
 interface Employee {
   id: string;
@@ -226,6 +236,11 @@ const SupportEmployeeList = () => {
   const [selectedEmployees, setSelectedEmployees] = useState<Set<string>>(
     new Set(),
   );
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(
+    null,
+  );
 
   const toggleSelectAll = () => {
     if (selectedEmployees.size === employees.length) {
@@ -418,10 +433,22 @@ const SupportEmployeeList = () => {
                       <button className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg transition-colors">
                         <Eye className="h-4 w-4" />
                       </button>
-                      <button className="p-1.5 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors">
+                      <button
+                        onClick={() => {
+                          setSelectedEmployee(emp);
+                          setIsEditModalOpen(true);
+                        }}
+                        className="p-1.5 text-emerald-500 hover:bg-emerald-50 rounded-lg transition-colors"
+                      >
                         <Pencil className="h-4 w-4" />
                       </button>
-                      <button className="p-1.5 text-rose-500 hover:bg-rose-100 rounded-lg transition-colors">
+                      <button
+                        onClick={() => {
+                          setSelectedEmployee(emp);
+                          setIsDeleteModalOpen(true);
+                        }}
+                        className="p-1.5 text-rose-500 hover:bg-rose-100 rounded-lg transition-colors"
+                      >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
@@ -431,6 +458,158 @@ const SupportEmployeeList = () => {
             </TableBody>
           </Table>
         </div>
+
+        {/* Delete Modal */}
+        <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+          <DialogContent className="max-w-[400px] p-6 rounded-xl border-none">
+            <DialogHeader className="space-y-3">
+              <div className="mx-auto w-12 h-12 rounded-full bg-rose-50 flex items-center justify-center">
+                <Trash2 className="h-6 w-6 text-rose-500" />
+              </div>
+              <DialogTitle className="text-lg font-semibold text-center text-gray-900">
+                Delete Employee
+              </DialogTitle>
+              <DialogDescription className="text-center text-gray-500 text-sm">
+                Are you sure you want to delete{" "}
+                <span className="font-semibold text-gray-900">
+                  {selectedEmployee?.name}
+                </span>
+                ? This action cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter className="flex gap-3 mt-6">
+              <Button
+                variant="outline"
+                onClick={() => setIsDeleteModalOpen(false)}
+                className="flex-1 h-11 rounded-lg border-gray-200 text-gray-600 font-semibold"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  toast.success("Employee deleted successfully");
+                  setIsDeleteModalOpen(false);
+                }}
+                className="flex-1 h-11 rounded-lg bg-rose-500 hover:bg-rose-600 text-white font-semibold shadow-lg shadow-rose-100"
+              >
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Edit Modal */}
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+          <DialogContent className="max-w-[500px] p-0 overflow-hidden border-none rounded-lg shadow-2xl">
+            <DialogHeader className="px-8 py-6 bg-white border-b border-gray-100 italic">
+              <DialogTitle className="text-lg font-semibold text-gray-900">
+                Edit Employee
+              </DialogTitle>
+            </DialogHeader>
+            <div className="p-8 space-y-6">
+              <div className="flex justify-center mb-2">
+                <Avatar className="h-20 w-20 border-4 border-white shadow-lg">
+                  <AvatarImage src={selectedEmployee?.avatar} />
+                  <AvatarFallback>{selectedEmployee?.name[0]}</AvatarFallback>
+                </Avatar>
+              </div>
+
+              <div className="grid grid-cols-2 gap-6">
+                <div className="space-y-2.5">
+                  <Label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Full Name
+                  </Label>
+                  <Input
+                    defaultValue={selectedEmployee?.name}
+                    className="h-12 bg-gray-50/50 border-gray-100 rounded-lg focus:ring-blue-500 focus:border-blue-500 font-medium"
+                  />
+                </div>
+                <div className="space-y-2.5">
+                  <Label className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    Role
+                  </Label>
+                  <Select defaultValue={selectedEmployee?.role}>
+                    <SelectTrigger className="h-12! w-full bg-gray-50/50 border-gray-100 rounded-lg focus:ring-blue-500 font-medium">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="Support Manager">
+                        Support Manager
+                      </SelectItem>
+                      <SelectItem value="Sales Officer">
+                        Sales Officer
+                      </SelectItem>
+                      <SelectItem value="Call attendance">
+                        Call attendance
+                      </SelectItem>
+                      <SelectItem value="System Eng.">System Eng.</SelectItem>
+                      <SelectItem value="Viewer">Viewer</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              <div className="space-y-2.5">
+                <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Email Address
+                </Label>
+                <Input
+                  defaultValue={selectedEmployee?.email}
+                  className="h-12 bg-gray-50/50 border-gray-100 rounded-lg focus:ring-blue-500 focus:border-blue-500 font-medium"
+                />
+              </div>
+
+              <div className="space-y-2.5">
+                <Label className="text-xs font-semibold text-gray-400 uppercase tracking-wider">
+                  Account Status
+                </Label>
+                <div className="flex gap-4">
+                  {["Active", "In Active"].map((status) => (
+                    <button
+                      key={status}
+                      onClick={() => {
+                        if (selectedEmployee) {
+                          setSelectedEmployee({
+                            ...selectedEmployee,
+                            status: status as any,
+                          });
+                        }
+                      }}
+                      className={cn(
+                        "flex-1 h-12 rounded-lg border-1 transition-all font-semibold text-sm",
+                        selectedEmployee?.status === status
+                          ? status === "Active"
+                            ? "bg-emerald-50 border-emerald-500 text-emerald-600"
+                            : "bg-rose-50 border-rose-500 text-rose-600"
+                          : "border-gray-100 bg-gray-50 text-gray-400 hover:border-gray-200",
+                      )}
+                    >
+                      {status}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <DialogFooter className="px-8 py-6 bg-gray-50  flex items-center gap-0 sm:gap-4">
+              <Button
+                variant="outline"
+                onClick={() => setIsEditModalOpen(false)}
+                className="flex-1 h-12 rounded-xl border-gray-200 text-gray-600 font-bold hover:bg-white"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  toast.success("Employee updated successfully");
+                  setIsEditModalOpen(false);
+                }}
+                className="flex-1 h-12 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-lg shadow-blue-100"
+              >
+                Save Changes
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Footer */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-4">
