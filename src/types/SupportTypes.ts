@@ -30,16 +30,19 @@ export interface SupportTicket {
   createdAt: string;
   updatedAt: string;
   client: TicketClient;
-  assignments:[{
-    ticketId: string;
-    userId: string;
-    role: string;
-    user: {
-      id: string;
-      name: string;
-      profileImage: string;
-    };
-  }];
+  assignments: [
+    {
+      assignedAt: string;
+      ticketId: string;
+      userId: string;
+      role: string;
+      user: {
+        id: string;
+        name: string;
+        profileImage: string;
+      };
+    },
+  ];
   messages: TicketMessage[];
 }
 

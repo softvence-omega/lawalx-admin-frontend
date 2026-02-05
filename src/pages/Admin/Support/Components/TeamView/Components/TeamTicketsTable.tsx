@@ -22,120 +22,120 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { AssignTicketModal } from "./AssignTicketModal";
+import { useGetAllTicketsQuery } from "@/store/Api/AdminApi/SupportApi";
+import { SupportTicket } from "@/types/SupportTypes";
 
-const tickets = [
-  {
-    id: "TI#252024",
-    company: "Acme",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
-    summary: "Login authentication failing for...",
-    priority: "High",
-    status: "Opened",
-    created: "2 hours ago",
-    updated: "2 hours ago",
-    assigned: null,
-  },
-  {
-    id: "TI#252024",
-    company: "Global Tech",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
-    summary: "Dashboard loading performan...",
-    priority: "High",
-    status: "Opened",
-    created: "4 hours ago",
-    updated: "4 hours ago",
-    assigned: {
-      name: "Leslie Alexander",
-      avatar: "https://i.pravatar.cc/150?u=leslie",
-    },
-  },
-  {
-    id: "TI#252024",
-    company: "Tech Stark",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=TS",
-    summary: "Export functionality not working",
-    priority: "Medium",
-    status: "Unassigned",
-    created: "Yesterday",
-    updated: "Yesterday",
-    assigned: {
-      name: "Annette Black",
-      avatar: "https://i.pravatar.cc/150?u=annette",
-    },
-  },
-  {
-    id: "TI#252024",
-    company: "Next Gen",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
-    summary: "Email notifications not being sent",
-    priority: "Low",
-    status: "In Progress",
-    created: "Jun 25, 10:20AM",
-    updated: "Jun 25, 10:20AM",
-    assigned: null,
-  },
-  {
-    id: "TI#252024",
-    company: "Softvence",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=SV",
-    summary: "Email notifications not being sent",
-    priority: "Normal",
-    status: "In Progress",
-    created: "Jun 25, 10:20AM",
-    updated: "Jun 25, 10:20AM",
-    assigned: {
-      name: "Debian Junior",
-      avatar: "https://i.pravatar.cc/150?u=debian",
-    },
-  },
-  {
-    id: "TI#252024",
-    company: "Next Gen",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
-    summary: "API rate limiting too aggressive",
-    priority: "Low",
-    status: "Solved",
-    created: "Jun 25, 10:20AM",
-    updated: "Jun 25, 10:20AM",
-    assigned: {
-      name: "Arlene McCoy",
-      avatar: "https://i.pravatar.cc/150?u=arlene",
-    },
-  },
-  {
-    id: "TI#252024",
-    company: "Acme",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
-    summary: "Chart render failed",
-    priority: "Normal",
-    status: "Solved",
-    created: "Jun 25, 10:20AM",
-    updated: "Jun 25, 10:20AM",
-    assigned: {
-      name: "Kathryn Murphy",
-      avatar: "https://i.pravatar.cc/150?u=kathryn",
-    },
-  },
-  {
-    id: "TI#252024",
-    company: "Global Tech",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
-    summary: "Chart render failed",
-    priority: "Low",
-    status: "Solved",
-    created: "Jun 25, 10:20AM",
-    updated: "Jun 25, 10:20AM",
-    assigned: null,
-  },
-];
-
+// const tickets = [
+//   {
+//     id: "TI#252024",
+//     company: "Acme",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
+//     summary: "Login authentication failing for...",
+//     priority: "High",
+//     status: "Opened",
+//     created: "2 hours ago",
+//     updated: "2 hours ago",
+//     assigned: null,
+//   },
+//   {
+//     id: "TI#252024",
+//     company: "Global Tech",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
+//     summary: "Dashboard loading performan...",
+//     priority: "High",
+//     status: "Opened",
+//     created: "4 hours ago",
+//     updated: "4 hours ago",
+//     assigned: {
+//       name: "Leslie Alexander",
+//       avatar: "https://i.pravatar.cc/150?u=leslie",
+//     },
+//   },
+//   {
+//     id: "TI#252024",
+//     company: "Tech Stark",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=TS",
+//     summary: "Export functionality not working",
+//     priority: "Medium",
+//     status: "Unassigned",
+//     created: "Yesterday",
+//     updated: "Yesterday",
+//     assigned: {
+//       name: "Annette Black",
+//       avatar: "https://i.pravatar.cc/150?u=annette",
+//     },
+//   },
+//   {
+//     id: "TI#252024",
+//     company: "Next Gen",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
+//     summary: "Email notifications not being sent",
+//     priority: "Low",
+//     status: "In Progress",
+//     created: "Jun 25, 10:20AM",
+//     updated: "Jun 25, 10:20AM",
+//     assigned: null,
+//   },
+//   {
+//     id: "TI#252024",
+//     company: "Softvence",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=SV",
+//     summary: "Email notifications not being sent",
+//     priority: "Normal",
+//     status: "In Progress",
+//     created: "Jun 25, 10:20AM",
+//     updated: "Jun 25, 10:20AM",
+//     assigned: {
+//       name: "Debian Junior",
+//       avatar: "https://i.pravatar.cc/150?u=debian",
+//     },
+//   },
+//   {
+//     id: "TI#252024",
+//     company: "Next Gen",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=NG",
+//     summary: "API rate limiting too aggressive",
+//     priority: "Low",
+//     status: "Solved",
+//     created: "Jun 25, 10:20AM",
+//     updated: "Jun 25, 10:20AM",
+//     assigned: {
+//       name: "Arlene McCoy",
+//       avatar: "https://i.pravatar.cc/150?u=arlene",
+//     },
+//   },
+//   {
+//     id: "TI#252024",
+//     company: "Acme",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=Acme",
+//     summary: "Chart render failed",
+//     priority: "Normal",
+//     status: "Solved",
+//     created: "Jun 25, 10:20AM",
+//     updated: "Jun 25, 10:20AM",
+//     assigned: {
+//       name: "Kathryn Murphy",
+//       avatar: "https://i.pravatar.cc/150?u=kathryn",
+//     },
+//   },
+//   {
+//     id: "TI#252024",
+//     company: "Global Tech",
+//     logo: "https://api.dicebear.com/7.x/initials/svg?seed=GT",
+//     summary: "Chart render failed",
+//     priority: "Low",
+//     status: "Solved",
+//     created: "Jun 25, 10:20AM",
+//     updated: "Jun 25, 10:20AM",
+//     assigned: null,
+//   },
+// ];
 const priorityStyles: Record<string, string> = {
   High: "bg-rose-50 text-rose-500 border-rose-100",
   Medium: "bg-amber-50 text-amber-500 border-amber-100",
   Low: "bg-emerald-50 text-emerald-500 border-emerald-100",
   Normal: "bg-indigo-50 text-indigo-500 border-indigo-100",
 };
-
 const statusStyles: Record<string, string> = {
   Opened: "bg-rose-50 text-rose-500 border-rose-100",
   Unassigned: "bg-amber-50 text-amber-500 border-amber-100",
@@ -150,7 +150,23 @@ export const TeamTicketsTable = () => {
   const [selectedTicketId, setSelectedTicketId] = useState<
     string | undefined
   >();
-
+  const { data, isLoading } = useGetAllTicketsQuery();
+  console.log(data?.data);
+  const ticketData = data?.data;
+  if (isLoading) {
+    return <>loading</>;
+  }
+  const transformTicket = ticketData?.map((item: SupportTicket) => ({
+    id: item.id,
+    company: item.companyName,
+    summary: item.issueType,
+    priority: item.priority,
+    status: item.status,
+    created: item.createdAt,
+    updated: item.updatedAt,
+    assigned: item?.assignments[0],
+  }));
+  console.log(transformTicket);
   const handleAssignClick = (ticketId: string) => {
     setSelectedTicketId(ticketId);
     setIsAssignModalOpen(true);
@@ -248,89 +264,94 @@ export const TeamTicketsTable = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {tickets.map((ticket, index) => (
-                <TableRow
-                  key={index}
-                  className="border-b border-gray-50/50 odd:bg-white even:bg-gray-50/30 hover:bg-gray-100/50 transition-colors"
-                >
-                  <TableCell className="py-4 px-4">
-                    <Input
-                      type="checkbox"
-                      className="w-4 h-4 rounded border-gray-300"
-                    />
-                  </TableCell>
-                  <TableCell className="font-medium text-gray-900 text-sm whitespace-nowrap py-4">
-                    {ticket.id}
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <div className="flex items-center gap-2">
-                      <Avatar className="h-8 w-8 rounded-lg border">
-                        <AvatarImage src={ticket.logo} />
-                        <AvatarFallback>{ticket.company[0]}</AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm font-medium text-gray-900">
-                        {ticket.company}
-                      </span>
-                    </div>
-                  </TableCell>
-                  <TableCell className="text-sm text-gray-500 max-w-[200px] truncate py-4">
-                    {ticket.summary}
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "px-3 py-1 rounded-md text-[11px] font-semibold border-none",
-                        priorityStyles[ticket.priority],
-                      )}
-                    >
-                      {ticket.priority}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="py-4">
-                    <Badge
-                      variant="outline"
-                      className={cn(
-                        "px-3 py-1 rounded-full text-[11px] font-semibold border-none",
-                        statusStyles[ticket.status],
-                      )}
-                    >
-                      {ticket.status}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-sm text-gray-500 whitespace-nowrap py-4">
-                    {ticket.created}
-                  </TableCell>
-                  <TableCell className="text-sm text-gray-500 whitespace-nowrap py-4">
-                    {ticket.updated}
-                  </TableCell>
-                  <TableCell className="py-4">
-                    {ticket.assigned ? (
+              {transformTicket?.map((ticket) => {
+                console.log(ticket);
+                return (
+                  <TableRow
+                    key={ticket.id}
+                    className="border-b border-gray-50/50 odd:bg-white even:bg-gray-50/30 hover:bg-gray-100/50 transition-colors"
+                  >
+                    <TableCell className="py-4 px-4">
+                      <Input
+                        type="checkbox"
+                        className="w-4 h-4 rounded border-gray-300"
+                      />
+                    </TableCell>
+                    <TableCell className="font-medium text-gray-900 text-sm whitespace-nowrap py-4">
+                      {ticket.id}
+                    </TableCell>
+                    <TableCell className="py-4">
                       <div className="flex items-center gap-2">
-                        <Avatar className="h-8 w-8">
-                          <AvatarImage src={ticket.assigned.avatar} />
-                          <AvatarFallback>
-                            {ticket.assigned.name[0]}
-                          </AvatarFallback>
+                        <Avatar className="h-8 w-8 rounded-lg border">
+                          {/* <AvatarImage src={ticket.logo} /> */}
+                          <AvatarFallback>{ticket.company}</AvatarFallback>
                         </Avatar>
-                        <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
-                          {ticket.assigned.name}
+                        <span className="text-sm font-medium text-gray-900">
+                          {ticket.company}
                         </span>
                       </div>
-                    ) : (
-                      <Button
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-500 max-w-[200px] truncate py-4">
+                      {ticket.summary}
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <Badge
                         variant="outline"
-                        size="lg"
-                        className="h-10 px-4 cursor-pointer hover:shadow-lg rounded-lg text-gray-500 flex items-center gap-2 border-gray-200"
-                        onClick={() => handleAssignClick(ticket.id)}
+                        className={cn(
+                          "px-3 py-1 rounded-md text-[11px] font-semibold border-none",
+                          priorityStyles[ticket.priority],
+                        )}
                       >
-                        <UserPlus size={24} />
-                        Assign
-                      </Button>
-                    )}
-                  </TableCell>
-                </TableRow>
-              ))}
+                        {ticket.priority}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="py-4">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          "px-3 py-1 rounded-full text-[11px] font-semibold border-none",
+                          statusStyles[ticket.status],
+                        )}
+                      >
+                        {ticket.status}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-500 whitespace-nowrap py-4">
+                      {ticket.created}
+                    </TableCell>
+                    <TableCell className="text-sm text-gray-500 whitespace-nowrap py-4">
+                      {ticket.updated}
+                    </TableCell>
+                    <TableCell className="py-4">
+                      {ticket.assigned ? (
+                        <div className="flex items-center gap-2">
+                          <Avatar className="h-8 w-8">
+                            <AvatarImage
+                              src={ticket.assigned?.user?.profileImage}
+                            />
+                            <AvatarFallback>
+                              {ticket.assigned.user.name}
+                            </AvatarFallback>
+                          </Avatar>
+                          <span className="text-sm font-medium text-gray-900 whitespace-nowrap">
+                            {ticket.assigned.user.name}
+                          </span>
+                        </div>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          size="lg"
+                          className="h-10 px-4 cursor-pointer hover:shadow-lg rounded-lg text-gray-500 flex items-center gap-2 border-gray-200"
+                          onClick={() => handleAssignClick(ticket.id)}
+                        >
+                          <UserPlus size={24} />
+                          Assign
+                        </Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             </TableBody>
           </Table>
         </div>
