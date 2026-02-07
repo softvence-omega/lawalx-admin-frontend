@@ -8,7 +8,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "@/hooks/useRedux";
 import { toast } from "sonner";
 import { logOut } from "@/store/Slices/AuthSlice/authSlice";
@@ -16,13 +16,11 @@ import { useGetUser } from "@/hooks/useGetUser";
 
 interface UserProfileButtonProps {
   onProfileClick?: () => void;
-  onSettingsClick?: () => void;
   isCollapsed?: boolean;
 }
 
 export default function UserProfile({
   onProfileClick,
-  onSettingsClick,
   isCollapsed,
 }: UserProfileButtonProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -117,17 +115,20 @@ export default function UserProfile({
 
         <DropdownMenuSeparator className="border border-[#E2E8F0] h-px" />
 
-        <DropdownMenuItem onClick={onSettingsClick} className="cursor-pointer">
+        <DropdownMenuItem
+          onClick={() => navigate("/admin/globalSettings")}
+          className="cursor-pointer"
+        >
           Settings
         </DropdownMenuItem>
 
-        <DropdownMenuItem onClick={onProfileClick} className="cursor-pointer">
+        {/* <DropdownMenuItem onClick={onProfileClick} className="cursor-pointer">
           Profile
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
-        <DropdownMenuItem onClick={onProfileClick} className="cursor-pointer">
+        {/* <DropdownMenuItem onClick={onProfileClick} className="cursor-pointer">
           <Link to="/user-activity-log">Activity Log</Link>
-        </DropdownMenuItem>
+        </DropdownMenuItem> */}
 
         <DropdownMenuSeparator className="border border-[#E2E8F0] " />
 

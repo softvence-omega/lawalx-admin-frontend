@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { AssignConfirmModal } from "./AssignConfirmModal";
 
 const CustomSwitch = ({
   checked,
@@ -79,24 +80,33 @@ export const AssignTicketModal: React.FC<AssignTicketModalProps> = ({
   ticketId,
 }) => {
   const [showAvailableOnly, setShowAvailableOnly] = useState(true);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [selectedAgent, setSelectedAgent] = useState("");
 
   const filteredEmployees = showAvailableOnly
     ? employees.filter((e) => e.status === "Available")
     : employees;
 
   const handleAssign = (agentName: string) => {
-    toast.success(`Ticket ${ticketId} assigned to ${agentName}`, {
+    setSelectedAgent(agentName);
+    onOpenChange(false);
+    setShowConfirm(true);
+  };
+
+  const handleFinalConfirm = () => {
+    toast.success(`Ticket ${ticketId} assigned to ${selectedAgent}`, {
       description: "Personnel has been notified and task added to workload.",
       className: "rounded-xl font-medium",
     });
+    setShowConfirm(false);
     onOpenChange(false);
   };
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-md p-0 overflow-hidden border-none rounded-3xl shadow-2xl bg-[#F8FAFF]">
+      <DialogContent className="min-w-md xl:min-w-3xl p-0 overflow-hidden border-none rounded-xl shadow-2xl bg-[#F8FAFF]">
         <DialogHeader className="p-6 bg-white border-b border-gray-100 flex flex-row items-center justify-between space-y-0">
-          <DialogTitle className="text-xl font-bold text-gray-900">
+          <DialogTitle className="text-xl font-semibold text-gray-900">
             Team Workload
           </DialogTitle>
           <button
@@ -110,7 +120,7 @@ export const AssignTicketModal: React.FC<AssignTicketModalProps> = ({
         <div className="p-6 space-y-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
           {/* Top Stats */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white p-6 rounded-2xl border border-blue-50/50 shadow-sm flex flex-col gap-1 transition-all hover:border-blue-100">
+            <div className="bg-white p-6 rounded-lg border border-blue-50/50 shadow-sm flex flex-col gap-1 transition-all hover:border-blue-100">
               <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
                 Person Available
               </span>
@@ -118,7 +128,7 @@ export const AssignTicketModal: React.FC<AssignTicketModalProps> = ({
                 3
               </span>
             </div>
-            <div className="bg-white p-6 rounded-2xl border border-blue-50/50 shadow-sm flex flex-col gap-1 transition-all hover:border-blue-100">
+            <div className="bg-white p-6 rounded-lg border border-blue-50/50 shadow-sm flex flex-col gap-1 transition-all hover:border-blue-100">
               <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
                 Active Ticket
               </span>
@@ -129,7 +139,7 @@ export const AssignTicketModal: React.FC<AssignTicketModalProps> = ({
           </div>
 
           {/* Filter Toggle */}
-          <div className="flex items-center space-x-3 bg-white/50 p-2 rounded-xl">
+          <div className="flex items-center space-x-3 bg-white/50 p-2 rounded-lg">
             <CustomSwitch
               checked={showAvailableOnly}
               onCheckedChange={setShowAvailableOnly}
@@ -147,12 +157,12 @@ export const AssignTicketModal: React.FC<AssignTicketModalProps> = ({
             {filteredEmployees.map((emp, index) => (
               <div
                 key={index}
-                className="bg-white rounded-[2rem] border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
+                className="bg-white rounded-lg border border-gray-100 overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
               >
                 <div className="p-6 space-y-6">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <Avatar className="h-14 w-14 rounded-2xl shadow-inner border-2 border-white">
+                      <Avatar className="h-14 w-14 rounded-lg shadow-inner border-2 border-white">
                         <AvatarImage src={emp.avatar} />
                         <AvatarFallback>{emp.name[0]}</AvatarFallback>
                       </Avatar>
@@ -201,14 +211,14 @@ export const AssignTicketModal: React.FC<AssignTicketModalProps> = ({
                   <div className="grid grid-cols-2 gap-3 pt-2">
                     <Button
                       variant="outline"
-                      className="rounded-xl h-11 border-gray-200 text-gray-600 font-bold text-xs"
+                      className="rounded-lg h-11 border-gray-200 text-gray-600 font-bold text-xs"
                     >
                       <User className="h-4 w-4 mr-2" />
                       View Profile
                     </Button>
                     <Button
                       className={cn(
-                        "rounded-xl h-11 font-bold text-xs shadow-lg transition-all active:scale-95",
+                        "rounded-lg h-11 font-bold text-xs shadow-lg transition-all active:scale-95",
                         emp.status === "Available"
                           ? "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-100/50"
                           : "bg-gray-100 text-gray-400 cursor-not-allowed hover:bg-gray-100 shadow-none border-none",
@@ -225,6 +235,17 @@ export const AssignTicketModal: React.FC<AssignTicketModalProps> = ({
           </div>
         </div>
       </DialogContent>
+
+      <AssignConfirmModal
+        open={showConfirm}
+        onOpenChange={setShowConfirm}
+        employeeName={selectedAgent}
+        onBack={() => {
+          setShowConfirm(false);
+          onOpenChange(true);
+        }}
+        onConfirm={handleFinalConfirm}
+      />
     </Dialog>
   );
 };

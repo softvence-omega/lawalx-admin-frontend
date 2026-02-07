@@ -6,7 +6,6 @@ const TeamView = () => {
     <div className="space-y-14">
       {/* Stats Cards Section */}
       <TeamStats />
-
       {/* Main Table Section */}
       <TeamTicketsTable />
     </div>

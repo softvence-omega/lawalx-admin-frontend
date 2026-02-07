@@ -1,4 +1,5 @@
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -8,6 +9,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Building2, AlertCircle, ChevronLeft, X } from "lucide-react";
+import { SupportTicket } from "@/types/SupportTypes";
+import {
+  useGetAllSupporterQuery,
+  useUpdateTicketMutation,
+} from "@/store/Api/AdminApi/SupportApi";
+import { useState, useEffect } from "react";
+import { toast } from "sonner";
 
 const EditTicketModal = ({
   open,
@@ -17,12 +25,61 @@ const EditTicketModal = ({
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  selectedTicket: any;
+  selectedTicket: SupportTicket;
   handleSave: () => void;
 }) => {
+  const [status, setStatus] = useState(selectedTicket?.status);
+  const [priority, setPriority] = useState(selectedTicket?.priority);
+  const [assignedSupporter, setAssignedSupporter] = useState<
+    string | undefined
+  >(selectedTicket?.assignments[0].user?.name || "unassigned");
+
+  const [adminNote, setAdminNote] = useState(selectedTicket?.adminNote || "");
+  console.log(selectedTicket?.assignments[0].user.name);
+  useEffect(() => {
+    if (selectedTicket) {
+      setStatus(selectedTicket.status);
+      setPriority(selectedTicket.priority);
+      setAdminNote(selectedTicket.adminNote || "");
+
+      const assignmentId = Array.isArray(selectedTicket.assignments)
+        ? selectedTicket.assignments[0]?.user?.id
+        : (selectedTicket.assignments as any)?.user?.id;
+      setAssignedSupporter(assignmentId || "unassigned");
+    }
+  }, [selectedTicket]);
+
+  const { data, isLoading: supporterLoading } = useGetAllSupporterQuery({});
+  const [updateTicket] = useUpdateTicketMutation();
+  const supporterData = data?.data;
+  const handleSubmit = async () => {
+    const toastId = toast.loading("Updating ticket...");
+    try {
+      const payload = {
+        status,
+        priority,
+        adminNote,
+        ...(assignedSupporter !== "unassigned" && {
+          supporterId: assignedSupporter,
+        }),
+      };
+
+      await updateTicket({
+        ticketId: selectedTicket?.id,
+        payload,
+      }).unwrap();
+
+      toast.success("Ticket updated successfully", { id: toastId });
+      handleSave();
+      onOpenChange(false);
+    } catch (error: any) {
+      const errorMessage = error?.data?.message || "An error occurred";
+      toast.error(errorMessage, { id: toastId });
+    }
+  };
+
   return (
     <div className="">
-      {/* Edit Ticket Modal */}
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-xl p-0 overflow-hidden border-none shadow-2xl rounded-2xl">
           <div className="p-6 border-b border-gray-100">
@@ -53,7 +110,7 @@ const EditTicketModal = ({
                   Subject:
                 </p>
                 <p className="text-sm font-medium text-gray-900 max-w-[150px] truncate">
-                  {selectedTicket?.subject}
+                  {selectedTicket?.issueType}
                 </p>
               </div>
               <div className="space-y-1 mt-2">
@@ -63,7 +120,7 @@ const EditTicketModal = ({
                 <div className="flex items-center gap-2">
                   <Building2 className="h-3 w-3 text-indigo-400" />
                   <p className="text-sm font-medium text-gray-900">
-                    {selectedTicket?.company}
+                    {selectedTicket?.companyName}
                   </p>
                 </div>
               </div>
@@ -74,15 +131,15 @@ const EditTicketModal = ({
                 <label className="text-sm font-medium pb-2 text-gray-700">
                   Ticket Status
                 </label>
-                <Select defaultValue={selectedTicket?.status}>
+                <Select value={status} onValueChange={setStatus}>
                   <SelectTrigger className="h-11 w-full rounded-lg bg-white border-gray-200">
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Opened">Opened</SelectItem>
-                    <SelectItem value="Unassigned">Unassigned</SelectItem>
-                    <SelectItem value="In Progress">In Progress</SelectItem>
-                    <SelectItem value="Solved">Solved</SelectItem>
+                    <SelectItem value="OPEN">Open</SelectItem>
+                    <SelectItem value="UNASSIGNED">Unassigned</SelectItem>
+                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                    <SelectItem value="SOLVED">Solved</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -91,15 +148,15 @@ const EditTicketModal = ({
                 <label className="text-sm font-medium pb-2 text-gray-700">
                   Priority
                 </label>
-                <Select defaultValue={selectedTicket?.priority}>
+                <Select value={priority} onValueChange={setPriority}>
                   <SelectTrigger className="h-11 w-full rounded-lg bg-white border-gray-200">
                     <SelectValue placeholder="Select priority" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="High">High</SelectItem>
-                    <SelectItem value="Medium">Medium</SelectItem>
-                    <SelectItem value="Low">Low</SelectItem>
-                    <SelectItem value="Normal">Normal</SelectItem>
+                    <SelectItem value="HIGH">High</SelectItem>
+                    <SelectItem value="MEDIUM">Medium</SelectItem>
+                    <SelectItem value="LOW">Low</SelectItem>
+                    <SelectItem value="NORMAL">Normal</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -108,25 +165,31 @@ const EditTicketModal = ({
                 <label className="text-sm font-medium pb-2 text-gray-700">
                   Assign to
                 </label>
-                <Select
-                  defaultValue={
-                    selectedTicket?.assignedTo?.name || "unassigned"
-                  }
-                >
-                  <SelectTrigger className="h-11 w-full rounded-lg bg-white border-gray-200">
-                    <SelectValue placeholder="Select staff" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="unassigned">Unassigned</SelectItem>
-                    <SelectItem value="Kathryn Murphy">
-                      Kathryn Murphy
-                    </SelectItem>
-                    <SelectItem value="Leslie Alexander">
-                      Leslie Alexander
-                    </SelectItem>
-                    <SelectItem value="Annette Black">Annette Black</SelectItem>
-                  </SelectContent>
-                </Select>
+                {supporterLoading ? (
+                  <Skeleton className="h-11 w-full rounded-lg" />
+                ) : supporterData && supporterData.length > 0 ? (
+                  <Select
+                    value={assignedSupporter}
+                    onValueChange={setAssignedSupporter}
+                  >
+                    <SelectTrigger className="h-11 w-full rounded-lg bg-white border-gray-200">
+                      <SelectValue placeholder="Select staff" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unassigned">Unassigned</SelectItem>
+                      {supporterData?.map((supporter: any) => (
+                        <SelectItem
+                          key={supporter.id}
+                          value={supporter.user.id}
+                        >
+                          {supporter.user.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                ) : (
+                  <p className="text-sm text-gray-500">No supporters found</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -140,6 +203,8 @@ const EditTicketModal = ({
                 </div>
                 <div className="relative">
                   <textarea
+                    value={adminNote}
+                    onChange={(e) => setAdminNote(e.target.value)}
                     className="w-full min-h-[100px] p-4 rounded-lg border border-gray-200 focus:ring-2 focus:ring-indigo-100 focus:border-indigo-400 transition-all text-sm text-gray-600 resize-none"
                     placeholder="Customer reported this issue after the v2.4.0 deployment..."
                   />
@@ -158,7 +223,7 @@ const EditTicketModal = ({
                 <textarea
                   className="w-full min-h-[120px] p-4 rounded-lg border border-gray-200 bg-gray-50/30 text-sm text-gray-500 cursor-not-allowed"
                   disabled
-                  value={selectedTicket?.description}
+                  defaultValue={selectedTicket?.issueType}
                 />
               </div>
             </div>
@@ -174,7 +239,7 @@ const EditTicketModal = ({
               </Button>
               <Button
                 className="h-11 px-8 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white shadow-lg shadow-indigo-100"
-                onClick={handleSave}
+                onClick={handleSubmit}
               >
                 Save changes
               </Button>

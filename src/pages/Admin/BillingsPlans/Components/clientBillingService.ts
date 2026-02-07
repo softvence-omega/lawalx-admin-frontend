@@ -12,7 +12,7 @@ export const clientBillingService = {
 
   // Get client billing by ID
   getClientBillingById: async (
-    id: string
+    id: string,
   ): Promise<ClientBilling | undefined> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
     return clientBillingsData.find((client) => client.id === id);
@@ -20,7 +20,7 @@ export const clientBillingService = {
 
   // Update client billing
   updateClientBilling: async (
-    updatedClient: ClientBilling
+    updatedClient: ClientBilling,
   ): Promise<ClientBilling> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
     // In a real app, this would make an API call to update the data
@@ -29,13 +29,13 @@ export const clientBillingService = {
 
   // Search client billings
   searchClientBillings: async (
-    searchTerm: string
+    searchTerm: string,
   ): Promise<ClientBilling[]> => {
     await new Promise((resolve) => setTimeout(resolve, 100));
     return clientBillingsData.filter(
       (client) =>
         client.companyName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        client.clientId.toLowerCase().includes(searchTerm.toLowerCase())
+        client.clientId.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   },
 
@@ -50,13 +50,13 @@ export const clientBillingService = {
 
     if (filters.planType && filters.planType !== "Plan Type") {
       filteredData = filteredData.filter(
-        (client) => client.planType === filters.planType
+        (client) => client.planType === filters.planType,
       );
     }
 
     if (filters.status && filters.status !== "Status") {
       filteredData = filteredData.filter(
-        (client) => client.status === filters.status
+        (client) => client.status === filters.status,
       );
     }
 

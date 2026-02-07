@@ -36,7 +36,7 @@ const Login = () => {
   } = useForm<LoginFormInputs>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "sakibsoftvence@gmail.com",
+      email: "mdkazinaim0018@gmail.com",
       password: "123456789",
     },
   });
@@ -47,8 +47,9 @@ const Login = () => {
     const toastId = toast.loading("Logging in...");
     try {
       const res = await login(data).unwrap();
-      console.log(res);
+      console.log(res, "res");
       if (res.success) {
+        console.log("inside success");
         dispatch(setUser(res?.data));
         if (res?.data?.specialToken) {
           toast.success("Logged in successfully", { id: toastId });
@@ -58,12 +59,9 @@ const Login = () => {
             role: "ADMIN" | "SUPERADMIN" | "SUPPORTER";
           }>(res?.data?.accessToken);
           if (Role[role]) {
-            console.log("Inside Role", role);
-            console.log(`/${Role[role]}`);
             toast.success("Logged in successfully", { id: toastId });
             navigate(`/${Role[role]}`);
           } else {
-            console.log("Inside Catch", role);
             toast.error("You are not authorized", {
               id: toastId,
             });

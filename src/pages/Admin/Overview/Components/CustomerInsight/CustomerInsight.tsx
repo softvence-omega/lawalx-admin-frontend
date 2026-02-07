@@ -13,12 +13,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { useLocation } from "react-router-dom";
 export const CustomerInsights = memo(function CustomerInsights() {
+  const location = useLocation();
+  const isClient = location.pathname.includes("/admin/clients");
   const { data, isLoading } = useGetAllClientByAdminQuery({});
   const customers: ClientData2[] = useMemo(() => data?.data || [], [data]);
   const [viewMode, setViewMode] = useState("Boards");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 4;
+  const itemsPerPage = isClient ? 16 : 4;
   const [filterPlan, setFilterPlan] = useState<string>("all");
 
   // Filter customers based on plan
@@ -50,25 +53,25 @@ export const CustomerInsights = memo(function CustomerInsights() {
   return (
     <div className="space-y-6 mt-11 min-h-[55vh]">
       {/* Section Header - Kept stable to prevent layout shifts */}
-      <div className="flex items-center justify-between">
+      <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
         <h2 className="text-xl font-semibold text-gray-900">
           Customer Insight
         </h2>
 
         <div className="flex items-center gap-3">
           <Button
+            size="lg"
             variant={viewMode === "Boards" ? "secondary" : "outline"}
-            className={
-              viewMode === "Boards"
-                ? "bg-gray-800 text-white gap-2 cursor-pointer"
-                : "gap-2 cursor-pointer"
-            }
+            className={`
+              ${viewMode === "Boards" ? "bg-gray-800 text-white gap-2 cursor-pointer" : "gap-2 cursor-pointer"}
+            `}
             onClick={() => setViewMode("Boards")}
           >
             <LayoutGrid className="h-4 w-4" />
             Boards
           </Button>
           <Button
+            size="lg"
             variant={viewMode === "Tables" ? "secondary" : "outline"}
             className={
               viewMode === "Tables"
@@ -117,9 +120,11 @@ export const CustomerInsights = memo(function CustomerInsights() {
       ) : (
         <>
           {viewMode === "Boards" ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-2">
               {currentCustomers.map((customer) => (
-                <BoardCustomerInsight key={customer.id} customer={customer} />
+                <div className="">
+                  <BoardCustomerInsight key={customer.id} customer={customer} />
+                </div>
               ))}
             </div>
           ) : (
@@ -129,29 +134,31 @@ export const CustomerInsights = memo(function CustomerInsights() {
           )}
 
           {/* Pagination Controls */}
-          <div className="flex justify-between items-center mt-6">
-            <Button
-              className="border border-green-500 text-green-500 cursor-pointer"
-              size="sm"
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              disabled={currentPage === 1}
-            >
-              Previous
-            </Button>
-            <span className="text-blue-400">
-              Page {currentPage} of {totalPages}
-            </span>
-            <Button
-              className="border border-blue-500 text-blue-500 cursor-pointer"
-              size="sm"
-              onClick={() =>
-                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-              }
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </Button>
-          </div>
+          {currentCustomers.length > itemsPerPage && (
+            <div className="flex justify-between items-center mt-6">
+              <Button
+                className="border border-green-500 text-green-500 cursor-pointer"
+                size="sm"
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+              >
+                Previous
+              </Button>
+              <span className="text-blue-400">
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                className="border border-blue-500 text-blue-500 cursor-pointer"
+                size="sm"
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+              >
+                Next
+              </Button>
+            </div>
+          )}
         </>
       )}
     </div>

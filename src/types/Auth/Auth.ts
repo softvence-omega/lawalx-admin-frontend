@@ -12,6 +12,7 @@ export interface User {
   profileImage?: string;
   status?: string;
   id?: string;
+  verification2FA?: boolean;
 }
 
 export interface Role {

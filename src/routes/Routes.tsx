@@ -9,6 +9,7 @@ import TwoStepVerification from "@/pages/Auth/TwoStepVerification";
 import ResetPassword from "@/pages/Auth/ResetPassword";
 import { supporterRoute } from "./SupporterRoutes";
 import ProtectedRoute from "./ProtectedRoutes";
+import EmailCode from "@/pages/Auth/EmailCode";
 const routes = createBrowserRouter([
   {
     path: "/",
@@ -28,6 +29,10 @@ const routes = createBrowserRouter([
       {
         path: "reset-password",
         element: <ResetPassword />,
+      },
+      {
+        path: "emailcode",
+        element: <EmailCode />,
       },
     ],
   },

@@ -1,15 +1,15 @@
-import { useGetPaymentsDashboardSummaryQuery } from "@/store/Api/PaymentApi/PaymentApi";
+import { useGetPaymentsStatsQuery } from "@/store/Api/PaymentApi/PaymentApi";
 import BillingStatsCard from "./BillingStatsCard";
 import { FaChartPie, FaUsers } from "react-icons/fa";
 import CardSkeleton from "@/common/Skeleton/CardSkeleton";
 
 const BillingStats = () => {
-  const { data, isLoading } = useGetPaymentsDashboardSummaryQuery(undefined);
+  const { data, isLoading } = useGetPaymentsStatsQuery({});
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
-        {Array(5)
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        {Array(4)
           .fill(0)
           .map((_, i) => (
             <CardSkeleton key={i} />
@@ -19,47 +19,39 @@ const BillingStats = () => {
   }
 
   const summary = data?.data;
-  const getGrowthType = (growth?: string): "up" | "down" | undefined => {
-    if (!growth) return undefined;
-    return growth.trim().startsWith("-") ? "down" : "up";
-  };
 
   const cards = [
     {
       title: "Trial Period",
-      value: summary?.totalSales?.value,
-      growth: summary?.totalSales?.growth,
-      growth_type: getGrowthType(summary?.totalSales?.growth),
+      value: summary?.trial || 0,
       icon: <FaChartPie />,
       icon_bg_color: "#2563EB",
-      description: "Overall sales performance",
+      description: "Users currently in trial",
+      growth_type: "up" as const, // Defaulting to up for styling since growth is missiong
     },
     {
       title: "Starter Plan",
-      value: summary?.monthlyRecurringRevenue?.value,
-      growth: summary?.monthlyRecurringRevenue?.growth,
-      growth_type: getGrowthType(summary?.monthlyRecurringRevenue?.growth),
+      value: summary?.starter || 0,
       icon: <FaChartPie />,
       icon_bg_color: "#7C3AED",
-      description: "Monthly recurring revenue",
+      description: "Active starter plan subscribers",
+      growth_type: "up" as const,
     },
     {
       title: "Professional Plan",
-      value: summary?.clientRetentionRate?.value,
-      growth: summary?.clientRetentionRate?.growth,
-      growth_type: getGrowthType(summary?.clientRetentionRate?.growth),
+      value: summary?.professional || 0,
       icon: <FaUsers />,
       icon_bg_color: "#16A34A",
-      description: "Client retention health",
+      description: "Active professional subscribers",
+      growth_type: "up" as const,
     },
     {
-      title: "Business",
-      value: summary?.clientChurnRate?.value,
-      growth: summary?.clientChurnRate?.growth,
-      growth_type: getGrowthType(summary?.clientChurnRate?.growth),
+      title: "Business Plan",
+      value: summary?.business || 0,
       icon: <FaUsers />,
       icon_bg_color: "#DC2626",
-      description: "Clients lost over time",
+      description: "Active business subscribers",
+      growth_type: "up" as const,
     },
   ];
 

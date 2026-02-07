@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { Search, Eye, Edit2, X } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 import {
   Select,
@@ -9,8 +10,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { clientBillingService } from "./Components/clientBillingService";
 import BillingStats from "./Components/BillingStats";
+import BillingPlansSkeleton from "../../../common/Skeleton/BillingPlansSkeleton";
+import { useGetPaymentsQuery } from "@/store/Api/PaymentApi/PaymentApi";
 
 export interface ClientBilling {
   id: string;
@@ -25,6 +27,8 @@ export interface ClientBilling {
   paymentMethod?: string;
 }
 const BillingPlans: React.FC = () => {
+  const { data, isLoading } = useGetPaymentsQuery({});
+  const navigate = useNavigate();
   const [clientBillings, setClientBillings] = useState<ClientBilling[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [planTypeFilter, setPlanTypeFilter] = useState<string>("All Plans");
@@ -34,31 +38,48 @@ const BillingPlans: React.FC = () => {
     new Set(),
   );
   const [selectAll, setSelectAll] = useState<boolean>(false);
-  const [editingClient, setEditingClient] = useState<ClientBilling | null>(
-    null,
-  );
-  const [isEditModalOpen, setIsEditModalOpen] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(true);
 
   const itemsPerPage = 11;
 
-  // Load initial data
+  // Transform API data to match table structure
   useEffect(() => {
-    const loadData = async () => {
-      try {
-        setLoading(true);
-        const data = await clientBillingService.getClientBillings();
-        setClientBillings(data);
-      } catch (error) {
-        console.error("Error loading client billings:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadData();
-  }, []);
-
+    if (data?.data) {
+      const transformedData: ClientBilling[] = Array.isArray(data.data)
+        ? data.data.map((payment: any) => ({
+            id: payment.id,
+            clientId: payment.userId.substring(0, 8).toUpperCase(),
+            companyName: payment.billingInfo?.contactName || "N/A",
+            companyLogo:
+              payment.billingInfo?.contactName?.charAt(0).toUpperCase() || "?",
+            subscriptionPlan: payment.plan,
+            planType:
+              payment.plan === "TRIAL"
+                ? "Trial"
+                : payment.plan === "BUSINESS"
+                  ? "Business"
+                  : payment.plan === "ENTERPRISE"
+                    ? "Enterprise"
+                    : payment.plan === "PROFESSIONAL"
+                      ? "Professional"
+                      : "Starter",
+            billingCycle: payment.billingCycle,
+            renewsDate: payment.nextRenewal
+              ? new Date(payment.nextRenewal).toLocaleDateString()
+              : "N/A",
+            status:
+              payment.status === "ACTIVE"
+                ? "Active"
+                : payment.status === "SUSPENDED"
+                  ? "Suspended"
+                  : payment.status === "TRIAL"
+                    ? "Trial"
+                    : "Expired",
+            paymentMethod: payment.billingInfo?.paymentMethod || "N/A",
+          }))
+        : [];
+      setClientBillings(transformedData);
+    }
+  }, [data]);
   // Filter clients based on search term and selected filters
   const filteredClients = useMemo(() => {
     return clientBillings.filter((client) => {
@@ -133,54 +154,10 @@ const BillingPlans: React.FC = () => {
     setSelectAll(newSelected.size === paginatedClients.length);
   };
 
-  const handleEditClient = (client: ClientBilling) => {
-    setEditingClient(client);
-    setIsEditModalOpen(true);
-  };
-
-  const handleSaveEdit = async () => {
-    if (editingClient) {
-      try {
-        // Update the client in the service
-        await clientBillingService.updateClientBilling(editingClient);
-
-        // Update local state
-        setClientBillings((prev) =>
-          prev.map((client) =>
-            client.id === editingClient.id
-              ? { ...client, ...editingClient }
-              : client,
-          ),
-        );
-
-        setIsEditModalOpen(false);
-        setEditingClient(null);
-      } catch (error) {
-        console.error("Error updating client:", error);
-      }
-    }
-  };
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>,
-  ) => {
-    if (!editingClient) return;
-
-    const { name, value } = e.target;
-    setEditingClient({
-      ...editingClient,
-      [name]: value,
-    });
-  };
-
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50 p-6 flex items-center justify-center">
-        <div className="text-gray-600">Loading client billings...</div>
-      </div>
-    );
+  if (isLoading) {
+    return <BillingPlansSkeleton />;
   }
 
   return (
@@ -192,7 +169,7 @@ const BillingPlans: React.FC = () => {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200">
           {/* Header */}
           <div className="px-6 py-4 border-b border-gray-200">
-            <div className="flex items-center justify-between">
+            <div className="space-y-4 md:space-y-0 md:flex items-center justify-between">
               <h1 className="text-xl font-semibold text-gray-900">
                 Client Billings
               </h1>
@@ -209,6 +186,7 @@ const BillingPlans: React.FC = () => {
                   <SelectContent className="bg-white top-10">
                     <SelectGroup>
                       <SelectItem value="All Plans">All Plans</SelectItem>
+                      <SelectItem value="Trial">Trial</SelectItem>
                       <SelectItem value="Business">Business</SelectItem>
                       <SelectItem value="Enterprise">Enterprise</SelectItem>
                       <SelectItem value="Professional">Professional</SelectItem>
@@ -239,7 +217,7 @@ const BillingPlans: React.FC = () => {
                     placeholder="Search Company..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 pr-4 py-2 w-48 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                    className="pl-9 pr-4 py-2 w-full md:w-48 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   />
                   {searchTerm && (
                     <button
@@ -255,9 +233,9 @@ const BillingPlans: React.FC = () => {
           </div>
 
           {/* Table */}
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50">
+          <div className="overflow-x-auto p-6">
+            <table className="w-full overflow-hidden rounded-t-lg">
+              <thead className="bg-gray-50 rounded-t-lg border border-gray-200">
                 <tr>
                   <th className="px-6 py-3 text-left">
                     <input
@@ -290,7 +268,7 @@ const BillingPlans: React.FC = () => {
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-gray-200 border border-gray-200">
                 {paginatedClients.length > 0 ? (
                   paginatedClients.map((client) => (
                     <tr key={client.id} className="hover:bg-gray-50">
@@ -341,12 +319,21 @@ const BillingPlans: React.FC = () => {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center space-x-2">
-                          <button className="p-1 text-blue-600 hover:text-blue-800">
+                          <button
+                            className="p-1 text-blue-600 hover:text-blue-800"
+                            onClick={() =>
+                              navigate(`/admin/billings/${client.id}`)
+                            }
+                            title="View Details"
+                          >
                             <Eye className="w-4 h-4" />
                           </button>
                           <button
                             className="p-1 text-green-600 hover:text-green-800"
-                            onClick={() => handleEditClient(client)}
+                            onClick={() =>
+                              navigate(`/admin/billings/edit/${client.id}`)
+                            }
+                            title="Edit Billing"
                           >
                             <Edit2 className="w-4 h-4" />
                           </button>
@@ -439,101 +426,6 @@ const BillingPlans: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Edit Modal */}
-      {isEditModalOpen && editingClient && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-lg w-full max-w-md">
-            <div className="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-gray-900">
-                Edit Client Billing
-              </h3>
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="px-6 py-4 space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Company Name
-                </label>
-                <input
-                  type="text"
-                  name="companyName"
-                  value={editingClient.companyName}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Subscription Plan
-                </label>
-                <select
-                  name="planType"
-                  value={editingClient.planType}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="Business">Business</option>
-                  <option value="Enterprise">Enterprise</option>
-                  <option value="Professional">Professional</option>
-                  <option value="Starter">Starter</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Billing Cycle
-                </label>
-                <select
-                  name="billingCycle"
-                  value={editingClient.billingCycle}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="Monthly">Monthly</option>
-                  <option value="Annually">Annually</option>
-                  <option value="Biennially">Biennially</option>
-                  <option value="Custom">Custom</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Status
-                </label>
-                <select
-                  name="status"
-                  value={editingClient.status}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                >
-                  <option value="Active">Active</option>
-                  <option value="Suspended">Suspended</option>
-                  <option value="Trial">Trial</option>
-                  <option value="Expired">Expired</option>
-                </select>
-              </div>
-            </div>
-            <div className="px-6 py-4 border-t border-gray-200 flex justify-end space-x-3">
-              <button
-                onClick={() => setIsEditModalOpen(false)}
-                className="px-4 py-2 text-sm text-gray-700 border border-gray-300 rounded-md hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveEdit}
-                className="px-4 py-2 text-sm text-white bg-blue-600 rounded-md hover:bg-blue-700"
-              >
-                Save Changes
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
