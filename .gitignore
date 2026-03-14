@@ -13,7 +13,6 @@ dist-ssr
 *.local
 
 # Editor directories and files
-.vscode/*
 !.vscode/extensions.json
 .idea
 .DS_Store
@@ -22,10 +21,12 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
-.env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
 .vercel
 Architecture.md
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
+config.bat
